@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<mapping>
+	<part id="Home">
+		<part id="Index">
+			<text key="flar">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="demo">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+		</part>
+		<part id="Demo">
+			<text key="raw">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="paragraph">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="p2">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="p2title">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="p3">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="p3title">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="shortkeys">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="shortkeystitle">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="replacements">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="actionlink">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="actionlinktitle">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="customtag">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="customtagtitle">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="wrapdivtitle">
+				<lang id="nl">This is some serious flar!</lang>
+			</text>
+			<text key="theseparagraphs">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="arewrapped">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="inadiv">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="hovercode">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="hovercodetitle">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+		</part>
+	</part>
+	<part id="Index">
+		<text key="flar">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="demo">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+	</part>
+	<part id="Demo">
+		<text key="raw">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="paragraph">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="p2">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="p2title">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="p3">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="p3title">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="shortkeys">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="shortkeystitle">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="replacements">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="actionlink">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="actionlinktitle">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="customtag">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="customtagtitle">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="wrapdivtitle">
+			<lang id="nl">This is some serious flar!</lang>
+		</text>
+		<text key="theseparagraphs">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="arewrapped">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="inadiv">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="hovercode">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="hovercodetitle">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+	</part>
+	<part id="LocalizedModels">
+		<part id="CoolModel">
+			<text key="Id">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="Name">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+			<text key="inputlabeltitle">
+				<lang id="nl">*EMPTY*</lang>
+			</text>
+		</part>
+	</part>
+	<part id="CoolModel">
+		<text key="Id">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="Name">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+		<text key="inputlabeltitle">
+			<lang id="nl">*EMPTY*</lang>
+		</text>
+	</part>
+</mapping>

@@ -1,0 +1,11 @@
+﻿body {
+    background-color: rgb(50, 80, 50);
+}
+
+.prettydiv {
+    margin: 20px;
+    border: 1px solid pink;
+    background-color: lightblue;
+    border-radius: 5px;
+    padding: 10px;
+}

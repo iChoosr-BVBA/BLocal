@@ -1,0 +1,32 @@
+﻿@model BLocal.Web.Manager.Models.ConnectionData
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Localization management</title>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Site.css")"/>
+    <script src="@Url.Content("~/Scripts/jquery-1.4.4.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/homebrew.popup.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("select[name='providerConfigName']").change(function () {
+                $(this).parents("form").submit();
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Authentication</h1>
+
+    <section class="general">
+        <h2>Please provide access password</h2>
+        @using (Html.BeginForm("Authenticate", "Home", FormMethod.Post)) {
+            <input type="text" name="username" value="notrequired" style="display: none;" placeholder="just here for password remember :)"/>
+            <input type="password" name="password" placeholder="password"/> <input type="submit" value="Authenticate"/>
+        }
+    </section>
+</body>
+</html>

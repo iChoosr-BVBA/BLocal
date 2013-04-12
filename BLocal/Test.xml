@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mapping id="root">
+  <text key="next">
+    <lang id="nl">Volgende</lang>
+    <lang id="fr">Volkende.</lang>
+    <lang id="de">Weiter!</lang>
+  </text>
+  <part id="Base">
+    <part id="Test">
+      <text key="selection">
+        <lang id="nl">U selecteerde nederlands.</lang>
+        <lang id="fr">U selecteerde frans.</lang>
+        <lang id="de">U selecteerde duits.</lang>
+      </text>
+      <text key="next">
+        <lang id="nl">Volgende (overwritten)</lang>
+      </text>
+    </part>
+  </part>
+</mapping>

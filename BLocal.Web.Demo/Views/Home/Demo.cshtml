@@ -1,0 +1,53 @@
+﻿@using BLocal.Web
+@using BLocal.Web.Demo.Models
+@model dynamic
+
+@{
+    Layout = null;
+    var local = @Html.Local();
+
+    var model = new CoolModel("awesome model name", 1);
+    var localmodel = local.Bind(model);
+}
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/site.css")"/>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/jquery.localization.css")"/>
+        <script type="text/javascript" src="@Url.Content("~/Scripts/jquery-1.9.1.js")"></script>
+        <script type="text/javascript" src="@Url.Content("~/Scripts/shortcut.js")"></script>
+        @local.JsLink(Url.Content("~/Scripts/jquery.localization.js"))
+    </head>
+    <body>
+        <h1>@local.Value("raw")</h1>
+        <div>
+            @local.Paragraph("paragraph")
+            @local.Paragraph("p2").AttrKey("title", "p2title")
+            @local.Paragraph("p3").AttrKey("title", "p3title").Attr("style", "color: red")
+            @local.Paragraph("shortkeys").AttrKey("title", "shortkeystitle").Id("short").Name("short").Data("short", true).ClassIf(false, "notworking").ClassIf(true, "working")
+            @local.Paragraph("replacements").Replace("[HARD]", "easy")
+            @local.ActionLink("Demo", "Home", "actionlink").AttrKey("title", "actionlinktitle")
+            <br /><br />
+            @local.Tag("button", "customtag").AttrKey("title", "customtagtitle")
+            @using (local.BeginTag("div").Class("prettydiv").AttrKey("title", "wrapdivtitle").Open()) {
+                @local.Paragraph("theseparagraphs")
+                @local.Paragraph("arewrapped")
+                @local.Paragraph("inadiv")
+            }
+            <p>
+                @localmodel.InputLabel(m => m.Id):
+                @localmodel.Input(m => m.Id, "text")
+                <br />
+                @localmodel.InputLabel(m => m.Name).AttrKey("title", "inputlabeltitle"):
+                @localmodel.Input(m => m.Name, "text")
+            </p>
+            <p>
+                @local.Paragraph("hovercode").AttrKey("title", "hovercodetitle")
+            </p>
+        </div>
+        @local.JsValueSummary()
+    </body>
+</html>

@@ -1,0 +1,70 @@
+<project name="Localization" default="mvc" basedir=".">
+
+	<property name="debug" value="true" overwrite="false" />
+	<property name="project.version" value="1.0.0"/>
+	<property name="project.name" value="Localization.Web.Manager"/>
+	<property name="environment" value="production" />
+	<tstamp property="build.date" pattern="yyyyMMdd" verbose="true" />
+	
+	<property name="src_module_dir" value="${directory::get-current-directory()}" />
+	<property name="src_web_dir" value="${directory::get-current-directory()}" />
+	
+	<target name="dev" description="Build and deploy to dev">
+		<property name="environment" value="dev" />
+		<property name="project" value="Localization.Web.Manager" />
+		<property name="site_dir" value="C:\Web\${environment}\Localization.Web.Manager"/>
+		<call target="mvc" />
+	</target>
+	
+	<target name="beta" description="Build and deploy to beta">
+		<property name="environment" value="beta" />
+		<property name="project" value="Localization.Web.Manager" />
+		<property name="site_dir" value="C:\Web\${environment}\Localization.Web.Manager"/>
+		<call target="mvc" />
+	</target>
+	
+	<target name="mvc" description="Build MVC" depends="build">
+		<echo message="Building ${project.name}-${project.version} MVC"/>
+		<mkdir dir="${site_dir}/bin"/>
+		<copy todir="${site_dir}">
+				<fileset basedir="${src_web_dir}/${project}">
+						<include name="*.config"/>
+						<include name="Global.asax"/>
+						<include name="Global.asax.cs"/>
+				</fileset>
+		</copy>
+		<copy todir="${site_dir}/Views">
+				<fileset basedir="${src_web_dir}/${project}/Views">
+						<include name="**"/>
+				</fileset>
+		</copy>
+		<copy todir="${site_dir}/Content">
+				<fileset basedir="${src_web_dir}/${project}/Content">
+						<include name="**"/>
+				</fileset>
+		</copy>
+		<copy todir="${site_dir}/Scripts">
+				<fileset basedir="${src_web_dir}/${project}/Scripts">
+						<include name="**"/>
+				</fileset>
+		</copy>
+		<copy todir="${site_dir}/bin">
+				<fileset basedir="${src_web_dir}/${project}/bin">
+						<include name="**.dll"/>
+				</fileset>
+		</copy>
+		<copy file="${src_web_dir}/${project}/Web.${environment}.config" tofile="${site_dir}/Web.config" overwrite="true" />
+	</target>
+
+	<target name="build" depends="clean">
+		<echo message="msbuilding ${src_web_dir}\${project}\${project}.csproj"/>
+		<msbuild project="${src_web_dir}\${project}\${project}.csproj">	
+			<property name="debug" value="false" />
+		</msbuild>
+	</target>
+			
+	<target name="clean" description="Clean up">
+		<echo message="Cleaning ${project.name}"/>
+		<delete dir="${site_dir}"/>
+	</target>
+</project>
