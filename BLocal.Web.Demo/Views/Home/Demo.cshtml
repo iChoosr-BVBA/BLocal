@@ -4,6 +4,7 @@
 
 @{
     Layout = null;
+    // automatically fetches localization provider using IoC configured in NinjectWebCommon.cs
     var local = @Html.Local();
 
     var model = new CoolModel("awesome model name", 1);
