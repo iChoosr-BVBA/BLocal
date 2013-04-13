@@ -488,24 +488,29 @@ namespace BLocal.Web
         /// <summary>
         /// Enables debugging via javascript overlay
         /// </summary>
-        /// <param name="jsFilePath">Path to the Foreach.Localization.js file</param>
+        /// <param name="jsContentPath">Path to the jquery.localization.js file</param>
+        /// <param name="cssContentPath">Path to the jquery.localization.css file</param>
         /// <param name="ajaxAction">AJAX Action for the debugger to send localization updates to</param>
         /// <param name="ajaxController">AJAX Controller for the debugger to send localization updates to</param>
         /// <param name="ajaxArea">AJAX Area for the debugger to send localization updates to</param>
         /// <returns></returns>
-        public MvcHtmlString JsLink(String jsFilePath, String ajaxAction = "ChangeValue", String ajaxController = "Localization", String ajaxArea = null)
+        public MvcHtmlString JsLink(String jsContentPath = "~/Scripts/jquery.localization.js", String cssContentPath = "~/Content/jquery.localization.css", String ajaxAction = "ChangeValue", String ajaxController = "Localization", String ajaxArea = null)
         {
             var url = new UrlHelper(Helper.ViewContext.RequestContext);
             var ajaxUrl = ajaxArea == null
                 ? url.Action(ajaxAction, ajaxController)
                 : url.Action(ajaxAction, ajaxController, new { area = ajaxArea });
 
+            var style = new TagBuilder("link");
+            style.MergeAttribute("rel", "stylesheet");
+            style.MergeAttribute("type", "text/css");
+            style.MergeAttribute("href", UrlHelper.Content(cssContentPath));
 
             var script = new StringBuilder();
 
             var baseScript = new TagBuilder("script");
             baseScript.MergeAttribute("type", "text/javascript");
-            baseScript.MergeAttribute("src", jsFilePath);
+            baseScript.MergeAttribute("src", UrlHelper.Content(jsContentPath));
             script.AppendLine(baseScript.ToString());
 
             var initScript = new TagBuilder("script");

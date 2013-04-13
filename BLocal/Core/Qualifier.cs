@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.SqlServer.Management.Common;
 
 namespace BLocal.Core
 {
@@ -54,13 +53,13 @@ namespace BLocal.Core
             public WithKey(String key)
             {
                 if(String.IsNullOrEmpty(key))
-                    throw new InvalidArgumentException("Key should not be Null or empty!");
+                    throw new ArgumentException("Key should not be Null or empty!", "key");
                 Key = key;
             }
             public WithKey(String key, Locale locale)
             {
                 if (String.IsNullOrEmpty(key))
-                    throw new InvalidArgumentException("Key should not be Null or empty!");
+                    throw new ArgumentException("Key should not be Null or empty!", "key");
                 Key = key;
                 Locale = locale;
             }
@@ -71,11 +70,11 @@ namespace BLocal.Core
             public Unique(Part part, Locale locale, String key) : base(key)
             {
                 if(String.IsNullOrEmpty(key))
-                    throw new InvalidArgumentException("Key should not be Null or empty!");
+                    throw new ArgumentException("Key should not be Null or empty!", "key");
                 if(part == null)
-                    throw new InvalidArgumentException("Part should not be Null!");
+                    throw new ArgumentException("Part should not be Null!", "part");
                 if (locale == null)
-                    throw new InvalidArgumentException("Locale should not be Null!");
+                    throw new ArgumentException("Locale should not be Null!", "locale");
 
                 Part = part;
                 Locale = locale;

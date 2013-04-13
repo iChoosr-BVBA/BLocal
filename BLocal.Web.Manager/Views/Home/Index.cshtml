@@ -1,4 +1,5 @@
-﻿@model BLocal.Web.Manager.Models.ConnectionData
+﻿@using System.Configuration
+@model BLocal.Web.Manager.Models.ConnectionData
 @{
     Layout = null;
 }
@@ -20,13 +21,18 @@
 
 <body>
     <h1>Authentication</h1>
-
-    <section class="general">
-        <h2>Please provide access password</h2>
-        @using (Html.BeginForm("Authenticate", "Home", FormMethod.Post)) {
-            <input type="text" name="username" value="notrequired" style="display: none;" placeholder="just here for password remember :)"/>
-            <input type="password" name="password" placeholder="password"/> <input type="submit" value="Authenticate"/>
-        }
-    </section>
+    
+    @if (String.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["password"])) {
+        <p>Please edit the web.config in the root directory to configure your provider(s). Once you've changed the password value there, you will be able to authenticate.</p>
+    }
+    else {
+        <section class="general">
+            <h2>Please provide access password</h2>
+            @using (Html.BeginForm("Authenticate", "Home", FormMethod.Post)) {
+                <input type="text" name="username" value="notrequired" style="display: none;" placeholder="just here for password remember :)"/>
+                <input type="password" name="password" placeholder="password"/> <input type="submit" value="Authenticate"/>
+            }
+        </section>
+    }
 </body>
 </html>

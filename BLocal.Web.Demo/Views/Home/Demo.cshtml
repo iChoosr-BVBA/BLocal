@@ -19,8 +19,8 @@
         <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/site.css")"/>
         <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/jquery.localization.css")"/>
         <script type="text/javascript" src="@Url.Content("~/Scripts/jquery-1.9.1.js")"></script>
-        <script type="text/javascript" src="@Url.Content("~/Scripts/shortcut.js")"></script>
-        @local.JsLink(Url.Content("~/Scripts/jquery.localization.js"))
+        <!-- This line render references to javascript and css required for in-page debugging. If you use nuget, it will know where to find them. -->
+        @local.JsLink()
     </head>
     <body>
         <h1>@local.Value("raw")</h1>

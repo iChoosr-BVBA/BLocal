@@ -1,0 +1,156 @@
+﻿
+/* OVERLAY CSS STYLES   
+----------------------------------------------------------*/
+
+.loc-hover {
+    border: 1px solid red !important;
+}
+
+#loc-overview, #loc-overview-other, #loc-editor {
+    position: fixed;
+    left: 50%;
+    top: 100px;
+    margin-left: -400px;
+    padding-top: 10px;
+    min-height: 490px;
+    width: 800px;
+    background-color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0.90);
+    display: none;
+}
+
+#loc-editor {
+    text-align: center;
+    background-color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0.95);
+    color: black;
+}
+
+    #loc-editor h3 {
+        font-size: 24px;
+        margin-bottom: 10px;
+        text-align: center;
+        color: black;
+    }
+
+    #loc-editor textarea {
+        display: block;
+        margin: 10px auto 15px auto;
+        width: 700px;
+        height: 380px;
+    }
+
+    #loc-editor p {
+        line-height: 20px;
+        color: black;
+    }
+
+    #loc-editor input {
+        display: inline-block;
+        width: 200px;
+        margin: 10px 10px 15px 10px;
+        text-align: center;
+    }
+
+#loc-overview {
+    overflow-y: auto;
+}
+
+    #loc-overview table {
+        width: 100%;
+    }
+
+        #loc-overview table th {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: left;
+            padding: 5px;
+        }
+
+        #loc-overview table td {
+            padding: 5px;
+            overflow: hidden;
+            height: 20px;
+        }
+
+            #loc-overview table td .loc-ov-html {
+                width: 60px;
+                max-width: 60px;
+                min-width: 60px;
+                text-align: center;
+            }
+
+            #loc-overview table td .loc-ov-attr {
+                width: 110px;
+                max-width: 110px;
+                min-width: 110px;
+                text-align: center;
+            }
+
+            #loc-overview table td .loc-ov-part {
+                width: 140px;
+                text-align: center;
+                max-width: 180px;
+            }
+
+            #loc-overview table td .loc-ov-key {
+                width: 80px;
+                max-width: 80px;
+                min-width: 80px;
+                text-align: center;
+            }
+
+            #loc-overview table td .loc-ov-value {
+                width: 320px;
+                max-width: 320px;
+                min-width: 320px;
+            }
+
+        #loc-overview table tbody tr:hover {
+            background-color: rgb(0, 25, 70);
+            background-color: rgba(0, 80, 200, 0.3);
+            cursor: pointer;
+        }
+
+#loc-overview-other {
+    overflow-y: auto;
+}
+    #loc-overview-other table {
+        width: 100%;
+    }
+        #loc-overview-other table th {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: left;
+            padding: 5px;
+        }
+
+        #loc-overview-other table td {
+            padding: 5px;
+            overflow: hidden;
+            height: 20px;
+        }
+            #loc-overview-other table td .loc-ov-part {
+                width: 140px;
+                text-align: center;
+                max-width: 180px;
+            }
+
+            #loc-overview-other table td .loc-ov-key {
+                width: 100px;
+                max-width: 80px;
+                min-width: 80px;
+                text-align: center;
+            }
+
+            #loc-overview-other table td .loc-ov-value {
+                width: 470px;
+                max-width: 320px;
+                min-width: 320px;
+            }
+
+        #loc-overview-other table tbody tr:hover {
+            background-color: rgb(0, 25, 70);
+            background-color: rgba(0, 80, 200, 0.3);
+            cursor: pointer;
+        }
