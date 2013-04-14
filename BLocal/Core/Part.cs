@@ -5,6 +5,9 @@ using System.Text;
 
 namespace BLocal.Core
 {
+    /// <summary>
+    /// Represents a category or group for localizations. Ideally, also represents a specific part of your application.
+    /// </summary>
     public class Part
     {
         public Part Parent { get; set; }
@@ -32,7 +35,7 @@ namespace BLocal.Core
         /// Parses a part to parts with parent parts from a given string using the Separator, then puts this part under the given parent.
         /// </summary>
         /// <param name="part">String representation of the part</param>
-        /// <param name="parentPart"> </param>
+        /// <param name="parentPart">Part of which this part will be a child</param>
         /// <returns></returns>
         public static Part Parse(String part, Part parentPart)
         {
@@ -41,11 +44,20 @@ namespace BLocal.Core
             return parsed;
         }
 
+        /// <summary>
+        /// Creates a new part based on the name
+        /// </summary>
+        /// <param name="name">Name of the part</param>
         public Part(String name)
         {
             Name = name;
         }
 
+        /// <summary>
+        /// Creates a new part based on the name and its parent
+        /// </summary>
+        /// <param name="name">Name of the part</param>
+        /// <param name="parent">Part of which this part will be a child</param>
         public Part(String name, Part parent) : this(name)
         {
             Parent = parent;

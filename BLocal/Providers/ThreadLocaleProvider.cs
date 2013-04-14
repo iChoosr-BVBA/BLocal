@@ -6,6 +6,9 @@ using BLocal.Core;
 
 namespace BLocal.Providers
 {
+    /// <summary>
+    /// Attempts to retrieve the locale from the current thread
+    /// </summary>
     public class ThreadLocaleProvider : ILocaleProvider
     {
         public Locale GetCurrentLocale()

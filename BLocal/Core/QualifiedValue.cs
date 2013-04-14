@@ -2,6 +2,9 @@
 
 namespace BLocal.Core
 {
+    /// <summary>
+    /// Represents a qualifier and its corresponding value
+    /// </summary>
     public class QualifiedValue
     {
         public Qualifier.Unique Qualifier { get; set; }

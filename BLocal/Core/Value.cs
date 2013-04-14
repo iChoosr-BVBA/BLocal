@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace BLocal.Core
 {
+    /// <summary>
+    /// Represents a localized value
+    /// </summary>
     public class Value
     {
         public ContentType ContentType { get; set; }
@@ -19,11 +22,19 @@ namespace BLocal.Core
         private String _content;
         private String _decodedContent;
 
+        /// <summary>
+        /// Returns content as decoded by its content type. Decoded value is then cached as long as the Value object lives.
+        /// </summary>
         public String DecodedContent
         {
             get { return _decodedContent ?? (_decodedContent = ContentType.Decode(Content)); }
         }
 
+        /// <summary>
+        /// Makes replacements in the value BEFORE running it through its contenttyp's decoder (not usually the way you'd want to do it)
+        /// </summary>
+        /// <param name="replacements">Replacements to make in the value before decoding it</param>
+        /// <returns></returns>
         public String DecodeWithReplacements(IEnumerable<KeyValuePair<String, String>> replacements)
         {
             return ContentType.Decode(replacements.Aggregate(_content, (current, replacement) => current.Replace(replacement.Key, replacement.Value)));

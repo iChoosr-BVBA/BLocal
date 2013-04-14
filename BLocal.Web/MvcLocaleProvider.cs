@@ -7,6 +7,9 @@ using BLocal.Core;
 
 namespace BLocal.Web
 {
+    /// <summary>
+    /// Tries to get the locale from HTTP_ACCEPT_LANGUAGE
+    /// </summary>
     public class MvcLocaleProvider : ILocaleProvider
     {
         private readonly String[] _locales;

@@ -5,6 +5,9 @@ using BLocal.Core;
 
 namespace BLocal.Providers
 {
+    /// <summary>
+    /// Void logger does not log anything, anywhere.
+    /// </summary>
     public class VoidLogger : ILocalizationLogger
     {
         public void Log(Qualifier.Unique accessedQualifier)

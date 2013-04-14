@@ -4,6 +4,9 @@ using BLocal.Core;
 
 namespace BLocal.Web
 {
+    /// <summary>
+    /// Recommended useage: create a controller that inherits this and call it LocalizationController, the rest will practically solve itself.
+    /// </summary>
     public abstract class MvcLocalizationController : Controller
     {
         private readonly ILocalizationContext _context;

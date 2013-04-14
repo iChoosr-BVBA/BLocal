@@ -42,6 +42,12 @@ namespace BLocal.Web
             _indirectQualifiers = (HtmlHelper.ViewData["LocalizationIndirectQualifiers"] as HashSet<QualifiedValue>);
         }
 
+        /// <summary>
+        /// Get a generic localization helper which is bound to a model
+        /// </summary>
+        /// <typeparam name="T">Type of the model</typeparam>
+        /// <param name="model">The model to bind to</param>
+        /// <returns></returns>
         public GenericLocalizationHelper<T> Bind<T>(T model)
         {
             return new GenericLocalizationHelper<T>(this, model);
@@ -476,7 +482,15 @@ namespace BLocal.Web
         {
             return BeginTag(tagName).AttrKey(localizedAttributeMappings);
         }
-
+        /// <summary>
+        /// Opens a localized HTML form. Please use .Open() with "using" statement.
+        /// </summary>
+        /// <param name="action">The action the form should navigate to</param>
+        /// <param name="controller">The controller for the action to navigate to</param>
+        /// <param name="routeValues">Route values for the navigation URL</param>
+        /// <param name="method">Method for the form to use</param>
+        /// <param name="target">Target to submit the form to (_self, _blank, name of iframe, ...)</param>
+        /// <returns></returns>
         public LocalizedHtmlTag BeginForm(String action, String controller, Object routeValues = null, FormMethod method = FormMethod.Post, String target = "_self")
         {
             return BeginTag("form")
@@ -488,8 +502,8 @@ namespace BLocal.Web
         /// <summary>
         /// Enables debugging via javascript overlay
         /// </summary>
-        /// <param name="jsContentPath">Path to the jquery.localization.js file</param>
-        /// <param name="cssContentPath">Path to the jquery.localization.css file</param>
+        /// <param name="jsContentPath">Path to the jquery.localization.js file (if null, assumes you reference this file manually)</param>
+        /// <param name="cssContentPath">Path to the jquery.localization.css file (if null, assumes you reference this file manually)</param>
         /// <param name="ajaxAction">AJAX Action for the debugger to send localization updates to</param>
         /// <param name="ajaxController">AJAX Controller for the debugger to send localization updates to</param>
         /// <param name="ajaxArea">AJAX Area for the debugger to send localization updates to</param>
@@ -501,17 +515,21 @@ namespace BLocal.Web
                 ? url.Action(ajaxAction, ajaxController)
                 : url.Action(ajaxAction, ajaxController, new { area = ajaxArea });
 
-            var style = new TagBuilder("link");
-            style.MergeAttribute("rel", "stylesheet");
-            style.MergeAttribute("type", "text/css");
-            style.MergeAttribute("href", UrlHelper.Content(cssContentPath));
-
             var script = new StringBuilder();
 
-            var baseScript = new TagBuilder("script");
-            baseScript.MergeAttribute("type", "text/javascript");
-            baseScript.MergeAttribute("src", UrlHelper.Content(jsContentPath));
-            script.AppendLine(baseScript.ToString());
+            if (cssContentPath != null) {
+                var style = new TagBuilder("link");
+                style.MergeAttribute("rel", "stylesheet");
+                style.MergeAttribute("type", "text/css");
+                style.MergeAttribute("href", UrlHelper.Content(cssContentPath));
+            }
+
+            if (jsContentPath != null) {
+                var baseScript = new TagBuilder("script");
+                baseScript.MergeAttribute("type", "text/javascript");
+                baseScript.MergeAttribute("src", UrlHelper.Content(jsContentPath));
+                script.AppendLine(baseScript.ToString());
+            }
 
             var initScript = new TagBuilder("script");
             initScript.MergeAttribute("type", "text/javascript");

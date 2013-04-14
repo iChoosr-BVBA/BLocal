@@ -4,6 +4,9 @@ using BLocal.Core;
 
 namespace BLocal.Providers
 {
+    /// <summary>
+    /// ValueProvider for demonstration purposes only. If you want to write your own implementation, this is a good example of a rather naive way of doing it.
+    /// </summary>
     public class DemonstrationValueProvider : ILocalizedValueManager
     {
         private static readonly Locale Locale = new Locale("en");
@@ -14,7 +17,7 @@ namespace BLocal.Providers
         private static KeyValuePair<Qualifier.Unique, QualifiedValue> CreateValuePair(Part part, string key, string value)
         {
             var qualifier = new Qualifier.Unique(part, Locale, key);
-            var qualifiedValue = new QualifiedValue(qualifier, new Value(ContentType.Unknown, value));
+            var qualifiedValue = new QualifiedValue(qualifier, new Value(ContentType.Unspecified, value));
             return new KeyValuePair<Qualifier.Unique, QualifiedValue>(qualifier, qualifiedValue);
         }
 

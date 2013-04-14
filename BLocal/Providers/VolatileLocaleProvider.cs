@@ -4,6 +4,9 @@ using BLocal.Core;
 
 namespace BLocal.Providers
 {
+    /// <summary>
+    /// Locale Provider whose Locale can be set at any given time.
+    /// </summary>
     public class VolatileLocaleProvider : ILocaleProvider
     {
         public Locale CurrentLocale { get; set; }

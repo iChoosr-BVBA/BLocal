@@ -19,21 +19,34 @@ namespace BLocal.Core
         }
         public static IEnumerable<ContentType> All { get { return ContentTypes.Values; } }
 
-        public static ContentType Unknown = Create("Unknown", value => value);
-        public static ContentType Text = Create("Text", value => value);
+        public static ContentType Unknown = Create("Unknown", null);
+        public static ContentType Unspecified = Create("Unspecified", null);
+        public static ContentType Text = Create("Text", null);
+        public static ContentType Html = Create("Html", null);
 
+        /// <summary>
+        /// Creates a new content type and adds it to the list
+        /// </summary>
+        /// <param name="name">Name of the content type</param>
+        /// <param name="decoder">Any content retrieved will first be decoded. Null returns normal value.</param>
+        /// <returns></returns>
         public static ContentType Create(String name, Func<String, String> decoder)
         {
             var newType = new ContentType(name, decoder);
             ContentTypes.Add(name, newType);
             return newType;
         }
-
+        
+        /// <summary>
+        /// Find or pretend to find this content type
+        /// </summary>
+        /// <param name="name">Name of the content type to find</param>
+        /// <returns></returns>
         public static ContentType Spoof(String name)
         {
             var type = Find(name);
-            if(type == Unknown)
-                type = new ContentType(name, value => value);
+            if(Equals(type, Unknown))
+                type = new ContentType(name, null);
             return type;
         }
 
@@ -46,9 +59,14 @@ namespace BLocal.Core
             _decoder = decoder;
         }
 
+        /// <summary>
+        /// Returns the decoded value
+        /// </summary>
+        /// <param name="value">Value to decode</param>
+        /// <returns></returns>
         public String Decode(String value)
         {
-            return _decoder(value);
+            return _decoder == null ? value : _decoder(value);
         }
 
         public override string ToString()

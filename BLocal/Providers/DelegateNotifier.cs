@@ -3,6 +3,9 @@ using BLocal.Core;
 
 namespace BLocal.Providers
 {
+    /// <summary>
+    /// For when writing your own implementation of INotifier is just too much work :P
+    /// </summary>
     public class DelegateNotifier : INotifier
     {
         private readonly Action<Qualifier> _missingValueAction;

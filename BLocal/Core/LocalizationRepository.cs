@@ -10,6 +10,9 @@ namespace BLocal.Core
     /// </summary>
     public class LocalizationRepository
     {
+        /// <summary>
+        /// Makes it easy to create multiple repositories with variance in different providers
+        /// </summary>
         public class Factory
         {
             private readonly ILocalizedValueProvider _valueProvider;
@@ -90,7 +93,7 @@ namespace BLocal.Core
             }
             catch (ValueNotFoundException) {
                 Notifier.NotifyMissing(resultQualifier);
-                return new QualifiedValue(resultQualifier, new Value(ContentType.Unknown, String.Format("[{0}]", qualifier.Key)));
+                return new QualifiedValue(resultQualifier, new Value(ContentType.Unspecified, String.Format("[{0}]", qualifier.Key)));
             }
         }
 
@@ -122,6 +125,11 @@ namespace BLocal.Core
             return Locales.GetAvailableLocales().ToDictionary(locale => locale, locale => Get(new Qualifier.WithKey(key) { Locale = locale}));
         }
 
+        /// <summary>
+        /// Sets the value for a given qualifier
+        /// </summary>
+        /// <param name="qualifier">Qualifies the value to be set</param>
+        /// <param name="value">The new value to override the old value with</param>
         public void Set(Qualifier.WithKey qualifier, String value)
         {
             var locale = qualifier.Locale ?? Locales.GetCurrentLocale();

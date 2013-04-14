@@ -9,18 +9,26 @@ using BLocal.Core;
 
 namespace BLocal.Providers
 {
+    /// <summary>
+    /// Provides xml-driven localization. Editing values will get slower with larger amounts of values stored.
+    /// </summary>
     public class XmlValueProvider : ILocalizedValueManager
     {
         private readonly Dictionary<String, GroupNode> _groups = new Dictionary<String, GroupNode>();
         private readonly String _file;
-        private readonly bool _createMissing;
+        private readonly bool _insertDummyValues;
 
         #region XML operations
 
-        public XmlValueProvider(String file, bool createMissing = false)
+        /// <summary>
+        /// Creates a new XmlValueProvider based on a given xml file.
+        /// </summary>
+        /// <param name="file">Name of the file in which to store all localization. Will be created if it doesn't exist.</param>
+        /// <param name="insertDummyValues">If set to true, will not throw ValueNotFoundExceptions (which trigger the Notifier), but create dummy values instead.</param>
+        public XmlValueProvider(String file, bool insertDummyValues = false)
         {
             _file = file;
-            _createMissing = createMissing;
+            _insertDummyValues = insertDummyValues;
             Reload();
         }
 
@@ -213,7 +221,7 @@ namespace BLocal.Providers
                 }
             }
             catch(ValueNotFoundException) {
-                if (!_createMissing)
+                if (!_insertDummyValues)
                     throw;
 
                 CreateValue(qualifier, "[-" + qualifier.Key + "-]");
@@ -232,7 +240,7 @@ namespace BLocal.Providers
                 }
             }
             catch (ValueNotFoundException) {
-                if (!_createMissing)
+                if (!_insertDummyValues)
                     throw;
 
                 CreateValue(qualifier, "[" + qualifier.Key + "]");
@@ -338,7 +346,7 @@ namespace BLocal.Providers
             {
                 try
                 {
-                    return new QualifiedValue(new Qualifier.Unique(Part.Parse(ToString()), qualifier.Locale, qualifier.Key), new Value(ContentType.Text, Content[qualifier.Key][qualifier.Locale.ToString()]));
+                    return new QualifiedValue(new Qualifier.Unique(Part.Parse(ToString()), qualifier.Locale, qualifier.Key), new Value(ContentType.Unspecified, Content[qualifier.Key][qualifier.Locale.ToString()]));
                 }
                 catch (KeyNotFoundException)
                 {
@@ -399,7 +407,7 @@ namespace BLocal.Providers
                 lock(Content)
                     foreach (var keyContainer in Content)
                         foreach (var localContainer in keyContainer.Value)
-                            yield return new QualifiedValue(new Qualifier.Unique(myPart, new Locale(localContainer.Key), keyContainer.Key), new Value(ContentType.Unknown, localContainer.Value));
+                            yield return new QualifiedValue(new Qualifier.Unique(myPart, new Locale(localContainer.Key), keyContainer.Key), new Value(ContentType.Unspecified, localContainer.Value));
             }
 
             public void RemoveValue(Qualifier.Unique qualifier, Action<GroupNode> killNode)

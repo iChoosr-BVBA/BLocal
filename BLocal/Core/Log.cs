@@ -3,6 +3,9 @@ using System.Globalization;
 
 namespace BLocal.Core
 {
+    /// <summary>
+    /// Represents the accessing of a localized value at a given point in time
+    /// </summary>
     public class Log
     {
         public Qualifier.Unique Qualifier { get; private set; }

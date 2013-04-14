@@ -14,7 +14,7 @@ namespace BLocal.Web.Demo.LocalizationProviders
         private static KeyValuePair<Qualifier.Unique, QualifiedValue> CreateValuePair(Part part, string key, string value)
         {
             var qualifier = new Qualifier.Unique(part, Locale, key);
-            var qualifiedValue = new QualifiedValue(qualifier, new Value(ContentType.Unknown, value));
+            var qualifiedValue = new QualifiedValue(qualifier, new Value(ContentType.Text, value));
             return new KeyValuePair<Qualifier.Unique, QualifiedValue>(qualifier, qualifiedValue);
         }
 
@@ -28,9 +28,9 @@ namespace BLocal.Web.Demo.LocalizationProviders
         public void SetValue(Qualifier.Unique qualifier, string value)
         {
             if (AllValues.ContainsKey(qualifier))
-                AllValues[qualifier] = new QualifiedValue(qualifier, new Value(ContentType.Unknown, value));
+                AllValues[qualifier] = new QualifiedValue(qualifier, new Value(ContentType.Text, value));
             else
-                AllValues.Add(qualifier, new QualifiedValue(qualifier, new Value(ContentType.Unknown, value)));
+                AllValues.Add(qualifier, new QualifiedValue(qualifier, new Value(ContentType.Text, value)));
         }
 
         public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier)

@@ -197,7 +197,7 @@ namespace BLocal.Web.Manager.Controllers
                 group.SingleOrDefault(v => Equals(v.Qualifier.Locale.ToString(), locale))
                     ?? new QualifiedValue(
                         new Qualifier.Unique(group.Key.Part, selectedLocale, group.Key.Key),
-                        new Value(ContentType.Unknown, String.Empty)
+                        new Value(ContentType.Unspecified, String.Empty)
                     )
             ).Select(v => new ImportExportRecord(v.Qualifier.Part.ToString(), v.Qualifier.Key, v.Value.Content))
             .ToArray();
@@ -283,7 +283,7 @@ namespace BLocal.Web.Manager.Controllers
                         updates.Add(Tuple.Create(correspondingValue, record));
                 }
                 else if(!record.DeleteOnImport)
-                    inserts.Add(new QualifiedValue(recordQualfier, new Value(ContentType.Unknown, record.Value)));
+                    inserts.Add(new QualifiedValue(recordQualfier, new Value(ContentType.Unspecified, record.Value)));
             }
 
             return View(new ImportReportData(providerConfigName, postedFile.FileName, selectedLocale, inserts, updates, deletes));
@@ -348,7 +348,7 @@ namespace BLocal.Web.Manager.Controllers
                 throw new Exception("Localization not loaded!");
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
-            localization.ValueManager.UpdateCreateValue(new QualifiedValue(qualifier, new Value(ContentType.Unknown, value)));
+            localization.ValueManager.UpdateCreateValue(new QualifiedValue(qualifier, new Value(ContentType.Unspecified, value)));
 
             return Json(new { ok = true });
         }
@@ -371,7 +371,7 @@ namespace BLocal.Web.Manager.Controllers
             foreach (var update in configuration.Data) {
                 providerPair.ValueManager.UpdateCreateValue(new QualifiedValue(
                     new Qualifier.Unique(Part.Parse(update.Part), selectedLocale, update.Key),
-                    new Value(ContentType.Unknown, update.Value)
+                    new Value(ContentType.Unspecified, update.Value)
                 ));
             }
             return Json(new { ok = true });

@@ -6,11 +6,14 @@ using BLocal.Core;
 
 namespace BLocal.Providers
 {
+    /// <summary>
+    /// Sends an e-mail whenever a value cannot be retrieved. Use with great care!
+    /// </summary>
     public class EmailNotifier : INotifier
     {
-        public static String DefaultHost = "mail.fe.dom";
-        public static String DefaultFrom = "smr@foreach.be";
-        public static Func<Qualifier, IEnumerable<String>> DefaultToFuction = qualifier => new[] { "smr@foreach.be" };
+        public static String DefaultHost = "mail.some.domain";
+        public static String DefaultFrom = "you@some.domain";
+        public static Func<Qualifier, IEnumerable<String>> DefaultToFuction = qualifier => new[] { "you@some.domain" };
         public static Func<Qualifier, IEnumerable<String>> DefaultCCFuction = qualifier => new String[0];
         public static Func<Qualifier, IEnumerable<String>> DefaultBccFuction = qualifier => new String[0];
         public static Func<Qualifier, String> DefaultSubjectFunction = qualifier => "Localization: Key not found";

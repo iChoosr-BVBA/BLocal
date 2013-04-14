@@ -10,6 +10,9 @@ using Microsoft.SqlServer.Management.Smo;
 
 namespace BLocal.Providers
 {
+    /// <summary>
+    /// Provides localization and logging based off of a Microsoft SQL Database
+    /// </summary>
     public class MSDBValueAndLogProvider : ILocalizedValueManager, ILocalizationLogger
     {
         private readonly String _connectionString;
@@ -23,6 +26,16 @@ namespace BLocal.Providers
         private LogTable _logTable;
         private readonly bool _insertDummyValues;
         
+        /// <summary>
+        /// Creates a new MSDBValueAndLogProvider
+        /// </summary>
+        /// <param name="connectionString">ConnectionString needed to connect to the database</param>
+        /// <param name="partTableName">Name of the table to store parts in (gets created if it doesn't exist)</param>
+        /// <param name="localeTableName">Name of the table to store locales in (gets created if it doesn't exist)</param>
+        /// <param name="valueTableName">Name of the table to store values in (gets created if it doesn't exist)</param>
+        /// <param name="logTableName">Name of the table to store logs in (gets created if it doesn't exist)</param>
+        /// <param name="schema">Schema to find or create all the tables in (null = default schema)</param>
+        /// <param name="insertDummyValues">If set to true, will not throw ValueNotFoundExceptions (which trigger the Notifier), but create dummy values instead.</param>
         public MSDBValueAndLogProvider(String connectionString, String partTableName, String localeTableName, String valueTableName, String logTableName, String schema = null, bool insertDummyValues = false)
         {
             // instantly test connection & get database name
@@ -60,7 +73,7 @@ namespace BLocal.Providers
             var value = _valueTable.GetValue(part, locale, qualifier.Key);
             if (value == null && _insertDummyValues)
                 using (var connection = Connect())
-                    value = _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Text.ToString(), "[-" + qualifier.Key + "-]"), connection);
+                    value = _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Unspecified.ToString(), "[-" + qualifier.Key + "-]"), connection);
 
             return value == null ? null : value.DecodedContent;
         }
@@ -118,7 +131,7 @@ namespace BLocal.Providers
                 using (var connection = Connect())
                     qualifiedValue = new QualifiedValue(
                         qualifier,
-                        _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Text.ToString(), "[-" + qualifier.Key + "-]"), connection)
+                        _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Unspecified.ToString(), "[-" + qualifier.Key + "-]"), connection)
                     );
             
             return qualifiedValue;
@@ -160,7 +173,7 @@ namespace BLocal.Providers
             var qualifiedValue = _valueTable.GetQualifiedValue(part, locale, qualifier.Key);
             if (qualifiedValue == null || !qualifiedValue.Qualifier.Equals(qualifier))
                 using(var connector = Connect())
-                    _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Unknown.Name, value), connector);
+                    _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Unspecified.Name, value), connector);
         }
 
         public IEnumerable<QualifiedValue> GetAllValuesQualified()

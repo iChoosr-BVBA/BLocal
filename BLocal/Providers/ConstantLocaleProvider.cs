@@ -4,6 +4,9 @@ using BLocal.Core;
 
 namespace BLocal.Providers
 {
+    /// <summary>
+    /// Always returns a single constant locale.
+    /// </summary>
     public class ConstantLocaleProvider : ILocaleProvider
     {
         private readonly Locale _locale;

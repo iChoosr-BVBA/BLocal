@@ -7,6 +7,9 @@ using BLocal.Core;
 
 namespace BLocal.Providers
 {
+    /// <summary>
+    /// Sends batch emails containing the latest notifications about missing values
+    /// </summary>
     public class BatchEmailNotifier : INotifier
     {
         private List<String> _mails;

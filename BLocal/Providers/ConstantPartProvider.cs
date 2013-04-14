@@ -2,6 +2,9 @@
 
 namespace BLocal.Providers
 {
+    /// <summary>
+    /// Always returns a single constant part.
+    /// </summary>
     public class ConstantPartProvider : IPartProvider
     {
         private readonly Part _part;

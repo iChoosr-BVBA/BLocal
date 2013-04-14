@@ -2,6 +2,9 @@
 
 namespace BLocal.Core
 {
+    /// <summary>
+    /// Represents the three dimensions in which a value can vary
+    /// </summary>
     public class Qualifier
     {
         public Part Part { get; set; }
@@ -48,6 +51,9 @@ namespace BLocal.Core
             }
         }
 
+        /// <summary>
+        /// Represents a qualifier for which at least the key is set.
+        /// </summary>
         public class WithKey : Qualifier
         {
             public WithKey(String key)
@@ -63,8 +69,18 @@ namespace BLocal.Core
                 Key = key;
                 Locale = locale;
             }
+            public WithKey(String key, Part part)
+            {
+                if (String.IsNullOrEmpty(key))
+                    throw new ArgumentException("Key should not be Null or empty!", "key");
+                Key = key;
+                Part = part;
+            }
         }
 
+        /// <summary>
+        /// Represents a qualifier for which all three dimensions are set. Forms a unique combination for which only one value can be resolved.
+        /// </summary>
         public class Unique : WithKey
         {
             public Unique(Part part, Locale locale, String key) : base(key)

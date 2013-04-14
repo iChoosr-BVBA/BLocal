@@ -2,6 +2,9 @@
 
 namespace BLocal.Core
 {
+    /// <summary>
+    /// Represents a locale (language/culture/...)
+    /// </summary>
     public class Locale
     {
         public Locale(String name)

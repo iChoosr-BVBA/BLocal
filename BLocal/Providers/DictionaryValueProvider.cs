@@ -4,6 +4,9 @@ using BLocal.Core;
 
 namespace BLocal.Providers
 {
+    /// <summary>
+    /// Provides localization based on a dictionnary containing localized values
+    /// </summary>
     public class DictionaryValueProvider : ILocalizedValueProvider
     {
         public Dictionary<Qualifier, Value> Values { get; set; }
