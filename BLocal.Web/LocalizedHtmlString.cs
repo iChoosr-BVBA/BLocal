@@ -80,7 +80,26 @@ namespace BLocal.Web
             AttrValue(attributeName, attributeValue);
             return this;
         }
-
+        /// <summary>
+        /// Adds a given value to multiple attributes
+        /// </summary>
+        /// <param name="value">the value</param>
+        /// <param name="attrs">the attributes to fill up with the value for this key</param>
+        public LocalizedHtmlString Attr(IEnumerable<String> attrs, String value)
+        {
+            AttrsValue(value, attrs);
+            return this;
+        }
+        /// <summary>
+        /// Add or override multiple attributes
+        /// </summary>
+        /// <param name="attributeNamesAndValues">name/value collection (Dictionary works) for attributes with their corresponding values</param>
+        /// <returns>returns itself</returns>
+        public LocalizedHtmlString Attr(IEnumerable<KeyValuePair<string, string>> attributeNamesAndValues)
+        {
+            AttrValues(attributeNamesAndValues);
+            return this;
+        }
         /// <summary>
         /// Add or override the attribute "attributename" with the value "attributevalue" if "condition" is true
         /// </summary>
@@ -116,27 +135,6 @@ namespace BLocal.Web
             return this;
         }
         /// <summary>
-        /// Adds a given value to multiple attributes
-        /// </summary>
-        /// <param name="value">the value</param>
-        /// <param name="attrs">the attributes to fill up with the value for this key</param>
-        public LocalizedHtmlString Attr(IEnumerable<String> attrs, String value)
-        {
-            AttrsValue(value, attrs);
-            return this;
-        }
-        /// <summary>
-        /// Add or override multiple attributes
-        /// </summary>
-        /// <param name="attributeNamesAndValues">name/value collection (Dictionary works) for attributes with their corresponding values</param>
-        /// <returns>returns itself</returns>
-        public LocalizedHtmlString Attr(IEnumerable<KeyValuePair<string, string>> attributeNamesAndValues)
-        {
-            AttrValues(attributeNamesAndValues);
-            return this;
-        }
-
-        /// <summary>
         /// Adds (does not overwrite) classes to the tag
         /// </summary>
         /// <param name="classNames">the classname(s) to add</param>
@@ -156,7 +154,6 @@ namespace BLocal.Web
             }
             return this;
         }
-
         /// <summary>
         /// Adds (does not overwrite) classes to the tag if condition evaluates as true
         /// </summary>
@@ -180,7 +177,6 @@ namespace BLocal.Web
             Attr("id", id);
             return this;
         }
-
         /// <summary>
         /// sets the "name" attribute of the HTML element
         /// </summary>
@@ -191,7 +187,6 @@ namespace BLocal.Web
             Attr("name", name);
             return this;
         }
-
         /// <summary>
         /// sets the "value" attribute of the HTML element
         /// </summary>
@@ -214,7 +209,6 @@ namespace BLocal.Web
             base.AttrKey(attributeName, attributeValueKey);
             return this;
         }
-
         /// <summary>
         /// Adds the localized value for one key to multiple attributes
         /// </summary>

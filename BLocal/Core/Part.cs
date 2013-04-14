@@ -63,6 +63,11 @@ namespace BLocal.Core
             Parent = parent;
         }
 
+        public Part CreateChild(String name)
+        {
+            return new Part(name, this);
+        }
+
         public override string ToString()
         {
             return ToStringBuilder().ToString();

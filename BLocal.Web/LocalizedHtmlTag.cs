@@ -92,7 +92,29 @@ namespace BLocal.Web
             AttrValues(attributeNamesAndValues);
             return this;
         }
+        /// <summary>
+        /// Add or override the attribute "attributename" with the value "attributevalue" if "condition" is true
+        /// </summary>
+        /// <param name="condition">if the condition is false, this method will do nothing</param>
+        /// <param name="attributeName">name of the attribute to add or override</param>
+        /// <param name="attributeValue">value for the attribute</param>
+        /// <returns>returns itself</returns>
+        public LocalizedHtmlTag AttrIf(bool condition, String attributeName, String attributeValue)
+        {
+            return condition ? Attr(attributeName, attributeValue) : this;
+        }
 
+        /// <summary>
+        /// Add or override the attribute data-"attributename" with the value "attributevalue"
+        /// </summary>
+        /// <param name="attributeName">name of the data attribute to add or override</param>
+        /// <param name="attributeValue">value for the attribute</param>
+        /// <returns>returns itself</returns>
+        public LocalizedHtmlTag Data(String attributeName, Object attributeValue)
+        {
+            AttrValue("data-" + attributeName, attributeValue.ToString());
+            return this;
+        }
         /// <summary>
         /// Adds (does not overwrite) classes to the tag
         /// </summary>
@@ -112,7 +134,6 @@ namespace BLocal.Web
             }
             return this;
         }
-
         /// <summary>
         /// Adds (does not overwrite) classes to the tag if condition evaluates as true
         /// </summary>
@@ -127,11 +148,43 @@ namespace BLocal.Web
         }
 
         /// <summary>
+        /// sets the "id" attribute of the HTML element
+        /// </summary>
+        /// <param name="id">the value for the id</param>
+        /// <returns>returns itself</returns>
+        public LocalizedHtmlTag Id(String id)
+        {
+            Attr("id", id);
+            return this;
+        }
+        /// <summary>
+        /// sets the "name" attribute of the HTML element
+        /// </summary>
+        /// <param name="name">the value for the id</param>
+        /// <returns>returns itself</returns>
+        public LocalizedHtmlTag Name(String name)
+        {
+            Attr("name", name);
+            return this;
+        }
+        /// <summary>
+        /// sets the "value" attribute of the HTML element
+        /// </summary>
+        /// <param name="value">the value for the "value" attribute</param>
+        /// <returns>returns itself</returns>
+        public LocalizedHtmlTag Val(String value)
+        {
+            Attr("value", value);
+            return this;
+        }
+
+        /// <summary>
         /// Add or overide the attribute "attributename" with the localized value for "attributevaluekey"
         /// </summary>
         /// <param name="attributeName">name of the attribute to add or override</param>
         /// <param name="attributeValueKey">key to be used to look up the value for the attribute</param>
         /// <returns>returns itself</returns>
+        /// 
         public new LocalizedHtmlTag AttrKey(String attributeName, String attributeValueKey)
         {
             base.AttrKey(attributeName, attributeValueKey);
