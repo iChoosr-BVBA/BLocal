@@ -63,7 +63,12 @@ namespace BLocal.Core
             Parent = parent;
         }
 
-        public Part CreateChild(String name)
+        /// <summary>
+        /// Creates a part whose parent is this
+        /// </summary>
+        /// <param name="name">Name for the child part</param>
+        /// <returns></returns>
+        public Part Child(String name)
         {
             return new Part(name, this);
         }

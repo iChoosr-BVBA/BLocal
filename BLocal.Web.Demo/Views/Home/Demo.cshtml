@@ -50,6 +50,15 @@
                 @local.Paragraph("hovercode").AttrKey("title", "hovercodetitle")
             </p>
         </div>
+        
+        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new {id = "form", title = @Messages.FormTitle, @class = "myform " + formActive ? "active" : ""})) {
+            
+        }
+        @using (local.BeginForm("Index", "Home", null, FormMethod.Post).Id("form").AttrKey("title", "formtitle").Class("myform").ClassIf(formActive, "active"))
+        {
+            
+        }
+
         <!-- this makes it so that all values that cannot be directly edit, can still be shown by pressing 'enter' while hovering over nothing -->
         @local.JsValueSummary()
     </body>
