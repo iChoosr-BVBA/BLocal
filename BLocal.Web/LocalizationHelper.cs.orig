@@ -505,14 +505,27 @@ namespace BLocal.Web
         /// <summary>
         /// Enables debugging via javascript overlay
         /// </summary>
+<<<<<<< HEAD
         /// <param name="jsContentPath">Path to the jquery.localization.js file (if null, assumes you reference this file manually)</param>
         /// <param name="cssContentPath">Path to the jquery.localization.css file (if null, assumes you reference this file manually)</param>
+        /// <param name="ajaxAction">AJAX Action for the debugger to send localization updates to</param>
+        /// <param name="ajaxController">AJAX Controller for the debugger to send localization updates to</param>
+        /// <param name="ajaxArea">AJAX Area for the debugger to send localization updates to</param>
+        /// <returns></returns>
+        public MvcHtmlString JsLink(String jsContentPath = "~/Scripts/jquery.localization.js", String cssContentPath = "~/Content/jquery.localization.css", String ajaxAction = "ChangeValue", String ajaxController = "Localization", String ajaxArea = null)
+        {
+            var url = new UrlHelper(Helper.ViewContext.RequestContext);
+            var ajaxUrl = ajaxArea == null
+                ? url.Action(ajaxAction, ajaxController)
+                : url.Action(ajaxAction, ajaxController, new { area = ajaxArea });
+=======
+        /// <param name="jsFilePath">Path to the jquery.blocal.js file</param>
         /// <param name="ajaxChangeAction">AJAX Action for the debugger to send localization updates to</param>
         /// <param name="ajaxRetrieveAction">AJAX Action for the debugger to retrieve missing localization values from</param>
         /// <param name="ajaxController">AJAX Controller to which change and retrieve actions can be sent</param>
         /// <param name="ajaxArea">The MVC Area in which to find the ajaxController</param>
         /// <returns></returns>
-        public MvcHtmlString JsLink(String jsContentPath = "~/Scripts/jquery.localization.js", String cssContentPath = "~/Content/jquery.localization.css", String ajaxChangeAction = "ChangeValue", String ajaxRetrieveAction = "GetQualifiedValues", String ajaxController = "Localization", String ajaxArea = null)
+        public MvcHtmlString JsLink(String jsFilePath, String ajaxChangeAction = "ChangeValue", String ajaxRetrieveAction = "GetQualifiedValues", String ajaxController = "Localization", String ajaxArea = null)
         {
             var url = new UrlHelper(Helper.ViewContext.RequestContext);
             var ajaxChangeUrl = ajaxArea == null
@@ -521,6 +534,7 @@ namespace BLocal.Web
             var ajaxRetrieveUrl = ajaxArea == null
                 ? url.Action(ajaxChangeAction, ajaxController)
                 : url.Action(ajaxChangeAction, ajaxController, new { area = ajaxArea });
+>>>>>>> cleanup js, refactored js to blocal
 
             var script = new StringBuilder();
 

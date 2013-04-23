@@ -150,7 +150,7 @@ namespace BLocal.Web
         {
             var tag = new TagBuilder("script");
             tag.MergeAttribute("type", "text/javascript");
-            tag.InnerHtml = "localization.load(" + JsonAll() + ");";
+            tag.InnerHtml = "blocal.load(" + JsonAll() + ");";
             return tag.ToString();
         }
 

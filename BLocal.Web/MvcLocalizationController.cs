@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using BLocal.Core;
 
@@ -25,6 +26,14 @@ namespace BLocal.Web
             return previousUrl == null
                 ? RedirectToAction("Index", "Home")
                 : (ActionResult)Redirect(previousUrl);
+        }
+
+        public JsonResult GetQualifiedValues(String part, String locale, String[] keys)
+        {
+            if (!_context.DebugMode)
+                throw new Exception("Unauthorized!");
+            var values = keys.Select(key => _context.Repository.GetQualified(new Qualifier.Unique(Part.Parse(part), new Locale(locale), key)));
+            return Json(new { Success = true, Values = values });
         }
 
         [ValidateInput(false)]

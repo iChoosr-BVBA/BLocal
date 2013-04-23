@@ -105,6 +105,17 @@ namespace BLocal.Web
             return this;
         }
         /// <summary>
+        /// Add or override the attribute data-"attributename" with the value "attributevalue"
+        /// </summary>
+        /// <param name="attributeName">name of the data attribute to add or override</param>
+        /// <param name="attributeValueKey">key to look for in the localized values to put as the value for the attribute</param>
+        /// <returns>returns itself</returns>
+        public LocalizedHtmlString DataKey(String attributeName, String attributeValueKey)
+        {
+            AttrKey("data-" + attributeName, attributeValueKey);
+            return this;
+        }
+        /// <summary>
         /// Adds a given value to multiple attributes
         /// </summary>
         /// <param name="value">the value</param>

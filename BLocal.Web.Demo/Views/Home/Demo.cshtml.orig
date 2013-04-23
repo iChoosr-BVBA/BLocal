@@ -17,11 +17,17 @@
     <head>
         <title>title</title>
         <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/site.css")"/>
+<<<<<<< HEAD
         <!-- make sure to reference jQuery before referencing jquery.localization. As the name suggests, there is a dependency -->
         <script type="text/javascript" src="@Url.Content("~/Scripts/jquery-1.9.1.min.js")"></script>
         <!-- This line render references to javascript and css required for in-page debugging. If you use nuget, it will know where to find them automatically. -->
         @local.JsLink()
         <!-- Try hovering over an element that gets a red border, then press enter. Press escape to get rid of the editor. -->
+=======
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/jquery.blocal.css")"/>
+        <script type="text/javascript" src="@Url.Content("~/Scripts/jquery-1.9.1.js")"></script>
+        @local.JsLink(Url.Content("~/Scripts/jquery.blocal.js"))
+>>>>>>> cleanup js, refactored js to blocal
     </head>
     <body>
         <h1>@local.Value("raw")</h1>

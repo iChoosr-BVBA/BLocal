@@ -114,11 +114,12 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Content Include="Content\jquery.localization.css" />
     <Content Include="Content\site.css" />
+    <Content Include="Content\jquery.blocal.css" />
     <Content Include="Global.asax" />
+    <Content Include="localization.xml" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
-    <Content Include="Scripts\jquery.localization.js" />
+    <Content Include="Scripts\jquery.blocal.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
