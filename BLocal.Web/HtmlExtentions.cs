@@ -14,7 +14,7 @@ namespace BLocal.Web
         {
             var context = DependencyResolver.Current.GetService<ILocalizationContext>();
             if (context == null)
-                throw new Exception("Could not retrieve LocalizationContext using 'DependencyResolver.Current.GetService<LocalizationContext>()'. Please set up dependency injection for MVC for this to work.");
+                throw new Exception("Could not retrieve LocalizationContext using 'DependencyResolver.Current.GetService<ILocalizationContext>()'. Please set up dependency injection for MVC for this to work.");
             
             return new LocalizationHelper(helper, context.DebugMode, new RepositoryWrapper(context.Repository, context.Repository.DefaultPart));
         }

@@ -505,14 +505,14 @@ namespace BLocal.Web
         /// <summary>
         /// Enables debugging via javascript overlay
         /// </summary>
-        /// <param name="jsContentPath">Path to the jquery.localization.js file (if null, assumes you reference this file manually)</param>
-        /// <param name="cssContentPath">Path to the jquery.localization.css file (if null, assumes you reference this file manually)</param>
+        /// <param name="jsContentPath">Path to the jquery.blocal.js file (if null, assumes you reference this file manually)</param>
+        /// <param name="cssContentPath">Path to the jquery.blocal.css file (if null, assumes you reference this file manually)</param>
         /// <param name="ajaxChangeAction">AJAX Action for the debugger to send localization updates to</param>
         /// <param name="ajaxRetrieveAction">AJAX Action for the debugger to retrieve missing localization values from</param>
         /// <param name="ajaxController">AJAX Controller to which change and retrieve actions can be sent</param>
         /// <param name="ajaxArea">The MVC Area in which to find the ajaxController</param>
         /// <returns></returns>
-        public MvcHtmlString JsLink(String jsContentPath = "~/Scripts/jquery.localization.js", String cssContentPath = "~/Content/jquery.localization.css", String ajaxChangeAction = "ChangeValue", String ajaxRetrieveAction = "GetQualifiedValues", String ajaxController = "Localization", String ajaxArea = null)
+        public MvcHtmlString JsLink(String jsContentPath = "~/Scripts/jquery.blocal.js", String cssContentPath = "~/Content/jquery.blocal.css", String ajaxChangeAction = "ChangeValue", String ajaxRetrieveAction = "GetQualifiedValues", String ajaxController = "Localization", String ajaxArea = null)
         {
             var url = new UrlHelper(Helper.ViewContext.RequestContext);
             var ajaxChangeUrl = ajaxArea == null
@@ -522,35 +522,36 @@ namespace BLocal.Web
                 ? url.Action(ajaxChangeAction, ajaxController)
                 : url.Action(ajaxChangeAction, ajaxController, new { area = ajaxArea });
 
-            var script = new StringBuilder();
+            var link = new StringBuilder();
 
             if (cssContentPath != null) {
                 var style = new TagBuilder("link");
                 style.MergeAttribute("rel", "stylesheet");
                 style.MergeAttribute("type", "text/css");
                 style.MergeAttribute("href", UrlHelper.Content(cssContentPath));
+                link.AppendLine(style.ToString());
             }
 
             if (jsContentPath != null) {
                 var baseScript = new TagBuilder("script");
                 baseScript.MergeAttribute("type", "text/javascript");
                 baseScript.MergeAttribute("src", UrlHelper.Content(jsContentPath));
-                script.AppendLine(baseScript.ToString());
+                link.AppendLine(baseScript.ToString());
             }
 
             var initScript = new TagBuilder("script");
             initScript.MergeAttribute("type", "text/javascript");
             initScript.InnerHtml = String.Format(
-                "blocal.initialize({0}, '{1}', '{2}', {3}, '{4}');",
+                "blocal.initialize({0}, '{1}', '{2}', '{3}', '{4}');",
                 Debugmode ? "true" : "false",
                 ajaxChangeUrl,
                 ajaxRetrieveUrl,
                 Repository.Part,
                 Repository.Locale
             );
-            script.AppendLine(initScript.ToString());
+            link.AppendLine(initScript.ToString());
 
-            return new MvcHtmlString(script.ToString());
+            return new MvcHtmlString(link.ToString());
         }
 
         /// <summary>

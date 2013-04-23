@@ -41,11 +41,11 @@
   <ItemGroup>
     <Reference Include="BLocal, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\BLocal.1.0.2\lib\BLocal.dll</HintPath>
+      <HintPath>..\packages\BLocal.1.0.7\lib\BLocal.dll</HintPath>
     </Reference>
     <Reference Include="BLocal.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\BLocal.Web.1.0.6\lib\BLocal.Web.dll</HintPath>
+      <HintPath>..\packages\BLocal.Web.1.1.0\lib\BLocal.Web.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -64,6 +64,9 @@
     </Reference>
     <Reference Include="Ninject.Web.Common">
       <HintPath>..\packages\Ninject.Web.Common.3.0.0.7\lib\net45-full\Ninject.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Mvc">
+      <HintPath>..\packages\Ninject.MVC3.3.0.0.6\lib\net45-full\Ninject.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

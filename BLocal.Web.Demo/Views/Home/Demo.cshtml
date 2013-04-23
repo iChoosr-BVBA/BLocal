@@ -17,7 +17,7 @@
     <head>
         <title>title</title>
         <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/site.css")"/>
-        <!-- make sure to reference jQuery before referencing jquery.localization. As the name suggests, there is a dependency -->
+        <!-- make sure to reference jQuery before referencing jquery.blocal. As the name suggests, there is a dependency -->
         <script type="text/javascript" src="@Url.Content("~/Scripts/jquery-1.9.1.min.js")"></script>
         <!-- This line render references to javascript and css required for in-page debugging. If you use nuget, it will know where to find them automatically. -->
         @local.JsLink()
@@ -50,15 +50,6 @@
                 @local.Paragraph("hovercode").AttrKey("title", "hovercodetitle")
             </p>
         </div>
-        
-        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new {id = "form", title = @Messages.FormTitle, @class = "myform " + formActive ? "active" : ""})) {
-            
-        }
-        @using (local.BeginForm("Index", "Home", null, FormMethod.Post).Id("form").AttrKey("title", "formtitle").Class("myform").ClassIf(formActive, "active"))
-        {
-            
-        }
-
         <!-- this makes it so that all values that cannot be directly edit, can still be shown by pressing 'enter' while hovering over nothing -->
         @local.JsValueSummary()
     </body>

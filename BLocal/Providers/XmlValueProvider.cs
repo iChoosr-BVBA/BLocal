@@ -89,7 +89,7 @@ namespace BLocal.Providers
                     {
                         writer.WriteStartElement("mapping");
 
-                        foreach (var group in _groups.Values)
+                        foreach (var group in _groups.Values.Where(g => g.Parent == null))
                             WriteGroup(writer, group);
 
                         writer.WriteEndElement();
@@ -316,7 +316,7 @@ namespace BLocal.Providers
             private const String Format = Separator + "{0}";
             private readonly List<GroupNode> _children = new List<GroupNode>();
 
-            private GroupNode Parent { get; set; }
+            public GroupNode Parent { get; private set; }
             public String Id { get;  private set; }
             public Dictionary<String, Dictionary<String, String>> Content { get; private set; }
 

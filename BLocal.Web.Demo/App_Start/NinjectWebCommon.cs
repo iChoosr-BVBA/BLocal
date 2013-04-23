@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Web;
+using System.Web.Mvc;
 using BLocal.Core;
 using BLocal.Providers;
 using BLocal.Web.Demo.App_Start;
@@ -44,8 +45,11 @@ namespace BLocal.Web.Demo.App_Start
             var kernel = new StandardKernel();
             kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
-            
             RegisterServices(kernel);
+
+            //added this line manually. NInject should do this automatically, but for some reason it doesn't...
+            DependencyResolver.SetResolver(kernel.Get<IDependencyResolver>());
+
             return kernel;
         }
 
@@ -62,6 +66,8 @@ namespace BLocal.Web.Demo.App_Start
             var localeProvider = new MvcLocaleProvider("en", "nl");
             var partProvider = new MvcPartProvider(new Part("General"));
             var logger = new VoidLogger();
+
+            kernel.Bind<String>().ToConstant("flar");
 
             // bind all required providers as singletons
             kernel.Bind<ILocalizedValueProvider>().ToConstant(valueProvider).InSingletonScope();
