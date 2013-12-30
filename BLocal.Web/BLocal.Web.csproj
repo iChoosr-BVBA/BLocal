@@ -41,6 +41,7 @@
     <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLocalConfiguration.cs" />
     <Compile Include="MvcLocaleProvider.cs" />
     <Compile Include="GenericLocalizationHelper.cs" />
     <Compile Include="HtmlExtentions.cs" />

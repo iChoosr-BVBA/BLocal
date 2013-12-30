@@ -18,18 +18,18 @@ namespace BLocal.Web
             Model = model;
         }
 
-        public LocalizedHtmlString Input<TProperty>(Expression<Func<TModel, TProperty>> property, String type)
+        public LocalizedHtmlString Input<TProperty>(Expression<Func<TModel, TProperty>> property, String type, String defaultContentValue = null)
         {
             var info = GetInfo(property);
             var hash = Model as Object == null ? 0 : Model.GetHashCode();
             return Base.Input(type).Name(info.Path).Id(info.Path + hash).Val(info.Value);
         }
 
-        public LocalizedHtmlString InputLabel<TProperty>(Expression<Func<TModel, TProperty>> property)
+        public LocalizedHtmlString InputLabel<TProperty>(Expression<Func<TModel, TProperty>> property, String defaultContentValue = null)
         {
             var info = GetInfo(property);
             var hash = Model as Object == null ? 0 : Model.GetHashCode();
-            return Base.ForPart(LocalizedModelPart).Label(info.Path + hash, info.Key);
+            return Base.ForPart(LocalizedModelPart).Label(info.Path + hash, info.Key, defaultContentValue);
         }
 
         public LocalizedHtmlString Radio<TProperty>(Expression<Func<TModel, TProperty>> property, TProperty radioValue)

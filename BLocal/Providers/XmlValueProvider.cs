@@ -209,7 +209,7 @@ namespace BLocal.Providers
 
         #region IValueProvider
 
-        public string GetValue(Qualifier.Unique qualifier)
+        public string GetValue(Qualifier.Unique qualifier, String defaultValue = null)
         {
             try {
                 try {
@@ -221,14 +221,21 @@ namespace BLocal.Providers
                 }
             }
             catch(ValueNotFoundException) {
-                if (!_insertDummyValues)
-                    throw;
 
-                CreateValue(qualifier, "[-" + qualifier.Key + "-]");
-                return GetValue(qualifier);
+                if (defaultValue != null) {
+                    CreateValue(qualifier, defaultValue);
+                    return GetValue(qualifier);
+                }
+
+                if (_insertDummyValues) {
+                    CreateValue(qualifier, "[-" + qualifier.Key + "-]");
+                    return GetValue(qualifier);
+                }
+
+                throw;
             }
         }
-        public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier)
+        public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier, String defaultValue = null)
         {
             try {
                 try {
@@ -240,11 +247,17 @@ namespace BLocal.Providers
                 }
             }
             catch (ValueNotFoundException) {
-                if (!_insertDummyValues)
-                    throw;
+                if (defaultValue != null) {
+                    CreateValue(qualifier, defaultValue);
+                    return GetQualifiedValue(qualifier);
+                }
 
-                CreateValue(qualifier, "[" + qualifier.Key + "]");
-                return GetQualifiedValue(qualifier);
+                if (_insertDummyValues) {
+                    CreateValue(qualifier, "[-" + qualifier.Key + "-]");
+                    return GetQualifiedValue(qualifier);
+                }
+
+                throw;
             }
         }
         public void SetValue(Qualifier.Unique qualifier, string value)

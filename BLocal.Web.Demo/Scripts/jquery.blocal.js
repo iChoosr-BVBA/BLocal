@@ -56,58 +56,16 @@ blocal = {
             });
 
             blocal.localizedNodes.bind("mouseover", function () {
-                var height = $(this).outerHeight(true);
-                var width = $(this).outerWidth(true);
-
                 $(this).addClass("loc-hover");
                 if (this.tagName == 'SELECT') {
                     $(this).children('option').addClass("loc-hover");
                 }
-
-                var dHeight = $(this).outerHeight(true) - height;
-                var dWidth = $(this).outerWidth(true) - width;
-
-                $(this).css({
-                    marginTop: function (index, value) {
-                        return parseFloat(value) - Math.ceil(dHeight / 2) + "px";
-                    },
-                    marginBottom: function (index, value) {
-                        return parseFloat(value) - Math.floor(dHeight / 2) + "px";
-                    },
-                    marginLeft: function (index, value) {
-                        return parseFloat(value) - Math.ceil(dWidth / 2) + "px";
-                    },
-                    marginRight: function (index, value) {
-                        return parseFloat(value) - Math.floor(dWidth / 2) + "px";
-                    }
-                });
             });
             blocal.localizedNodes.bind("mouseout", function () {
-                var height = $(this).outerHeight(true);
-                var width = $(this).outerWidth(true);
-
                 $(this).removeClass("loc-hover");
                 if (this.tagName == 'SELECT') {
                     $(this).children('option').removeClass("loc-hover");
                 }
-
-                var dHeight = $(this).outerHeight(true) - height;
-                var dWidth = $(this).outerWidth(true) - width;
-
-                $(this).css({
-                    marginTop: function (index, value) {
-                        return parseFloat(value) - Math.ceil(dHeight / 2) + "px";
-                    },
-                    marginBottom: function (index, value) {
-                        return parseFloat(value) - Math.floor(dHeight / 2) + "px";
-                    },
-                    marginLeft: function (index, value) {
-                        return parseFloat(value) - Math.ceil(dWidth / 2) + "px";
-                    },
-                    marginRight: function (index, value) {
-                        return parseFloat(value) - Math.floor(dWidth / 2) + "px";
-                    }
-                });
             });
 
             $(document).on("click", "#loc-overview tr.loc-ov-record", function () { blocal.editValue($(this)); return false; });

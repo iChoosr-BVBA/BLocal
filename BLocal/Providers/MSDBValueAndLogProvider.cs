@@ -54,7 +54,7 @@ namespace BLocal.Providers
             _flushLog.Start();
         }
 
-        public string GetValue(Qualifier.Unique qualifier)
+        public string GetValue(Qualifier.Unique qualifier, String defaultValue = null)
         {
             var part = _partTable.GetPart(qualifier.Part.ToString());
             var locale = _localeTable.GetLocale(qualifier.Locale.Name);
@@ -71,6 +71,10 @@ namespace BLocal.Providers
             }
 
             var value = _valueTable.GetValue(part, locale, qualifier.Key);
+            if(value == null && defaultValue != null)
+                using(var connection = Connect())
+                    value = _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Unspecified.ToString(), defaultValue), connection);
+
             if (value == null && _insertDummyValues)
                 using (var connection = Connect())
                     value = _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Unspecified.ToString(), "[-" + qualifier.Key + "-]"), connection);
@@ -110,7 +114,7 @@ namespace BLocal.Providers
                 _valueTable.UpdateCreate(dbval, connection);
         }
 
-        public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier)
+        public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier, String defaultValue = null)
         {
             var part = _partTable.GetPart(qualifier.Part.ToString());
             var locale = _localeTable.GetLocale(qualifier.Locale.Name);
@@ -127,6 +131,13 @@ namespace BLocal.Providers
             }
 
             var qualifiedValue = _valueTable.GetQualifiedValue(part, locale, qualifier.Key);
+            if (qualifiedValue == null && defaultValue != null)
+                using (var connection = Connect())
+                    qualifiedValue = new QualifiedValue(
+                        qualifier,
+                        _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Unspecified.ToString(), defaultValue), connection)
+                    );
+
             if (qualifiedValue == null && _insertDummyValues)
                 using (var connection = Connect())
                     qualifiedValue = new QualifiedValue(

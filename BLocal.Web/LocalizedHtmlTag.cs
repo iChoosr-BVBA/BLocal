@@ -92,29 +92,7 @@ namespace BLocal.Web
             AttrValues(attributeNamesAndValues);
             return this;
         }
-        /// <summary>
-        /// Add or override the attribute "attributename" with the value "attributevalue" if "condition" is true
-        /// </summary>
-        /// <param name="condition">if the condition is false, this method will do nothing</param>
-        /// <param name="attributeName">name of the attribute to add or override</param>
-        /// <param name="attributeValue">value for the attribute</param>
-        /// <returns>returns itself</returns>
-        public LocalizedHtmlTag AttrIf(bool condition, String attributeName, String attributeValue)
-        {
-            return condition ? Attr(attributeName, attributeValue) : this;
-        }
 
-        /// <summary>
-        /// Add or override the attribute data-"attributename" with the value "attributevalue"
-        /// </summary>
-        /// <param name="attributeName">name of the data attribute to add or override</param>
-        /// <param name="attributeValue">value for the attribute</param>
-        /// <returns>returns itself</returns>
-        public LocalizedHtmlTag Data(String attributeName, Object attributeValue)
-        {
-            AttrValue("data-" + attributeName, attributeValue.ToString());
-            return this;
-        }
         /// <summary>
         /// Adds (does not overwrite) classes to the tag
         /// </summary>
@@ -142,40 +120,27 @@ namespace BLocal.Web
         /// <returns>returns itself</returns>
         public LocalizedHtmlTag ClassIf(bool condition, params String[] classNames)
         {
-            if (condition)
-                Class(classNames);
-            return this;
+            return condition ? Class(classNames) : this;
         }
 
         /// <summary>
-        /// sets the "id" attribute of the HTML element
+        /// Sets the ID for the tag
         /// </summary>
-        /// <param name="id">the value for the id</param>
+        /// <param name="id">the id to set</param>
         /// <returns>returns itself</returns>
         public LocalizedHtmlTag Id(String id)
         {
-            Attr("id", id);
-            return this;
+            return Attr("id", id);
         }
         /// <summary>
-        /// sets the "name" attribute of the HTML element
+        /// Sets the ID for the tag if condition evaluates as true
         /// </summary>
-        /// <param name="name">the value for the id</param>
+        /// <param name="condition">if condition evaluates as true, sets id, otherwise discards.</param>
+        /// <param name="id">the id to set</param>
         /// <returns>returns itself</returns>
-        public LocalizedHtmlTag Name(String name)
+        public LocalizedHtmlTag IdIf(bool condition, String id)
         {
-            Attr("name", name);
-            return this;
-        }
-        /// <summary>
-        /// sets the "value" attribute of the HTML element
-        /// </summary>
-        /// <param name="value">the value for the "value" attribute</param>
-        /// <returns>returns itself</returns>
-        public LocalizedHtmlTag Val(String value)
-        {
-            Attr("value", value);
-            return this;
+            return condition ? Id(id) : this;
         }
 
         /// <summary>
@@ -183,11 +148,11 @@ namespace BLocal.Web
         /// </summary>
         /// <param name="attributeName">name of the attribute to add or override</param>
         /// <param name="attributeValueKey">key to be used to look up the value for the attribute</param>
+        /// <param name="defaultAttributeValue">Default value for the attribute</param>
         /// <returns>returns itself</returns>
-        /// 
-        public new LocalizedHtmlTag AttrKey(String attributeName, String attributeValueKey)
+        public new LocalizedHtmlTag AttrKey(String attributeName, String attributeValueKey, String defaultAttributeValue = null)
         {
-            base.AttrKey(attributeName, attributeValueKey);
+            base.AttrKey(attributeName, attributeValueKey, defaultAttributeValue);
             return this;
         }
         /// <summary>
@@ -237,7 +202,7 @@ namespace BLocal.Web
             var builder = new TagBuilder(TagName);
 
             foreach (var attribute in LocalizedAttributes) {
-                var value = Repository.GetQualified(attribute.Value);
+                var value = Repository.GetQualified(attribute.Value.Key, attribute.Value.Default);
                 builder.MergeAttribute(attribute.Key, Processors.Aggregate(
                     value.Value.DecodeWithReplacements(Replacements),
                     (val, processor) => processor(val)

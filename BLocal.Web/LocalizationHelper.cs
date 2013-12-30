@@ -57,10 +57,11 @@ namespace BLocal.Web
         /// Returns pure value for a given key. Not directly hover-debuggable.
         /// </summary>
         /// <param name="key">The key to look for in the repository.</param>
+        /// <param name="defaultValue">Default Value to create if no other value is found</param>
         /// <returns></returns>
-        public MvcHtmlString Value(String key)
+        public MvcHtmlString Value(String key, String defaultValue = null)
         {
-            var qValue = Repository.GetQualified(key);
+            var qValue = Repository.GetQualified(key, defaultValue);
             AddIndirectValue(qValue);
             return new MvcHtmlString(qValue.Value.Content);
         }
@@ -75,14 +76,56 @@ namespace BLocal.Web
             return Tag("H" + headingLevel);
         }
         /// <summary>
-        /// Creates a localized tag of the Header type (H1, H2, ...) of the given level  with an inner value set to the value for a given key.
+        /// Creates a localized tag of the Heading type (H1, H2, ...) of the given level  with an inner value set to the value for a given key.
         /// </summary>
         /// <param name="headingLevel">The level of the header (1-6 for valid html)</param>
         /// <param name="innerHtmlKey">The key of the inner value</param>
+        /// <param name="defaultInnerHtmlValue">Default Value to create if no other value is found</param>
         /// <returns></returns>
-        public LocalizedHtmlString Heading(int headingLevel, String innerHtmlKey)
+        public LocalizedHtmlString Heading(int headingLevel, String innerHtmlKey, String defaultInnerHtmlValue = null)
         {
-            return Tag("H" + headingLevel, innerHtmlKey);
+            return Tag("H" + headingLevel, innerHtmlKey, defaultInnerHtmlValue);
+        }
+
+        /// <summary>
+        /// Creates a localized tag of the Heading with an inner value set to the value for a given key.
+        /// </summary>
+        /// <param name="innerHtmlKey">The key of the inner value</param>
+        /// <param name="defaultInnerHtmlValue">Default Value to create if no other value is found</param>
+        /// <returns></returns>
+        public LocalizedHtmlString H1(String innerHtmlKey, String defaultInnerHtmlValue = null)
+        {
+            return Heading(1, innerHtmlKey, defaultInnerHtmlValue);
+        }
+        /// <summary>
+        /// Creates a localized tag of the Heading with an inner value set to the value for a given key.
+        /// </summary>
+        /// <param name="innerHtmlKey">The key of the inner value</param>
+        /// <param name="defaultInnerHtmlValue">Default Value to create if no other value is found</param>
+        /// <returns></returns>
+        public LocalizedHtmlString H2(String innerHtmlKey, String defaultInnerHtmlValue = null)
+        {
+            return Heading(2, innerHtmlKey, defaultInnerHtmlValue);
+        }
+        /// <summary>
+        /// Creates a localized tag of the Heading with an inner value set to the value for a given key.
+        /// </summary>
+        /// <param name="innerHtmlKey">The key of the inner value</param>
+        /// <param name="defaultInnerHtmlValue">Default Value to create if no other value is found</param>
+        /// <returns></returns>
+        public LocalizedHtmlString H3(String innerHtmlKey, String defaultInnerHtmlValue = null)
+        {
+            return Heading(3, innerHtmlKey, defaultInnerHtmlValue);
+        }
+        /// <summary>
+        /// Creates a localized tag of the Heading with an inner value set to the value for a given key.
+        /// </summary>
+        /// <param name="innerHtmlKey">The key of the inner value</param>
+        /// <param name="defaultInnerHtmlValue">Default Value to create if no other value is found</param>
+        /// <returns></returns>
+        public LocalizedHtmlString H4(String innerHtmlKey, String defaultInnerHtmlValue = null)
+        {
+            return Heading(4, innerHtmlKey, defaultInnerHtmlValue);
         }
 
         /// <summary>
@@ -94,34 +137,39 @@ namespace BLocal.Web
         {
             return new LocalizedHtmlString(Repository, tagname, Debugmode);
         }
+
         /// <summary>
         /// Returns a localized tag of the given type with an inner value set to the value for a given key.
         /// </summary>
         /// <param name="tagname">The name of the tag to generate (p, span, div, ...)</param>
         /// <param name="innerHtmlKey">The key of the inner value</param>
+        /// <param name="defaultInnerHtmlValue">Default value for the inner html if applicable</param>
         /// <returns></returns>
-        public LocalizedHtmlString Tag(String tagname, String innerHtmlKey)
+        public LocalizedHtmlString Tag(String tagname, String innerHtmlKey, string defaultInnerHtmlValue = null)
         {
-            return new LocalizedHtmlString(Repository, tagname, Debugmode).HtmlKey(innerHtmlKey);
+            return new LocalizedHtmlString(Repository, tagname, Debugmode).HtmlKey(innerHtmlKey, defaultInnerHtmlValue);
         }
 
         /// <summary>
         /// Returns the debuggable textvalue for a key.
         /// </summary>
         /// <param name="key">The key to look for in the repository.</param>
+        /// <param name="defaultValue">Default value if applicable</param>
         /// <returns></returns>
-        public LocalizedHtmlString Text(String key)
+        public LocalizedHtmlString Text(String key, String defaultValue = null)
         {
-            return Tag("span").HtmlKey(key);
+            return Tag("span").HtmlKey(key, defaultValue);
         }
+
         /// <summary>
         /// Creates a "p" tag with the translated value of your content key inside it
         /// </summary>
         /// <param name="contentKey">the key with which to fetch the content</param>
+        /// <param name="defaultContentValue">Default value if applicable</param>
         /// <returns></returns>
-        public LocalizedHtmlString Paragraph(String contentKey)
+        public LocalizedHtmlString Paragraph(String contentKey, String defaultContentValue = null)
         {
-            return Tag("p").HtmlKey(contentKey);
+            return Tag("p").HtmlKey(contentKey, defaultContentValue);
         }
 
         /// <summary>
@@ -129,30 +177,35 @@ namespace BLocal.Web
         /// </summary>
         /// <param name="contentKey">the key with which to fetch the content</param>
         /// <param name="href">value for the "href" attribute of your tag</param>
+        /// <param name="defaultContentValue">Default value if applicable</param>
         /// <returns></returns>
-        public LocalizedHtmlString Anchor(String contentKey, String href = "#")
+        public LocalizedHtmlString Anchor(String contentKey, string defaultContentValue = null, String href = "#")
         {
-            return Tag("a", contentKey).Attr("href", href);
+            return Tag("a", contentKey, defaultContentValue).Attr("href", href);
         }
+
         /// <summary>
         /// Creates an "a" tag with the translated value of your content key for its title
         /// </summary>
         /// <param name="titleKey">the key for the value of the "title" attriute</param>
         /// <param name="href">value for the "href" attribute of your tag</param>
+        /// <param name="defaultTitleValue">Default value for the title if applicable</param>
         /// <returns></returns>
-        public LocalizedHtmlString AnchorEmpty(String titleKey, String href = "#")
+        public LocalizedHtmlString AnchorEmpty(String titleKey, string defaultTitleValue = null, String href = "#")
         {
-            return Tag("a").AttrKey("title", titleKey).Attr("href", href);
+            return Tag("a").AttrKey("title", titleKey, defaultTitleValue).Attr("href", href);
         }
+
         /// <summary>
         /// Creates a "label" tag with the translated value of your content key inside it
         /// </summary>
         /// <param name="targetId">the Id for the "for" attribute of the generated label</param>
         /// <param name="contentKey">the key with which to fetch the content</param>
+        /// <param name="defaultContentValue">Default value if applicable</param>
         /// <returns></returns>
-        public LocalizedHtmlString Label(String targetId, String contentKey)
+        public LocalizedHtmlString Label(String targetId, String contentKey, string defaultContentValue = null)
         {
-            return Tag("label").Attr("for", targetId).HtmlKey(contentKey);
+            return Tag("label").Attr("for", targetId).HtmlKey(contentKey, defaultContentValue);
         }
         /// <summary>
         /// Creates an input tag of a given type
@@ -180,18 +233,21 @@ namespace BLocal.Web
         /// <param name="type">the type parameter of the input tag</param>
         /// <param name="name">the name parameter of the input tag</param>
         /// <param name="valueKey">the key with which to fetch the localized value as the value parameter of the input tag</param>
+        /// <param name="defaultValueValue">Default value for the Value attribute</param>
         /// <returns></returns>
-        public LocalizedHtmlString Input(String type, String name, String valueKey)
+        public LocalizedHtmlString Input(String type, String name, String valueKey, String defaultValueValue)
         {
-            return Tag("input").Attr("type", type).Attr("name", name).AttrKey("value", valueKey);
+            return Tag("input").Attr("type", type).Attr("name", name).AttrKey("value", valueKey, defaultValueValue);
         }
+
         /// <summary>
         /// Creates an input type="button" tag with the translated value of your content key inside it
         /// </summary>
         /// <param name="valueKey">the key with which to fetch the content for the "value" attribute</param>
         /// <param name="placeholderKey">the key with which to fetch teh content for the "placeholder" attribute</param>
+        /// <param name="defaultPlaceholderValue">Default value for the placeholder if applicable</param>
         /// <returns></returns>
-        public LocalizedHtmlString InputText(String valueKey, String placeholderKey)
+        public LocalizedHtmlString InputText(String valueKey, String placeholderKey, String defaultPlaceholderValue)
         {
             return Tag("input").Attr("type", "text").AttrKey("value", valueKey).AttrKey("placeholder", placeholderKey);
         }
@@ -199,53 +255,61 @@ namespace BLocal.Web
         /// Creates an input type="hidden" tag with the translated value of your content key inside it
         /// </summary>
         /// <param name="valueKey">the key with which to fetch the content for the "value" attribute</param>
+        /// <param name="defaultValue">Default Value to create if no other value is found</param>
         /// <param name="className">name of the class to set for the input</param>
         /// <returns></returns>
-        public LocalizedHtmlString InputHidden(string valueKey, params string[] className)
+        public LocalizedHtmlString InputHidden(string valueKey, string defaultValue = null, params string[] className)
         {
-            AddIndirectValue(Repository.GetQualified(valueKey));
+            AddIndirectValue(Repository.GetQualified(valueKey, defaultValue));
             var tag = Tag("input").AttrKey("value", valueKey).Attr("type", "hidden");
             if (className != null && className.Length > 0)
                 tag.Class(className);
             return tag;
         }
+
         /// <summary>
         /// Creates an input type="button" tag with the translated value of your content key inside it
         /// </summary>
         /// <param name="valueKey">the key with which to fetch the content for the "value" attribute</param>
+        /// <param name="defaultValueValue">Default value if applicable</param>
         /// <returns></returns>
-        public LocalizedHtmlString InputButton(String valueKey)
+        public LocalizedHtmlString InputButton(String valueKey, string defaultValueValue = null)
         {
-            return Tag("input").Attr("type", "button").AttrKey("value", valueKey);
+            return Tag("input").Attr("type", "button").AttrKey("value", valueKey, defaultValueValue);
         }
+
         /// <summary>
         /// Creates an input type="submit" tag with the translated value of your content key inside it
         /// </summary>
         /// <param name="valueKey">the key with which to fetch the content for the "value" attribute</param>
+        /// <param name="defaultValueValue">Default value if applicable</param>
         /// <returns></returns>
-        public LocalizedHtmlString InputSubmit(String valueKey)
+        public LocalizedHtmlString InputSubmit(String valueKey, string defaultValueValue = null)
         {
-            return Tag("input").Attr("type", "submit").AttrKey("value", valueKey);
+            return Tag("input").Attr("type", "submit").AttrKey("value", valueKey, defaultValueValue);
         }
+
         /// <summary>
         /// Creates an input type="reset" tag with the translated value of your content key inside it
         /// </summary>
         /// <param name="valueKey">the key with which to fetch the content for the "value" attribute</param>
+        /// <param name="defaultValueValue">Default value if applicable</param>
         /// <returns></returns>
-        public LocalizedHtmlString InputReset(String valueKey)
+        public LocalizedHtmlString InputReset(String valueKey, string defaultValueValue = null)
         {
-            return Tag("input").Attr("type", "reset").AttrKey("value", valueKey);
+            return Tag("input").Attr("type", "reset").AttrKey("value", valueKey, defaultValueValue);
         }
 
         /// <summary>
         /// Creates an HTML5 button tag with the translated value of your content key inside it
         /// </summary>
         /// <param name="valueKey">the key with which to fetch the content for the "value" attribute</param>
+        /// <param name="defaultValueValue">Default value if applicable</param>
         /// <param name="className">name of the class to set for the button</param>
         /// <returns></returns>
-        public LocalizedHtmlString Button(string valueKey, params string[] className)
+        public LocalizedHtmlString Button(string valueKey, string defaultValueValue = null, params string[] className)
         {
-            var tag = Tag("button", valueKey);
+            var tag = Tag("button", valueKey, defaultValueValue);
             tag.Attr("type", "button");
             if (className != null && className.Length > 0)
                 tag.Class(className);
@@ -258,21 +322,24 @@ namespace BLocal.Web
         /// <param name="action">Action to link to</param>
         /// <param name="controller">Controller to link to</param>
         /// <param name="innerHtmlKey">Key for the text inside the a tag</param>
+        /// <param name="innerHtmlDefaultValue">Default value if applicable</param>
         /// <param name="routeValues">Values to append to the querystring of the link</param>
         /// <returns></returns>
-        public LocalizedHtmlString ActionLink(String action, String controller, String innerHtmlKey, Object routeValues = null)
+        public LocalizedHtmlString ActionLink(String action, String controller, String innerHtmlKey, string innerHtmlDefaultValue = null, Object routeValues = null)
         {
-            return Tag("a").Attr("href", new UrlHelper(Helper.ViewContext.RequestContext).Action(action, controller, routeValues)).HtmlKey(innerHtmlKey);
+            return Tag("a").Attr("href", new UrlHelper(Helper.ViewContext.RequestContext).Action(action, controller, routeValues)).HtmlKey(innerHtmlKey, innerHtmlDefaultValue);
         }
+
         /// <summary>
         /// Creates an a href="" tag with the translated value of your content key inside it, wrapped in a span tag and a link to your controller
         /// </summary>
         /// <param name="action">Action to link to</param>
         /// <param name="controller">Controller to link to</param>
         /// <param name="innerHtmlKey">Key for the text inside the a tag</param>
+        /// <param name="innerHtmlDefaultValue">Default value if applicable</param>
         /// <param name="routeValues">Values to append to the querystring of the link</param>
         /// <returns></returns>
-        public LocalizedHtmlString ActionLinkSpan(String action, String controller, String innerHtmlKey, Object routeValues = null)
+        public LocalizedHtmlString ActionLinkSpan(String action, String controller, String innerHtmlKey, string innerHtmlDefaultValue = null, Object routeValues = null)
         {
             return Tag("a")
                 .Attr("href", new UrlHelper(Helper.ViewContext.RequestContext).Action(action, controller, routeValues))
@@ -283,8 +350,9 @@ namespace BLocal.Web
         /// Genarates an HTML Image element with a given key whose value will be used as the "src" attribute.
         /// </summary>
         /// <param name="srcKey">The key whose corresponding value will be used as the "src" attribute</param>
+        /// <param name="defaultSrcValue">Devault value for the src attribute if applicable</param>
         /// <returns></returns>
-        public LocalizedHtmlString Image(String srcKey)
+        public LocalizedHtmlString Image(String srcKey, string defaultSrcValue)
         {
             return Tag("img").AttrKey("src", srcKey);
         }
@@ -295,8 +363,10 @@ namespace BLocal.Web
         /// <param name="contentPath">Path for the 'src' attribute (ie "~/Content/image.png")</param>
         /// <param name="altKey">Key for the value to put in the 'alt' attribute</param>
         /// <param name="titleKey">Key for the value to put in the 'title' attribute</param>
+        /// <param name="defaultAltValue">Default value for the 'alt' attribute</param>
+        /// <param name="defaultTitleValue">Default value for the 'title' attribute</param>
         /// <returns></returns>
-        public LocalizedHtmlString Image(String contentPath, String altKey, String titleKey)
+        public LocalizedHtmlString Image(String contentPath, String altKey, String titleKey, String defaultAltValue = null, String defaultTitleValue = null)
         {
             return Tag("img")
                 .Attr("src", new UrlHelper(Helper.ViewContext.RequestContext).Content(contentPath))
@@ -316,7 +386,7 @@ namespace BLocal.Web
         /// <returns></returns>
         public LocalizedHtmlString ActionLinkImage(String contentPath, String altKey, String titleKey, String action, String controller, object routeValues = null)
         {
-            return Image(contentPath, altKey, titleKey).WithParent(ActionLink(action, controller, String.Empty, routeValues));
+            return Image(contentPath, altKey, titleKey).WithParent(ActionLink(action, controller, String.Empty, String.Empty, routeValues));
         }
 
         /// <summary>
@@ -329,23 +399,25 @@ namespace BLocal.Web
         /// <param name="itemSelected">function which decides which items will be marked as selected</param>
         /// <param name="itemValue">function which decides what to render as value for the item</param>
         /// <param name="itemDisplayKey">function which decides what key to use to fetch the localized display value of the item</param>
+        /// <param name="itemDefaultValue">fufnction which decides the default value for the display of the item</param>
         /// <param name="firstValue">value for an extra item inserted as first, not added if NULL</param>
         /// <param name="firstDisplayKey">display key for an extra item inserted as first, not added if NULL</param>
+        /// <param name="defaultFirstDisplayValue">default value for the first item displayed, not added if NULL</param>
         /// <returns></returns>
-        public LocalizedHtmlString Selectbox<T>(String id, String name, IEnumerable<T> items, Func<T, bool> itemSelected, Func<T, object> itemValue, Func<T, string> itemDisplayKey, object firstValue = null, String firstDisplayKey = null)
+        public LocalizedHtmlString Selectbox<T>(String id, String name, IEnumerable<T> items, Func<T, bool> itemSelected, Func<T, object> itemValue, Func<T, string> itemDisplayKey, Func<T, string> itemDefaultValue = null , object firstValue = null, String firstDisplayKey = null, string defaultFirstDisplayValue = null)
         {
             var tag = Tag("select").Attr("name", name).Attr("id", id);
 
             // tuple contains selection - value - displaykey
-            var convertedItems = items.Select(item => Tuple.Create(itemSelected(item), itemValue(item), itemDisplayKey(item)));
+            var convertedItems = items.Select(item => Tuple.Create(itemSelected(item), itemValue(item), itemDisplayKey(item), itemDefaultValue == null ? null : itemDefaultValue(item)));
             if (firstValue != null && firstDisplayKey != null)
-                convertedItems = new[] { Tuple.Create(false, firstValue, firstDisplayKey) }.Union(convertedItems);
+                convertedItems = new[] { Tuple.Create(false, firstValue, firstDisplayKey, defaultFirstDisplayValue) }.Union(convertedItems);
 
             if (items != null) {
                 var options = new StringBuilder();
                 foreach (var item in convertedItems) {
                     var itemTag = Tag("option")
-                        .HtmlKey(item.Item3)
+                        .HtmlKey(item.Item3, item.Item4)
                         .Attr("value", item.Item2.ToString());
                     if (item.Item1)
                         itemTag.Attr("selected", "selected");
@@ -361,12 +433,13 @@ namespace BLocal.Web
         /// Creates an "option" tag with the translated value of your content key inside it
         /// </summary>
         /// <param name="contentKey">the key with which to fetch the content</param>
+        /// <param name="defaultContentValue">Default Value to create if no other value is found</param>
         /// <param name="value">value for the "value" attribute of your tag</param>
         /// <returns></returns>
-        public LocalizedHtmlString Option(String contentKey, Object value = null)
+        public LocalizedHtmlString Option(String contentKey, string defaultContentValue = null, Object value = null)
         {
-            AddIndirectValue(Repository.GetQualified(contentKey));
-            var tag = Tag("option", contentKey);
+            AddIndirectValue(Repository.GetQualified(contentKey, defaultContentValue));
+            var tag = Tag("option", contentKey, defaultContentValue);
             if(value != null)
                 tag.Attr("value", value.ToString());
             return tag;
@@ -464,16 +537,18 @@ namespace BLocal.Web
         {
             return new LocalizedHtmlTag(Repository, tagName, Debugmode, Helper.ViewContext);
         }
+
         /// <summary>
         /// Opens a localized HTML tag with an attribute. Please use .Open() with "using" statement.
         /// </summary>
         /// <param name="tagName">The name of the tag to generate (p, span, div, ...)</param>
         /// <param name="localizedAttribute">The attribute to localize</param>
         /// <param name="localizedAttributeKey">The key whose value to insert into the given attribute.</param>
+        /// <param name="localizedAttributeDefaultValue">The default value for the given attribute</param>
         /// <returns></returns>
-        public LocalizedHtmlTag BeginTag(String tagName, String localizedAttribute, String localizedAttributeKey)
+        public LocalizedHtmlTag BeginTag(String tagName, String localizedAttribute, String localizedAttributeKey, string localizedAttributeDefaultValue = null)
         {
-            return BeginTag(tagName).AttrKey(localizedAttribute, localizedAttributeKey);
+            return BeginTag(tagName).AttrKey(localizedAttribute, localizedAttributeKey, localizedAttributeDefaultValue);
         }
         /// <summary>
         /// Opens a localized HTML tag with multiple attributes. Please use .Open() with "using" statement.
@@ -519,8 +594,8 @@ namespace BLocal.Web
                 ? url.Action(ajaxChangeAction, ajaxController)
                 : url.Action(ajaxChangeAction, ajaxController, new { area = ajaxArea });
             var ajaxRetrieveUrl = ajaxArea == null
-                ? url.Action(ajaxChangeAction, ajaxController)
-                : url.Action(ajaxChangeAction, ajaxController, new { area = ajaxArea });
+                ? url.Action(ajaxRetrieveAction, ajaxController)
+                : url.Action(ajaxRetrieveAction, ajaxController, new { area = ajaxArea });
 
             var link = new StringBuilder();
 
@@ -582,7 +657,7 @@ namespace BLocal.Web
                )
             );
 
-            var content = String.Format("blocal.setOtherValues([{0}])", String.Join(",", qvJson));
+            var content = String.Format("blocal.addOtherValues([{0}])", String.Join(",", qvJson));
 
             var script = new TagBuilder("script");
             script.MergeAttribute("type", "text/javascript");

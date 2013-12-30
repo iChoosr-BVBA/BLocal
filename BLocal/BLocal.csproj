@@ -64,6 +64,7 @@
     <Compile Include="Providers\BatchEmailNotifier.cs" />
     <Compile Include="Providers\ConstantLocaleProvider.cs" />
     <Compile Include="Providers\ConstantPartProvider.cs" />
+    <Compile Include="Providers\DefaultValueProvider.cs" />
     <Compile Include="Providers\CulturedThreadLocaleProvider.cs" />
     <Compile Include="Providers\DelegateNotifier.cs" />
     <Compile Include="Providers\DemonstrationValueProvider.cs" />

@@ -61,15 +61,16 @@ namespace BLocal.Core
             Parts = partProvider;
             Logger = logger ?? new VoidLogger();
         }
-      
+
         /// <summary>
         /// Gets the current value for a specified key, overriding the current part and locale
         /// </summary>
         /// <param name="qualifier">Qualifier for the value to get. Should have at least its key set</param>
+        /// <param name="defaultValue">If the localization does not yet exist, create with default value</param>
         /// <returns></returns>
-        public String Get(Qualifier.WithKey qualifier)
+        public String Get(Qualifier.WithKey qualifier, String defaultValue = null)
         {
-            var value = GetQualified(qualifier);
+            var value = GetQualified(qualifier, defaultValue);
             return value == null ? String.Empty : value.Value.DecodedContent;
         }
 
@@ -77,15 +78,16 @@ namespace BLocal.Core
         /// Gets the current spec for a specified key, overriding the current part and locale
         /// </summary>
         /// <param name="qualifier">Qualifier to get specs for, should at least contain the key.</param>
+        /// <param name="defaultValue">If the localization does not yet exist, create with default value</param>
         /// <returns></returns>
-        public QualifiedValue GetQualified(Qualifier.WithKey qualifier)
+        public QualifiedValue GetQualified(Qualifier.WithKey qualifier, String defaultValue = null)
         {
             var locale = qualifier.Locale ?? Locales.GetCurrentLocale();
             var part = qualifier.Part ?? Parts.GetCurrentPart();
             var resultQualifier = new Qualifier.Unique(part, locale, qualifier.Key);
 
             try {
-                var value = Values.GetQualifiedValue(resultQualifier);
+                var value = Values.GetQualifiedValue(resultQualifier, defaultValue);
                 if (value == null)
                     throw new ValueNotFoundException(qualifier);
                 Logger.Log(value.Qualifier);
@@ -93,7 +95,7 @@ namespace BLocal.Core
             }
             catch (ValueNotFoundException) {
                 Notifier.NotifyMissing(resultQualifier);
-                return new QualifiedValue(resultQualifier, new Value(ContentType.Unspecified, String.Format("[{0}]", qualifier.Key)));
+                return new QualifiedValue(resultQualifier, new Value(ContentType.Unspecified, defaultValue ?? String.Format("[{0}]", qualifier.Key)));
             }
         }
 
@@ -101,10 +103,11 @@ namespace BLocal.Core
         /// Gets the value for a single key and returns it
         /// </summary>
         /// <param name="key">Key to get the value of</param>
+        /// <param name="defaultValue">If the localization does not yet exist, create with default value</param>
         /// <returns></returns>
-        public String Get(String key)
+        public String Get(String key, String defaultValue = null)
         {
-            return Get(new Qualifier.Unique(Parts.GetCurrentPart(), Locales.GetCurrentLocale(), key));
+            return Get(new Qualifier.Unique(Parts.GetCurrentPart(), Locales.GetCurrentLocale(), key), defaultValue);
         }
         /// <summary>
         /// Gets multiple keys and returns them as a key => value dictionary using the current part and locale

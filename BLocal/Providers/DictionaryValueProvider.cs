@@ -16,7 +16,7 @@ namespace BLocal.Providers
             Values = new Dictionary<Qualifier, Value>();
         }
 
-        public string GetValue(Qualifier.Unique qualifier)
+        public string GetValue(Qualifier.Unique qualifier, String defaultValue = null)
         {
             try
             {
@@ -24,7 +24,8 @@ namespace BLocal.Providers
             }
             catch
             {
-                throw new ValueNotFoundException(qualifier);
+                Values[qualifier] = new Value(ContentType.Unknown, defaultValue);
+                return defaultValue;
             }
         }
 
@@ -33,7 +34,7 @@ namespace BLocal.Providers
             Values[qualifier].Content = value;
         }
 
-        public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier)
+        public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier, String defaultValue = null)
         {
             try
             {
@@ -41,7 +42,9 @@ namespace BLocal.Providers
             }
             catch
             {
-                throw new ValueNotFoundException(qualifier);
+                var qualifiedValue = new QualifiedValue(qualifier, new Value(ContentType.Unknown, defaultValue));
+                Values[qualifier] = qualifiedValue.Value;
+                return qualifiedValue;
             }
         }
 

@@ -24,9 +24,9 @@ namespace BLocal.Web
         /// Make localization for key available in javascript (uses default Part & Locale)
         /// </summary>
         /// <param name="key">The key to look up in the localization</param>
-        public LocalizedJavascriptContainer Add(String key)
+        public LocalizedJavascriptContainer Add(String key, String defaultValue = null)
         {
-            var qualifiedValue = _repository.GetQualified(key);
+            var qualifiedValue = _repository.GetQualified(key, defaultValue);
             _localization.AddIndirectValue(qualifiedValue);
             _qualifiedValuesWithReplacements.Add(
                 Tuple.Create(
@@ -55,9 +55,9 @@ namespace BLocal.Web
         /// <param name="key">The key to look up in the localization</param>
         /// <param name="replacementKey">The text to look for and  replace</param>
         /// <param name="replacementValue">The replacement value </param>
-        public LocalizedJavascriptContainer Add(String key, String replacementKey, String replacementValue)
+        public LocalizedJavascriptContainer Add(String key, String replacementKey, String replacementValue, string defaultValue = null)
         {
-            var qualifiedValue = _repository.GetQualified(key);
+            var qualifiedValue = _repository.GetQualified(key, defaultValue);
             _localization.AddIndirectValue(qualifiedValue);
             _qualifiedValuesWithReplacements.Add(
                 Tuple.Create(
@@ -73,9 +73,9 @@ namespace BLocal.Web
         /// </summary>
         /// <param name="key">The key to look up in the localization</param>
         /// <param name="replacements">Replacements to make in the localized value</param>
-        public LocalizedJavascriptContainer Add(String key, List<KeyValuePair<string, string>> replacements)
+        public LocalizedJavascriptContainer Add(String key, List<KeyValuePair<string, string>> replacements, string defaultValue = null)
         {
-            var qualifiedValue = _repository.GetQualified(key);
+            var qualifiedValue = _repository.GetQualified(key, defaultValue);
             _localization.AddIndirectValue(qualifiedValue);
             _qualifiedValuesWithReplacements.Add(
                 Tuple.Create(

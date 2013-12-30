@@ -23,9 +23,9 @@ namespace BLocal.Providers
 
         public Dictionary<Qualifier.Unique, QualifiedValue> AllValues = DefaultValues;
 
-        public string GetValue(Qualifier.Unique qualifier)
+        public string GetValue(Qualifier.Unique qualifier, string defaultValue = null)
         {
-            return GetQualifiedValue(qualifier).Value.Content;
+            return GetQualifiedValue(qualifier, defaultValue).Value.Content;
         }
 
         public void SetValue(Qualifier.Unique qualifier, string value)
@@ -36,7 +36,7 @@ namespace BLocal.Providers
                 AllValues.Add(qualifier, new QualifiedValue(qualifier, new Value(ContentType.Unknown, value)));
         }
 
-        public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier)
+        public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier, string defaultValue = null)
         {
             var testQualifier = qualifier;
             while (testQualifier.Part.Parent != null)
@@ -46,7 +46,10 @@ namespace BLocal.Providers
                 if (AllValues.TryGetValue(testQualifier, out value))
                     return value;
             }
-            throw new ValueNotFoundException(qualifier);
+
+            var qualifiedValue = new QualifiedValue(qualifier, new Value(ContentType.Unknown, defaultValue));
+            AllValues.Add(qualifier, qualifiedValue);
+            return qualifiedValue;
         }
 
         public void Reload()

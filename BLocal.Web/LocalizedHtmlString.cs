@@ -10,7 +10,7 @@ namespace BLocal.Web
 {
     public class LocalizedHtmlString : LocalizedHtmlContainer, IHtmlString
     {
-        public String LocalizedHtmlKey { get; private set; }
+        public KeyWithDefault LocalizedHtmlKey { get; private set; }
         public String OtherHtml { get; private set; }
         private readonly List<LocalizedHtmlString> _children = new List<LocalizedHtmlString>();
         public bool IsDisplayed { get; private set; }
@@ -168,14 +168,23 @@ namespace BLocal.Web
         }
 
         /// <summary>
-        /// sets the "id" attribute of the HTML element
+        /// Sets the ID for the tag
         /// </summary>
-        /// <param name="id">the value for the id</param>
+        /// <param name="id">the id to set</param>
         /// <returns>returns itself</returns>
         public LocalizedHtmlString Id(String id)
         {
-            Attr("id", id);
-            return this;
+            return Attr("id", id);
+        }
+        /// <summary>
+        /// Sets the ID for the tag if condition evaluates as true
+        /// </summary>
+        /// <param name="condition">if condition evaluates as true, sets id, otherwise discards.</param>
+        /// <param name="id">the id to set</param>
+        /// <returns>returns itself</returns>
+        public LocalizedHtmlString IdIf(bool condition, String id)
+        {
+            return condition ? Id(id) : this;
         }
         /// <summary>
         /// sets the "name" attribute of the HTML element
@@ -203,20 +212,22 @@ namespace BLocal.Web
         /// </summary>
         /// <param name="attributeName">name of the attribute to add or override</param>
         /// <param name="attributeValueKey">key to be used to look up the value for the attribute</param>
+        /// <param name="defaultValue">Default value to create if no value is found</param>
         /// <returns>returns itself</returns>
-        public new LocalizedHtmlString AttrKey(String attributeName, String attributeValueKey)
+        public new LocalizedHtmlString AttrKey(String attributeName, String attributeValueKey, String defaultValue = null)
         {
-            base.AttrKey(attributeName, attributeValueKey);
+            base.AttrKey(attributeName, attributeValueKey, defaultValue);
             return this;
         }
         /// <summary>
         /// Adds the localized value for one key to multiple attributes
         /// </summary>
-        /// <param name="key">the key to look up</param>
         /// <param name="attrs">the attributes to fill up with the value for this key</param>
-        public LocalizedHtmlString AttrKey(IEnumerable<String> attrs, String key)
+        /// <param name="key">the key to look up</param>
+        /// <param name="defaultValue">Default value to create if no value is found</param>
+        public LocalizedHtmlString AttrKey(IEnumerable<String> attrs, String key, String defaultValue = null)
         {
-            AttrsKey(key, attrs);
+            AttrsKey(key, attrs, defaultValue);
             return this;
         }
         /// <summary>
@@ -224,7 +235,7 @@ namespace BLocal.Web
         /// </summary>
         /// <param name="attributeNamesAndValueKeys">name/valuekey collection (Dictionary works) for attributes with the keys for their corresponding localized values</param>
         /// <returns>returns itself</returns>
-        public LocalizedHtmlString AttrKey(IEnumerable<KeyValuePair<String, String>> attributeNamesAndValueKeys)
+        public LocalizedHtmlString AttrKey(IEnumerable<KeyValuePair<String, String>> attributeNamesAndValueKeys, String defaultValue = null)
         {
             AttrKeys(attributeNamesAndValueKeys);
             return this;
@@ -240,14 +251,16 @@ namespace BLocal.Web
             OtherHtml = html;
             return this;
         }
+
         /// <summary>
         /// Sets the key that will be used to look up the value for the inner HTML of the node.
         /// </summary>
         /// <param name="htmlKey">key to use for lookup</param>
+        /// <param name="defaultValue">Default value to create if no value is found for the key</param>
         /// <returns>returns itself</returns>
-        public LocalizedHtmlString HtmlKey(String htmlKey)
+        public LocalizedHtmlString HtmlKey(String htmlKey, string defaultValue = null)
         {
-            LocalizedHtmlKey = htmlKey;
+            LocalizedHtmlKey = new KeyWithDefault(htmlKey, defaultValue);
             return this;
         }
 
@@ -292,8 +305,8 @@ namespace BLocal.Web
             var innerHtml = String.Empty;
             QualifiedValue innerHtmlValue = null;
 
-            if (!String.IsNullOrEmpty(LocalizedHtmlKey)) {
-                innerHtmlValue = Repository.GetQualified(LocalizedHtmlKey);
+            if (!String.IsNullOrEmpty(LocalizedHtmlKey.Key)) {
+                innerHtmlValue = Repository.GetQualified(LocalizedHtmlKey.Key, LocalizedHtmlKey.Default);
                 var decodedValue = Processors.Aggregate(
                     innerHtmlValue.Value.DecodeWithReplacements(Replacements),
                     (value, processor) => processor(value)
@@ -302,7 +315,7 @@ namespace BLocal.Web
             }
 
             foreach (var attribute in LocalizedAttributes) {
-                var value = Repository.GetQualified(attribute.Value);
+                var value = Repository.GetQualified(attribute.Value.Key, attribute.Value.Default);
                 builder.MergeAttribute(attribute.Key, Processors.Aggregate(
                     value.Value.DecodeWithReplacements(Replacements),
                     (val, processor) => processor(val)

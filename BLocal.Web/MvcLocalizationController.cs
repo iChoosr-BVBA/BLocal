@@ -31,9 +31,11 @@ namespace BLocal.Web
         public JsonResult GetQualifiedValues(String part, String locale, String[] keys)
         {
             if (!_context.DebugMode)
-                throw new Exception("Unauthorized!");
-            var values = keys.Select(key => _context.Repository.GetQualified(new Qualifier.Unique(Part.Parse(part), new Locale(locale), key)));
-            return Json(new { Success = true, Values = values });
+                throw new Exception("Unauthorized: DebugMode not on.");
+            var values = keys == null
+                ? Enumerable.Empty<FlattenedQualifiedValue>()
+                : keys.Select(key => new FlattenedQualifiedValue(_context.Repository.GetQualified(new Qualifier.Unique(Part.Parse(part), new Locale(locale), key))));
+            return Json(new { Success = true, Values = values }, JsonRequestBehavior.AllowGet);
         }
 
         [ValidateInput(false)]
@@ -44,7 +46,23 @@ namespace BLocal.Web
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
             _context.Repository.Values.SetValue(qualifier, value);
-            return Json(new { Success = true, Value = _context.Repository.Values.GetValue(qualifier) });
+            return Json(new { Success = true, Value = _context.Repository.Values.GetValue(qualifier) }, JsonRequestBehavior.AllowGet);
+        }
+
+        public class FlattenedQualifiedValue
+        {
+            public String Part { get; set; }
+            public String Locale { get; set; }
+            public String Key { get; set; }
+            public String Value { get; set; }
+
+            public FlattenedQualifiedValue(QualifiedValue value)
+            {
+                Part = value.Qualifier.Part.ToString();
+                Locale = value.Qualifier.Locale.ToString();
+                Key = value.Qualifier.Key;
+                Value = value.Value.DecodedContent;
+            }
         }
     }
 }

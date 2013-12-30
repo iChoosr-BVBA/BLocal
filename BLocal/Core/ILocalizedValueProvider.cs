@@ -11,8 +11,9 @@ namespace BLocal.Core
         /// When implemented, returns the value for the specified qualifier
         /// </summary>
         /// <param name="qualifier">Unique qualifier for which to set the value</param>
+        /// <param name="defaultValue">Default value to be used if applicable</param>
         /// <returns></returns>
-        String GetValue(Qualifier.Unique qualifier);
+        String GetValue(Qualifier.Unique qualifier, String defaultValue = null);
 
         /// <summary>
         /// When implemented, sets the value for a specified qualifier. If the value does not exist, nothing happens.
@@ -25,8 +26,9 @@ namespace BLocal.Core
         /// When implemented, returns the Fully Qualified value for a specified qualifier
         /// </summary>
         /// <param name="qualifier">Unique qualifier</param>
+        /// <param name="defaultValue">Default value to be used if applicable</param>
         /// <returns></returns>
-        QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier);
+        QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier, String defaultValue = null);
 
         /// <summary>
         /// When implemented, un-caches any cached values
