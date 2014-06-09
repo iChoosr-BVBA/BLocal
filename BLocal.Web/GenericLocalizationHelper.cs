@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Web.Mvc;
 using BLocal.Core;
 
 namespace BLocal.Web
@@ -23,6 +24,13 @@ namespace BLocal.Web
             var info = GetInfo(property);
             var hash = Model as Object == null ? 0 : Model.GetHashCode();
             return Base.Input(type).Name(info.Path).Id(info.Path + hash).Val(info.Value);
+        }
+
+        public LocalizedHtmlString TextArea<TProperty>(Expression<Func<TModel, TProperty>> property)
+        {
+            var info = GetInfo(property);
+            var hash = Model as Object == null ? 0 : Model.GetHashCode();
+            return Base.Tag("textarea").Name(info.Path).Id(info.Path + hash).Val(info.Value);
         }
 
         public LocalizedHtmlString InputLabel<TProperty>(Expression<Func<TModel, TProperty>> property, String defaultContentValue = null)
@@ -69,42 +77,31 @@ namespace BLocal.Web
 
         private ExpressionInfo GetInfo<TProperty>(Expression<Func<TModel, TProperty>> property)
         {
-            var value = String.Empty;
-            try { value = property.Compile().Invoke(Model).ToString(); }
-            catch (NullReferenceException) { }
-
-            var body = property.Body;
-            if (body == null)
-                throw new ArgumentException("Please provide a valid body for the expression", "property");
-
-            var bodymember = body as MemberExpression;
-            if (bodymember == null)
-                throw new ArgumentException("Please provide a reference to a property (get/set)", "property");
-
-            return new ExpressionInfo(value, Flatten(bodymember));
+            var path = ExpressionHelper.GetExpressionText((LambdaExpression) property);
+            var metadata = ModelMetadata.FromLambdaExpression(property, new ViewDataDictionary<TModel>(Model));
+            var metaModel = metadata.Model;
+            return new ExpressionInfo(metaModel == null ? String.Empty : metaModel.ToString(), path);
         }
 
         private static IEnumerable<MemberExpression> Flatten(Expression expression)
         {
             var memberExpression = expression as MemberExpression;
-            if (memberExpression == null)
-                return Enumerable.Empty<MemberExpression>();
-            return Flatten(memberExpression.Expression).Concat(new[] {memberExpression});
+            return memberExpression == null
+                ? Enumerable.Empty<MemberExpression>()
+                : Flatten(memberExpression.Expression).Concat(new[] {memberExpression});
         }
 
         private class ExpressionInfo
         {
             public readonly String Value;
-            public readonly MemberExpression[] FlattenedExpressionTree;
             public readonly String Path;
             public readonly String Key;
 
-            public ExpressionInfo(string value, IEnumerable<MemberExpression> flattenedExpressionTree)
+            public ExpressionInfo(string value, String path)
             {
                 Value = value;
-                FlattenedExpressionTree = flattenedExpressionTree.ToArray();
-                Path = String.Join(Part.Separator, FlattenedExpressionTree.Select(expr => expr.Member.Name));
-                Key = String.Join("-", FlattenedExpressionTree.Select(expr => expr.Member.Name));
+                Path = path;
+                Key = path.Replace(".", "-");
             }
         }
     }
