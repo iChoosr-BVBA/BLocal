@@ -63,6 +63,14 @@
       <Name>BLocal</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\jquery.localization.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Content\jquery.blocal.d.ts" />
+    <Content Include="Content\jquery.blocal.js" />
+    <Content Include="Content\shortcut.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

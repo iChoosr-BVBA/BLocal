@@ -3,7 +3,7 @@
 ----------------------------------------------------------*/
 
 .loc-hover {
-    border: 1px solid red !important;
+    outline: 1px solid red !important;
 }
 
 #loc-overview, #loc-overview-other, #loc-editor {

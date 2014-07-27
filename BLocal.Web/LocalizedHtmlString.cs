@@ -105,11 +105,11 @@ namespace BLocal.Web
         /// </summary>
         /// <param name="condition">if the condition is false, this method will do nothing</param>
         /// <param name="attributeName">name of the attribute to add or override</param>
-        /// <param name="attributeValue">value for the attribute</param>
+        /// <param name="attributeValue">value for the attribute, defaults to the attribute name when NULL</param>
         /// <returns>returns itself</returns>
-        public LocalizedHtmlString AttrIf(bool condition, String attributeName, String attributeValue)
+        public LocalizedHtmlString AttrIf(bool condition, String attributeName, String attributeValue = null)
         {
-            return condition ? Attr(attributeName, attributeValue) : this;
+            return condition ? Attr(attributeName, attributeValue ?? attributeName) : this;
         }
 
         /// <summary>
