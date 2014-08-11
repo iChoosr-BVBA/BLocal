@@ -241,15 +241,17 @@ namespace BLocal.Web
         }
 
         /// <summary>
-        /// Creates an input type="button" tag with the translated value of your content key inside it
+        /// Creates an input type="text" tag with the translated value of your placeholder key as its placeholder
         /// </summary>
-        /// <param name="valueKey">the key with which to fetch the content for the "value" attribute</param>
         /// <param name="placeholderKey">the key with which to fetch teh content for the "placeholder" attribute</param>
         /// <param name="defaultPlaceholderValue">Default value for the placeholder if applicable</param>
         /// <returns></returns>
-        public LocalizedHtmlString InputText(String valueKey, String placeholderKey, String defaultPlaceholderValue)
+        public LocalizedHtmlString InputText(String placeholderKey = null, String defaultPlaceholderValue = null)
         {
-            return Tag("input").Attr("type", "text").AttrKey("value", valueKey).AttrKey("placeholder", placeholderKey);
+            var tag = Tag("input").Attr("type", "text");
+            return placeholderKey == null
+                ? tag
+                : tag.AttrKey("placeholder", placeholderKey, defaultPlaceholderValue);
         }
         /// <summary>
         /// Creates an input type="hidden" tag with the translated value of your content key inside it
@@ -303,16 +305,16 @@ namespace BLocal.Web
         /// <summary>
         /// Creates an HTML5 button tag with the translated value of your content key inside it
         /// </summary>
-        /// <param name="valueKey">the key with which to fetch the content for the "value" attribute</param>
-        /// <param name="defaultValueValue">Default value if applicable</param>
-        /// <param name="className">name of the class to set for the button</param>
+        /// <param name="innerHtmlKey">the key with which to fetch the content for the inner html</param>
+        /// <param name="defaultInnerHtmlValue">Default value if applicable</param>
+        /// <param name="classNames">names of the classes to set for the button</param>
         /// <returns></returns>
-        public LocalizedHtmlString Button(string valueKey, string defaultValueValue = null, params string[] className)
+        public LocalizedHtmlString Button(string innerHtmlKey, string defaultInnerHtmlValue = null, params string[] classNames)
         {
-            var tag = Tag("button", valueKey, defaultValueValue);
+            var tag = Tag("button", innerHtmlKey, defaultInnerHtmlValue);
             tag.Attr("type", "button");
-            if (className != null && className.Length > 0)
-                tag.Class(className);
+            if (classNames != null && classNames.Length > 0)
+                tag.Class(classNames);
             return tag;
         }
 
