@@ -849,6 +849,18 @@ namespace BLocal.Providers
             }
         }
 
+        private class TemporaryQualifier 
+        {
+            public InternalQualifier Qualifer { get; set; }
+            public DateTime Time { get; set; }
+
+            public TemporaryQualifier(InternalQualifier qualifer, DateTime time)
+            {
+                Qualifer = qualifer;
+                Time = time;
+            }
+        }
+
         private class LogTable
         {
             public const String PartIdColumn = "PartId";
@@ -857,7 +869,7 @@ namespace BLocal.Providers
             public const String DateColumn = "Date";
 
             private readonly Table _table;
-            private readonly List<Tuple<InternalQualifier, DateTime>> _tmpQualifiers = new List<Tuple<InternalQualifier, DateTime>>(); 
+            private readonly List<TemporaryQualifier> _tmpQualifiers = new List<TemporaryQualifier>(); 
 
             public LogTable(Database database, TableConfiguration configuration)
             {
@@ -922,7 +934,7 @@ namespace BLocal.Providers
             public void LogAsync(InternalQualifier qualifier)
             {
                 lock(_tmpQualifiers)
-                    _tmpQualifiers.Add(Tuple.Create(qualifier, DateTime.Now));
+                    _tmpQualifiers.Add(new TemporaryQualifier(qualifier, DateTime.Now));
             }
 
             public void ClearLog(Connector connector)
@@ -944,10 +956,10 @@ namespace BLocal.Providers
                             _table, PartIdColumn, LocaleIdColumn, KeyColumn, DateColumn
                         ), connection);
 
-                        command.Parameters.Add(new SqlParameter("part", SqlDbType.BigInt) {Value = log.Item1.PartId});
-                        command.Parameters.Add(new SqlParameter("locale", SqlDbType.Int) {Value = log.Item1.LocaleId});
-                        command.Parameters.Add(new SqlParameter("key", SqlDbType.VarChar) {Value = log.Item1.Key});
-                        command.Parameters.Add(new SqlParameter("date", SqlDbType.DateTime) {Value = log.Item2});
+                        command.Parameters.Add(new SqlParameter("part", SqlDbType.BigInt) {Value = log.Qualifer.PartId});
+                        command.Parameters.Add(new SqlParameter("locale", SqlDbType.Int) {Value = log.Qualifer.LocaleId});
+                        command.Parameters.Add(new SqlParameter("key", SqlDbType.VarChar) {Value = log.Qualifer.Key});
+                        command.Parameters.Add(new SqlParameter("date", SqlDbType.DateTime) {Value = log.Time});
                         command.ExecuteNonQuery();
                     }
                     _tmpQualifiers.Clear();
