@@ -1,0 +1,111 @@
+﻿@using BLocal.Web.Manager.MVC3.Controllers
+@model BLocal.Web.Manager.Models.ImportExportData
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Localization management</title>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Site.css")"/>
+    <script src="@Url.Content("~/Scripts/jquery-1.4.4.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/homebrew.popup.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".check").click(function() {
+                $(this).parents(".innerPart").first().find("input[type=checkbox]").attr("checked", "checked");
+                return false;
+            });
+            $(".uncheck").click(function () {
+                $(this).parents(".innerPart").first().find("input[type=checkbox]").removeAttr("checked");
+                return false;
+            });
+            $("input[type=checkbox]").click(function (e) {
+                var check = $(this);
+                if (check.is(":checked"))
+                    check.removeAttr("checked");
+                else
+                    check.attr("checked", "checked");
+                e.preventBubble();
+            });
+            $(".innerPart p").click(function() {
+                var check = $(this).find("input[type=checkbox]");
+                if (check.is(":checked"))
+                    check.removeAttr("checked");
+                else
+                    check.attr("checked", "checked");
+            });
+            $("form.import").submit(function() {
+                if ($(this).find("select[name=locale]").val() == "x-loc-nolocale") {
+                    var newLocale = prompt("Type in a the new locale to start your import");
+                    if (!newLocale)
+                        return false;
+                    $(this).find("option[value=x-loc-nolocale]").html(newLocale).attr("value", newLocale);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>@Html.ActionLink("Home", "Overview") - Import / Export - [@Model.ProviderConfigName]</h1>
+    
+    <section class="general">
+        <h2>Import | Step 1</h2>
+        <p>Select the locale you want to change and select a (.csv or .xml) file.</p>
+        <form class="import" method="POST" target="_blank" enctype="multipart/form-data" action="@Url.Action("Import")">
+            <p><select name="locale">
+                @foreach (var locale in Model.Locales) {
+                    <option>@locale</option>
+                }
+                <option value="x-loc-nolocale">Add new locale</option>
+            </select> <input type="file" name="postedFile" /></p>
+            <input type="hidden" name="providerConfigName" value="@Model.ProviderConfigName"/>
+            <p><input type="submit" value="Upload and proceed to step 2"/></p>
+        </form>
+    </section>
+
+    <section class="general">
+        <a id="export"></a>
+        <h2>Export</h2>
+        @using (Html.BeginForm("Export", "Home", FormMethod.Post)) {
+            <input type="hidden" name="providerConfigName" value="@Model.ProviderConfigName"/>
+            <h3>File Format</h3>
+            <p>
+                <input type="radio" name="format" value="csv" id="exportcxv" checked="checked"/><label style="width: 300px" for="exportcxv">CSV (Can be opened with Excel)</label><br />
+                <input type="radio" name="format" value="xml" id="exportxml"/><label style="width: 300px" for="exportxml">XML (Can be opened with HTML editors)</label>
+            </p>
+            <h3>Locale Selection</h3>
+            <p><select name="locale">
+                <option value="x-loc-nolocale">Export without values (leave empty)</option>
+                @foreach (var locale in Model.Locales) {
+                    <option>@locale</option>
+                }
+            </select></p>
+            <p><input type="submit" value="Start Export"/></p>
+            <h3>Value Selection (all selected by default)</h3>
+            <section class="innerPart">
+                <p>All values<span><a href="#" class="check">check all</a> | <a href="#" class="uncheck">uncheck all</a></span></p>
+                <form class="partdata">
+                    @foreach (var part in Model.PartNodes) {
+                        @RenderPart(part)
+                    }
+                </form>
+            </section>
+            <p style="text-align: right;"><a href="#export" style="color: white;">Back to top ^</a></p>
+        }
+    </section>
+</body>
+</html>
+@helper RenderPart(HomeController.PartNode part)
+{
+    <section class="innerPart">
+        <p>
+            <input type="checkbox" checked="checked" name="parts" value="@part.Part" />
+            @part.Part
+            @if (part.SubParts.Count > 0) {<span><a href="#" class="check">check all</a> | <a href="#" class="uncheck">uncheck all</a></span>}
+        </p>
+        @foreach (var subPart in part.SubParts) {
+            @RenderPart(subPart)
+        }
+    </section>
+}

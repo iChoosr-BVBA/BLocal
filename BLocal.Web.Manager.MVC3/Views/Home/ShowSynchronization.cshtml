@@ -1,0 +1,138 @@
+﻿@model BLocal.Web.Manager.Models.SynchronizationData
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Localization management</title>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Site.css")"/>
+    <script src="@Url.Content("~/Scripts/jquery-1.4.4.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/homebrew.popup.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("input[type=button].select").click(function() {
+                $(this).parents(".general").find("input[type=checkbox]").attr("checked", "checked");
+            });
+            $("input[type=button].deselect").click(function () {
+                $(this).parents(".general").find("input[type=checkbox]").removeAttr("checked");
+            });
+            $("input[type=button].delete, input[type=button].duplicate").click(function () {
+                var remove = $(this).hasClass("delete");
+                var checkboxes = $(this).parents(".general").find("input[type=checkbox]:checked");
+                var valuesToLoad = checkboxes.length;
+                if (!confirm((remove ? "Delete" : "Duplicate") + " " + checkboxes.length + " items?"))
+                    return true;
+                
+                checkboxes.each(function () {
+                    $.ajax({
+                        url: remove ? '@Url.Action("SyncRemove", "Home")' : '@Url.Action("SyncDuplicate", "Home")',
+                        data: { side: $(this).attr("data-side"), part: $(this).attr("data-part"), key: $(this).attr("data-key"), locale: $(this).attr("data-locale") },
+                        type: 'POST',
+                        success: function() {
+                            if (--valuesToLoad == 0)
+                                window.location.reload();
+                        },
+                        error: function () {
+                            alert(":'(");
+                        }
+                    });
+                });
+                return true;
+            });
+            $("tr").click(function(e) {
+                if ($(e.originalEvent.srcElement).is("input"))
+                    return true;
+                
+                var check = $(this).find("input[type=checkbox]");
+                if (check.is(":checked"))
+                    check.removeAttr("checked");
+                else
+                    check.attr("checked", "checked");
+                return true;
+            });
+            $(".locktoggle").click(function() {
+                var toggler = $(this);
+                var isOn = toggler.is(".on");
+                if (isOn) {
+                    toggler.removeClass("on");
+                    $("section.comparison input[type=button]").attr("disabled", "disabled");
+                } else {
+                    toggler.addClass("on");
+                    $("section.comparison input[type=button]").removeAttr("disabled");
+                }
+                var swap = toggler.attr("value");
+                toggler.attr("value", toggler.attr("data-alt")).attr("data-alt", swap);
+            });
+            $("section.comparison input[type=button]").click(function () {
+                var element = $(this).parents(".difference");
+                $.ajax({
+                    url: '@Url.Action("SyncDuplicate", "Home")',
+                    data: { side: $(this).attr("data-side"), part: $(this).attr("data-part"), key: $(this).attr("data-key"), locale: $(this).attr("data-locale") },
+                    type: 'POST',
+                    success: function() {
+                        element.remove();
+                    },
+                    error: function () {
+                        alert(":'(");
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>@Html.ActionLink("Home", "Overview") - Synchronization - [@Model.LeftName] | [@Model.RightName]</h1>
+
+    <section class="general" data-from="left">
+        <h2>Values that exist in [@Model.LeftName] but not in [@Model.RightName] (@Model.LeftValuesNotRight.Length)</h2>
+        <p>
+            <input type="button" class="select" value="Select All" />
+            <input type="button" class="deselect" value="Deselect All" />
+            <input type="button" class="delete" value="Delete Selected" />
+            <input type="button" class="duplicate" value="Duplicate Selected" />
+        </p>
+        <table cellpadding="0" cellspacing="0"><tbody>
+            @foreach (var value in Model.LeftValuesNotRight) {
+                <tr class="lrvalue">
+                    <td style="white-space: nowrap"><input type="checkbox" name="values" data-side="Left" data-part="@value.Qualifier.Part" data-locale="@value.Qualifier.Locale" data-key="@value.Qualifier.Key"/></td>
+                    <td style="white-space: nowrap">@value.Qualifier</td>
+                    <td style="width: 99%;">@value.Value.Content</td>
+                </tr>
+            }
+        </tbody></table>
+    </section>
+    <section class="general" data-from="right">
+        <h2>Values that exist in [@Model.RightName] but not in [@Model.LeftName] (@Model.RightValuesNotLeft.Length)</h2>
+        <p>
+            <input type="button" class="select" value="Select All" />
+            <input type="button" class="deselect" value="Deselect All" />
+            <input type="button" class="delete" value="Delete Selected" />
+            <input type="button" class="duplicate" value="Duplicate Selected" />
+        </p>
+        <table cellpadding="0" cellspacing="0"><tbody>
+            @foreach (var value in Model.RightValuesNotLeft) {
+                <tr class="lrvalue">
+                    <td style="white-space: nowrap"><input type="checkbox" name="values" data-side="Right" data-part="@value.Qualifier.Part" data-locale="@value.Qualifier.Locale" data-key="@value.Qualifier.Key"/></td>
+                    <td style="white-space: nowrap">@value.Qualifier</td>
+                    <td style="width: 99%;">@value.Value.Content</td>
+                </tr>
+            }
+        </tbody></table>
+    </section>
+    <section class="general">
+        <h2>Qualifiers whose values differ between the two (@Model.ValueDifferences.Length)</h2>
+        <input class="locktoggle" type="button" value="Unlock Use buttons" data-alt="Lock Use buttons"/>
+        @foreach (var value in Model.ValueDifferences) {
+            <section class="difference">
+                <p>@value.Left.Qualifier</p>
+                <section class="comparison">
+                    <p class="left"><input type="button" value="Use" data-side="Left" data-part="@value.Left.Qualifier.Part" data-locale="@value.Left.Qualifier.Locale" data-key="@value.Left.Qualifier.Key" disabled="disabled"/> @value.Left.Value.Content</p>
+                    <p class="right"><input type="button" value="Use" data-side="Right" data-part="@value.Right.Qualifier.Part" data-locale="@value.Right.Qualifier.Locale" data-key="@value.Right.Qualifier.Key" disabled="disabled"/> @value.Right.Value.Content</p>
+                    <div class="clear"></div>
+                </section>
+            </section>
+        }
+    </section>
+</body>
+</html>

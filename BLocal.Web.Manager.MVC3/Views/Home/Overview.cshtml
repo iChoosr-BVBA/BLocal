@@ -1,0 +1,86 @@
+﻿@using BLocal.Web.Manager.Configuration
+@model BLocal.Web.Manager.Models.ConnectionData
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Localization management</title>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Site.css")"/>
+    <script src="@Url.Content("~/Scripts/jquery-1.4.4.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/homebrew.popup.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("select[name='providerConfigName']").change(function () {
+                $(this).parents("form").submit();
+            });
+            $("select[name='rightConfigName'],select[name='leftConfigName']").change(function () {
+                if ($("select[name='rightConfigName']").val() != "loc-flar" && $("select[name='leftConfigName']").val() != "loc-flar")
+                    $(this).parents("form").submit();
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Localization Manager</h1>
+
+    <section class="general">
+        <h2>Direct Editing</h2>
+        <p>Manually edit (find, add, change, remove) any parts of the localization in any language. If caching is turned on in connected applications, changes will not immediately be visible and a manual refresh of said cache is recommended after editing.</p>
+        @using (Html.BeginForm("LoadLocalization", "Home", FormMethod.Post)) {
+            <select name="providerConfigName">
+                <option>Select a connection to get started.</option>
+                @foreach (var config in ProviderConfig.ProviderPairs) {
+                    <option>@config.Name</option>
+                }
+            </select>
+        }
+    </section>
+    
+    <section class="general left">
+        <h2>Transparant Synchronization</h2>
+        <p>Editing should rarely be done directly into the production environment. Using this feature, you can edit in your test (or dev or staging) environment and synchronize directly to production!</p>
+        @using (Html.BeginForm("Synchronize", "Home", FormMethod.Post)) {
+            <select name="leftConfigName">
+                <option value="loc-flar">Select two providers to get a synrchronization overview.</option>
+                @foreach (var config in ProviderConfig.ProviderPairs) {
+                    <option>@config.Name</option>
+                }
+            </select>
+            <select name="rightConfigName">
+                <option value="loc-flar">Select two providers to get a synrchronization overview.</option>
+                @foreach (var config in ProviderConfig.ProviderPairs) {
+                    <option>@config.Name</option>
+                }
+            </select>
+        }
+    </section>
+    
+    <section class="general">
+        <h2>Translation Verification</h2>
+        <p>Track missing translations across all locales and fix them up.</p>
+        @using (Html.BeginForm("LoadTranslations", "Home", FormMethod.Post)) {
+            <select name="providerConfigName">
+                <option>Select a connection to get started.</option>
+                @foreach (var config in ProviderConfig.ProviderPairs) {
+                    <option>@config.Name</option>
+                }
+            </select>
+        }
+    </section>
+    <section class="general">
+        <h2>Import / Export</h2>
+        <p>CSV and XML import and export</p>
+        @using (Html.BeginForm("ShowImportExport", "Home", FormMethod.Post)) {
+            <select name="providerConfigName">
+                <option>Select a connection to get started.</option>
+                @foreach (var config in ProviderConfig.ProviderPairs) {
+                    <option>@config.Name</option>
+                }
+            </select>
+        }
+    </section>
+</body>
+</html>
