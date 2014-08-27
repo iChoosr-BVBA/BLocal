@@ -7,16 +7,23 @@ using System.Web;
 using System.Web.Mvc;
 using System.Xml.Linq;
 using BLocal.Core;
-using BLocal.Web.Manager.Configuration;
+using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Context;
 using BLocal.Web.Manager.Models;
 using CsvHelper;
 
-namespace BLocal.Web.Manager.MVC3.Controllers
+namespace BLocal.Web.Manager.Controllers
 {
     [Authenticate]
     public class HomeController : Controller
     {
+        public ProviderPairFactory ProviderPairFactory { get; set; }
+
+        public HomeController()
+        {
+            ProviderPairFactory = new ProviderPairFactory();
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -39,7 +46,7 @@ namespace BLocal.Web.Manager.MVC3.Controllers
         public ActionResult LoadLocalization(String providerConfigName)
         {
             Session["manualProviderPair"] = null;
-            Session["manualProviderPair"] = FetchProviderPair(providerConfigName);
+            Session["manualProviderPair"] = ProviderPairFactory.CreateProviderPair(providerConfigName);
             return RedirectToAction("EditLocalization");
         }
 
@@ -48,8 +55,8 @@ namespace BLocal.Web.Manager.MVC3.Controllers
         {
             Session["synchronizationLeftProviderPair"] = null;
             Session["synchronizationRightProviderPair"] = null;
-            Session["synchronizationLeftProviderPair"] = FetchProviderPair(leftConfigName);
-            Session["synchronizationRightProviderPair"] = FetchProviderPair(rightConfigName);
+            Session["synchronizationLeftProviderPair"] = ProviderPairFactory.CreateProviderPair(leftConfigName);
+            Session["synchronizationRightProviderPair"] = ProviderPairFactory.CreateProviderPair(rightConfigName);
             return RedirectToAction("ShowSynchronization");
         }
 
@@ -57,7 +64,7 @@ namespace BLocal.Web.Manager.MVC3.Controllers
         public ActionResult LoadTranslations(String providerConfigName)
         {
             Session["translationProviderPair"] = null;
-            Session["translationProviderPair"] = FetchProviderPair(providerConfigName);
+            Session["translationProviderPair"] = ProviderPairFactory.CreateProviderPair(providerConfigName);
             return RedirectToAction("VerifyTranslation");
         }
 
@@ -151,7 +158,7 @@ namespace BLocal.Web.Manager.MVC3.Controllers
 
         public ActionResult ShowImportExport(String providerConfigName)
         {
-            var providerPair = FetchProviderPair(providerConfigName);
+            var providerPair = ProviderPairFactory.CreateProviderPair(providerConfigName);
             var allValues = providerPair.ValueManager.GetAllValuesQualified().ToArray();
             var allParts = allValues.Select(value => value.Qualifier.Part).Distinct().OrderBy(p => p.ToString()).ToArray();
             var allLocales = allValues.Select(value => value.Qualifier.Locale).Distinct().OrderBy(l => l.ToString()).ToArray();
@@ -186,7 +193,7 @@ namespace BLocal.Web.Manager.MVC3.Controllers
         [HttpPost]
         public ActionResult Export(String providerConfigName, String[] parts, String format, String locale)
         {
-            var providerPair = FetchProviderPair(providerConfigName);
+            var providerPair = ProviderPairFactory.CreateProviderPair(providerConfigName);
             var allValues = providerPair.ValueManager.GetAllValuesQualified().ToArray();
             var selectedLocale = new Locale(locale);
             var groupedTranslations = allValues
@@ -241,7 +248,7 @@ namespace BLocal.Web.Manager.MVC3.Controllers
         [HttpPost]
         public ActionResult Import(String providerConfigName, String locale, HttpPostedFileBase postedFile)
         {
-            var providerPair = FetchProviderPair(providerConfigName);
+            var providerPair = ProviderPairFactory.CreateProviderPair(providerConfigName);
             var allValues = providerPair.ValueManager.GetAllValuesQualified().ToArray();
             var selectedLocale = new Locale(locale);
             var valuesByPartKey = allValues
@@ -366,7 +373,7 @@ namespace BLocal.Web.Manager.MVC3.Controllers
 
         public JsonResult ImportFinalizeUpdate(ImportConfiguration configuration)
         {
-            var providerPair = FetchProviderPair(configuration.ProviderConfigName);
+            var providerPair = ProviderPairFactory.CreateProviderPair(configuration.ProviderConfigName);
             var selectedLocale = new Locale(configuration.Locale);
             foreach (var update in configuration.Data) {
                 providerPair.ValueManager.UpdateCreateValue(new QualifiedValue(
@@ -378,7 +385,7 @@ namespace BLocal.Web.Manager.MVC3.Controllers
         }
         public JsonResult ImportFinalizeInsert(ImportConfiguration configuration)
         {
-            var providerPair = FetchProviderPair(configuration.ProviderConfigName);
+            var providerPair = ProviderPairFactory.CreateProviderPair(configuration.ProviderConfigName);
             var selectedLocale = new Locale(configuration.Locale);
             foreach (var insert in configuration.Data) {
                 providerPair.ValueManager.CreateValue(
@@ -390,68 +397,12 @@ namespace BLocal.Web.Manager.MVC3.Controllers
         }
         public JsonResult ImportFinalizeDelete(ImportConfiguration configuration)
         {
-            var providerPair = FetchProviderPair(configuration.ProviderConfigName);
+            var providerPair = ProviderPairFactory.CreateProviderPair(configuration.ProviderConfigName);
             var selectedLocale = new Locale(configuration.Locale);
             foreach (var delete in configuration.Data) {
                 providerPair.ValueManager.DeleteValue(new Qualifier.Unique(Part.Parse(delete.Part), selectedLocale, delete.Key));
             }
             return Json(new { ok = true });
-        }
-
-        private static ProviderPair FetchProviderPair(String providerConfigName)
-        {
-            var providerConfig = ProviderConfig.ProviderPairs.Single(vp => vp.Name == providerConfigName);
-
-            var valueProviderType = Type.GetType(providerConfig.ValueProvider.Type);
-            if(valueProviderType == null)
-                throw new Exception("Cannot find type \"" + providerConfig.ValueProvider.Type + "\"");
-            if(!typeof(ILocalizedValueManager).IsAssignableFrom(valueProviderType))
-                throw new Exception("Type \"" + valueProviderType + "\" does not implement " + typeof(ILocalizedValueManager).Name + "!");
-
-            var valueProvider = ConstructProvider(valueProviderType, providerConfig.ValueProvider.ConstructorArguments.Cast<ConstructorArgumentElement>().ToArray());
-            if (valueProvider == null)
-                throw new Exception("Could not initialize value provider, incorrect constructor arguments!");
-
-            if (providerConfig.LogProvider.IsValueProvider)
-                return new ProviderPair(providerConfigName, valueProvider as ILocalizedValueManager, valueProvider as ILocalizationLogger);
-
-            var logProviderType = Type.GetType(providerConfig.LogProvider.Type);
-            if (logProviderType == null)
-                throw new Exception("Cannot find type \"" + providerConfig.LogProvider.Type + "\"");
-            if (!typeof(ILocalizationLogger).IsAssignableFrom(logProviderType))
-                throw new Exception("Type \"" + logProviderType + "\" does not implement " + typeof(ILocalizationLogger).Name + "!");
-
-            var logProvider = ConstructProvider(logProviderType, providerConfig.LogProvider.ConstructorArguments.Cast<ConstructorArgumentElement>().ToArray());
-            if (logProvider == null)
-                throw new Exception("Could not initialize log provider, incorrect constructor arguments!");
-
-            return new ProviderPair(providerConfigName, valueProvider as ILocalizedValueManager, logProvider as ILocalizationLogger);
-        }
-
-        private static Object ConstructProvider(Type providerType, ICollection<ConstructorArgumentElement> arguments)
-        {
-            foreach (var constructor in providerType.GetConstructors()) {
-                var parameters = constructor.GetParameters().ToArray();
-
-                // not all arguments can be specified
-                if (parameters.Select(param => param.Name).Intersect(arguments.Select(a => a.Name)).Count() != arguments.Count)
-                    continue;
-
-                // not enough arguments to call constructor
-                if (parameters.Any(param => !(param.IsOptional || param.DefaultValue != null || arguments.Any(arg => arg.Name == param.Name))))
-                    continue;
-
-                // get correct arguments
-                var invocationArguments = parameters
-                    .OrderBy(param => param.Position)
-                    .Select(p => new { Parameter = p, Argument = arguments.SingleOrDefault(a => a.Name == p.Name) })
-                    .Select(pair => pair.Argument == null ? pair.Parameter.DefaultValue : pair.Argument.Value)
-                    .ToArray();
-
-                // invoke constructor
-                return constructor.Invoke(invocationArguments);
-            }
-            return null;
         }
 
         private static void FixTree(IDictionary<Part, LocalizedPart> groupedParts, Part key)
@@ -461,96 +412,6 @@ namespace BLocal.Web.Manager.MVC3.Controllers
 
             groupedParts.Add(newKey, new LocalizedPart(newKey, new List<QualifiedLocalization>(0)));
             FixTree(groupedParts, newKey);
-        }
-
-        public class PartNode
-        {
-            public readonly Part Part;
-            public readonly List<PartNode> SubParts;
-            public readonly bool IsRoot;
-
-            public PartNode(Part part, bool isRoot)
-            {
-                Part = part;
-                SubParts = new List<PartNode>();
-                IsRoot = isRoot;
-            }
-
-            protected bool Equals(PartNode other)
-            {
-                return Equals(Part, other.Part);
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (ReferenceEquals(null, obj)) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                return Equals(obj as PartNode);
-            }
-
-            public override int GetHashCode()
-            {
-                return (Part != null ? Part.GetHashCode() : 0);
-            }
-        }
-
-        public class LocalizedPart
-        {
-            public List<LocalizedPart> Subparts { get; set; }
-            public List<QualifiedLocalization> Localizations { get; set; }
-            public Part Part { get; set; }
-
-            public LocalizedPart(Part part, List<QualifiedLocalization> localizations)
-            {
-                Part = part;
-                Localizations = localizations;
-                Subparts = new List<LocalizedPart>();
-            }
-        }
-
-        public class ProviderPair
-        {
-            public readonly String Name;
-            public readonly ILocalizedValueManager ValueManager;
-            public readonly ILocalizationLogger Logger;
-
-            public ProviderPair(String name, ILocalizedValueManager valueManager, ILocalizationLogger logger)
-            {
-                Name = name;
-                ValueManager = valueManager;
-                Logger = logger;
-            }
-        }
-        public class ImportExportRecord
-        {
-            public String Part { get; set; }
-            public String Key { get; set; }
-            public String Value { get; set; }
-            public bool DeleteOnImport { get; set; }
-
-            public ImportExportRecord()
-            {
-            }
-
-            public ImportExportRecord(string part, string key, string value)
-            {
-                Part = part;
-                Key = key;
-                Value = value;
-                DeleteOnImport = false;
-            }
-        }
-        public class ImportData
-        {
-            public String Part { get; set; }
-            public String Key { get; set; }
-            public String Value { get; set; }
-        }
-        public class ImportConfiguration
-        {
-            public String ProviderConfigName { get; set; }
-            public String Locale { get; set; }
-            public ImportData[] Data { get; set; }
         }
     }
 }

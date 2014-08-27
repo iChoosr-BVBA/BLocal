@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using BLocal.Core;
-using BLocal.Web.Manager.MVC3.Controllers;
+using BLocal.Web.Manager.Business;
+using BLocal.Web.Manager.Controllers;
 
 namespace BLocal.Web.Manager.Models
 {
@@ -11,10 +12,10 @@ namespace BLocal.Web.Manager.Models
         public readonly String UploadedFileName;
         public readonly Locale AffectedLocale;
         public readonly List<QualifiedValue> Inserts;                                 
-        public readonly List<Tuple<QualifiedValue, HomeController.ImportExportRecord>> Updates;      
+        public readonly List<Tuple<QualifiedValue, ImportExportRecord>> Updates;      
         public readonly List<QualifiedValue> Deletes;
 
-        public ImportReportData(string providerPairName, string uploadedFileName, Locale affectedLocale, List<QualifiedValue> inserts, List<Tuple<QualifiedValue, HomeController.ImportExportRecord>> updates, List<QualifiedValue> deletes)
+        public ImportReportData(string providerPairName, string uploadedFileName, Locale affectedLocale, List<QualifiedValue> inserts, List<Tuple<QualifiedValue, ImportExportRecord>> updates, List<QualifiedValue> deletes)
         {
             ProviderPairName = providerPairName;
             UploadedFileName = uploadedFileName;
