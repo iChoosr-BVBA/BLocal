@@ -71,7 +71,7 @@ namespace BLocal.Core
         public String Get(Qualifier.WithKey qualifier, String defaultValue = null)
         {
             var value = GetQualified(qualifier, defaultValue);
-            return value == null ? String.Empty : value.Value.DecodedContent;
+            return value == null ? String.Empty : value.Value;
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace BLocal.Core
             }
             catch (ValueNotFoundException) {
                 Notifier.NotifyMissing(resultQualifier);
-                return new QualifiedValue(resultQualifier, new Value(ContentType.Unspecified, defaultValue ?? String.Format("[{0}]", qualifier.Key)));
+                return new QualifiedValue(resultQualifier, defaultValue ?? String.Format("[{0}]", qualifier.Key));
             }
         }
 

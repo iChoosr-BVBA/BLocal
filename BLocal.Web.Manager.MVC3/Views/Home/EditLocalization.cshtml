@@ -1,4 +1,5 @@
-﻿@model IEnumerable<BLocal.Web.Manager.MVC3.Controllers.HomeController.LocalizedPart>
+﻿@using BLocal.Web.Manager.Business
+@model IEnumerable<BLocal.Web.Manager.Business.LocalizedPart>
 @{
     Layout = null;
 }
@@ -35,10 +36,10 @@
                     valueChildren.show();
             });
 
-            var create = function (part, key, locale, contenttype, content, callback) {
+            var create = function (part, key, locale, content, callback) {
                 $.ajax({
                     url: '@Url.Action("Create", "Home")',
-                    data: { part: part, key: key, locale: locale, contenttype: contenttype, content: content },
+                    data: { part: part, key: key, locale: locale, content: content },
                     type: 'POST',
                     success: callback,
                     error: function () {
@@ -63,20 +64,18 @@
             $(".values > p").click(function () {
                 var p = $(this);
                 details.onOpen = function (elements) {
-                    var part = p.parent(".values").parent(".part").children("h2").children("span.title").html();
-                    var key = p.find(".key").html();
-                    var locale = p.find(".locale").html();
-                    var contenttype = p.find(".contenttype").html();
-                    var content = p.find(".content").html();
+                    var part = p.parent(".values").parent(".part").children("h2").children("span.title").text();
+                    var key = p.find(".key").text();
+                    var locale = p.find(".locale").text();
+                    var content = p.find(".content").text();
 
                     var partEl = elements.find("input.part").val(part);
                     var keyEl = elements.find("input.key").val(key);
                     var localeEl = elements.find("input.locale").val(locale);
-                    var contenttypeEl = elements.find("input.contenttype").val(contenttype);
                     var contentEl = elements.find("textarea.content").val(content);
 
                     elements.find(".updatecopy").click(function () {
-                        create(partEl.val(), keyEl.val(), localeEl.val(), contenttypeEl.val(), contentEl.val(), function () {
+                        create(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val(), function () {
                             if (partEl.val() == part && localeEl.val() == locale && keyEl.val() == key)
                                 p.find(".content").html(contentEl.val());
                             details.close();
@@ -84,7 +83,7 @@
                     });
                     elements.find(".updaterecreate").click(function () {
                         remove(part, key, locale, function () {
-                            create(partEl.val(), keyEl.val(), localeEl.val(), contenttypeEl.val(), contentEl.val(), function () {
+                            create(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val(), function () {
                                 if (partEl.val() == part && localeEl.val() == locale && keyEl.val() == key)
                                     p.find(".content").html(contentEl.val());
                                 else
@@ -137,14 +136,13 @@
 </head>
 
 <body>
-    <h1>@Html.ActionLink("Home", "Overview") - Manual Edit - [@(((HomeController.ProviderPair) Session["manualProviderPair"]).Name)]</h1>
+    <h1>@Html.ActionLink("Home", "Overview") - Manual Edit - [@(((ProviderPair) Session["manualProviderPair"]).Name)]</h1>
     <p><span class="open">open</span> | <span class="collapse">collapse</span> | <span class="reload">reload</span> | <span class="hardreload" title="dump localization cache, reload from scratch">hard reload</span></p>
     
     <section class="general">
         <h2>Filter</h2>
         <div><label for="key">Key</label> <input type="text" class="filter" id="key" /></div>
         <div><label for="locale">Locale</label> <input type="text" class="filter" id="locale" /></div>
-        <div><label for="contenttype">Content Type</label> <input type="text" class="filter" id="contenttype" /></div>
         <div><label for="content">Content</label> <input type="text" class="filter" id="content" /></div>
         <div><label for="autohide">Auto-hide</label> <input class="autohide" id="autohide" type="checkbox" checked="checked" /></div>
         <div><input type="button" class="dofilter" value="filter" /></div>
@@ -155,7 +153,7 @@
         @RenderPart(localizedPart)
     }
 
-    @helper RenderPart(HomeController.LocalizedPart part) {
+    @helper RenderPart(LocalizedPart part) {
         <section class="part">
             <h2><span class="title">@part.Part.ToString()</span> [@part.Localizations.Count]</h2>
             <section class="values">
@@ -163,9 +161,8 @@
                     <p>
                         <span class="key">@value.Qualifier.Key</span>
                         <span class="locale">@value.Qualifier.Locale</span>
-                        <span class="contenttype">@value.Value.ContentType</span>
                         <span class="lastlog">@value.LastAcces</span>
-                        <span class="content" title="@Html.Encode(value.Value.Content.Replace(@"""", @"'"))">@Html.Encode(value.Value.Content)</span>
+                        <span class="content" title="@value.Value.Replace(@"""", @"'")">@value.Value</span>
                         <span class="clear"></span>
                     </p>
                 }
@@ -179,8 +176,8 @@
     <div id="details" class="popup">
         <h2>Details</h2>
         <form>
-            <p><span class="lbl part">Part</span><span class="lbl key">Key</span><span class="lbl locale">Locale</span><span class="lbl contenttype">Type</span></p>
-            <p><input type="text" class="val part"></input><input type="text" class="val key"></input><input type="text" class="val locale"></input><input type="text" class="val contenttype"></input></p>
+            <p><span class="lbl part">Part</span><span class="lbl key">Key</span><span class="lbl locale">Locale</span></p>
+            <p><input type="text" class="val part"></input><input type="text" class="val key"></input><input type="text" class="val locale"></input></p>
             <p><span class="lbl">Content</span></p>
             <div><textarea class="content"></textarea></div>
             <div><input type="button" class="updatecopy" value="Update Copy" title="creates a copy if key or part changed, does not delete original" /> <input type="button" class="updaterecreate" value="Update Recreate" title="deletes current value, recreates to new value" /> <input class="updatedelete" type="button" value="Clean Delete" title="bye-bye" /> (visible changes are indications, press reload to confirm)</div>

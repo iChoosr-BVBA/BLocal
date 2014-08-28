@@ -21,18 +21,17 @@ namespace BLocal.Core
             return Name;
         }
 
-        public bool Equals(Locale other)
+        protected bool Equals(Locale other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(other.Name, Name);
+            return string.Equals(Name, other.Name);
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return Equals(obj as Locale);
+            if (obj.GetType() != GetType()) return false;
+            return Equals((Locale) obj);
         }
 
         public override int GetHashCode()

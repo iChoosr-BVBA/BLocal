@@ -34,8 +34,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BLocal, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\GroupSales\ThirdParty\BLocal\BLocal.dll</HintPath>
+    </Reference>
     <Reference Include="CsvHelper">
       <HintPath>..\packages\CsvHelper.2.7.0\lib\net40-client\CsvHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\GroupSales\ThirdParty\Json.Net\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -83,7 +91,20 @@
     <Compile Include="Models\Home\SynchronizationData.cs" />
     <Compile Include="Models\Home\TranslationVerificationData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\ExternalSynchronizationManager.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\AuthenticationRequest.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\AuthenticationResponse.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\CreateValueRequest.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\DeleteLocalizationsRequest.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\DeleteValueRequest.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\GetAllQualifiedValuesRequest.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\FullContentResponse.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\LocaleValueContainer.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\ExternalSynchronizationManager.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\ExternalSynchronizationConnector.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\IRequest.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\KeyLocaleValueContainer.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\PartJsonConverter.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\UpdateCreateValueRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -159,12 +180,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BLocal\BLocal35.csproj">
-      <Project>{03ACC2A4-B9CA-4018-8081-44A215386454}</Project>
-      <Name>BLocal35</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\ExternalSynchronization\" />

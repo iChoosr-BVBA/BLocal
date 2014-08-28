@@ -1,4 +1,5 @@
-﻿@model BLocal.Web.Manager.Models.TranslationVerificationData
+﻿@using BLocal.Web.Manager.Business
+@model BLocal.Web.Manager.Models.TranslationVerificationData
 @{
     Layout = null;
 }
@@ -79,7 +80,7 @@
 </head>
 
 <body>
-    <h1>@Html.ActionLink("Home", "Overview") - Translation Verification - [@(((HomeController.ProviderPair) Session["translationProviderPair"]).Name)]</h1>
+    <h1>@Html.ActionLink("Home", "Overview") - Translation Verification - [@(((ProviderPair) Session["translationProviderPair"]).Name)]</h1>
     
     @foreach (var locale in Model.LocalesAvailable) {
         var missingGroups = Model.LocaleIndepandantValueLookup.Where(group => !group.Any(qv => qv.Qualifier.Locale.Equals(locale))).ToArray();
@@ -91,7 +92,7 @@
                     <table><tbody>
                         @foreach (var hintValue in group) {
                             <tr data-part="@group.Key.Part" data-key="@group.Key.Key">
-                                <td style="padding-right: 5px;">@hintValue.Qualifier.Locale.Name</td><td>@hintValue.Value.Content</td>
+                                <td style="padding-right: 5px;">@hintValue.Qualifier.Locale.Name</td><td>@hintValue.Value</td>
                             </tr>
                         }
                     </tbody></table>

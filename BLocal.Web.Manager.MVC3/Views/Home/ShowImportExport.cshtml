@@ -1,4 +1,5 @@
-﻿@model BLocal.Web.Manager.Models.ImportExportData
+﻿@using BLocal.Web.Manager.Business
+@model BLocal.Web.Manager.Models.ImportExportData
 @{
     Layout = null;
 }
@@ -95,7 +96,7 @@
     </section>
 </body>
 </html>
-@helper RenderPart(HomeController.PartNode part)
+@helper RenderPart(PartNode part)
 {
     <section class="innerPart">
         <p>

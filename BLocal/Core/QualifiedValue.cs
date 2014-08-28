@@ -8,11 +8,11 @@ namespace BLocal.Core
     public class QualifiedValue
     {
         public Qualifier.Unique Qualifier { get; set; }
-        public Value Value { get; set; }
+        public String Value { get; set; }
 
         public QualifiedValue() {}
 
-        public QualifiedValue(Qualifier.Unique qualifier, Value value)
+        public QualifiedValue(Qualifier.Unique qualifier, String value)
         {
             Qualifier = qualifier;
             Value = value;
@@ -20,7 +20,7 @@ namespace BLocal.Core
 
         public override String ToString()
         {
-            return String.Format("{0} {1}: {2}", Qualifier, Value.ContentType, Value.Content);
+            return String.Format("{0}: {1}", Qualifier, Value);
         }
 
         public bool Equals(QualifiedValue other)

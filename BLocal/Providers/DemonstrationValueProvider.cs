@@ -17,7 +17,7 @@ namespace BLocal.Providers
         private static KeyValuePair<Qualifier.Unique, QualifiedValue> CreateValuePair(Part part, string key, string value)
         {
             var qualifier = new Qualifier.Unique(part, Locale, key);
-            var qualifiedValue = new QualifiedValue(qualifier, new Value(ContentType.Unspecified, value));
+            var qualifiedValue = new QualifiedValue(qualifier, value);
             return new KeyValuePair<Qualifier.Unique, QualifiedValue>(qualifier, qualifiedValue);
         }
 
@@ -25,15 +25,15 @@ namespace BLocal.Providers
 
         public string GetValue(Qualifier.Unique qualifier, string defaultValue = null)
         {
-            return GetQualifiedValue(qualifier, defaultValue).Value.Content;
+            return GetQualifiedValue(qualifier, defaultValue).Value;
         }
 
         public void SetValue(Qualifier.Unique qualifier, string value)
         {
             if (AllValues.ContainsKey(qualifier))
-                AllValues[qualifier] = new QualifiedValue(qualifier, new Value(ContentType.Unknown, value));
+                AllValues[qualifier] = new QualifiedValue(qualifier, value);
             else
-                AllValues.Add(qualifier, new QualifiedValue(qualifier, new Value(ContentType.Unknown, value)));
+                AllValues.Add(qualifier, new QualifiedValue(qualifier, value));
         }
 
         public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier, string defaultValue = null)
@@ -47,7 +47,7 @@ namespace BLocal.Providers
                     return value;
             }
 
-            var qualifiedValue = new QualifiedValue(qualifier, new Value(ContentType.Unknown, defaultValue));
+            var qualifiedValue = new QualifiedValue(qualifier, defaultValue);
             AllValues.Add(qualifier, qualifiedValue);
             return qualifiedValue;
         }
@@ -59,7 +59,7 @@ namespace BLocal.Providers
 
         public void UpdateCreateValue(QualifiedValue value)
         {
-            SetValue(value.Qualifier, value.Value.Content);
+            SetValue(value.Qualifier, value.Value);
         }
 
         public void CreateValue(Qualifier.Unique qualifier, string value)

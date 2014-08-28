@@ -204,9 +204,9 @@ namespace BLocal.Web.Manager.Controllers
                 group.SingleOrDefault(v => Equals(v.Qualifier.Locale.ToString(), locale))
                     ?? new QualifiedValue(
                         new Qualifier.Unique(group.Key.Part, selectedLocale, group.Key.Key),
-                        new Value(ContentType.Unspecified, String.Empty)
+                        String.Empty
                     )
-            ).Select(v => new ImportExportRecord(v.Qualifier.Part.ToString(), v.Qualifier.Key, v.Value.Content))
+            ).Select(v => new ImportExportRecord(v.Qualifier.Part.ToString(), v.Qualifier.Key, v.Value))
             .ToArray();
 
             var stream = new MemoryStream();
@@ -286,24 +286,24 @@ namespace BLocal.Web.Manager.Controllers
                 if (valuesByPartKey.TryGetValue(recordQualfier, out correspondingValue)) {
                     if(record.DeleteOnImport)
                         deletes.Add(correspondingValue);
-                    else if(!record.Value.Equals(correspondingValue.Value.Content))
+                    else if(!record.Value.Equals(correspondingValue.Value))
                         updates.Add(Tuple.Create(correspondingValue, record));
                 }
                 else if(!record.DeleteOnImport)
-                    inserts.Add(new QualifiedValue(recordQualfier, new Value(ContentType.Unspecified, record.Value)));
+                    inserts.Add(new QualifiedValue(recordQualfier, record.Value));
             }
 
             return View(new ImportReportData(providerConfigName, postedFile.FileName, selectedLocale, inserts, updates, deletes));
         }
 
-        public JsonResult Create(String part, String locale, String key, String contentType, String content)
+        public JsonResult Create(String part, String locale, String key, String content)
         {
             var localization = Session["manualProviderPair"] as ProviderPair;
             if (localization == null)
                 throw new Exception("Localization not loaded!");
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
-            var value = new Value(ContentType.Spoof(contentType), content);
+            var value = content;
             var qualifiedValue = new QualifiedValue(qualifier, value);
             localization.ValueManager.UpdateCreateValue(qualifiedValue);
 
@@ -355,7 +355,7 @@ namespace BLocal.Web.Manager.Controllers
                 throw new Exception("Localization not loaded!");
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
-            localization.ValueManager.UpdateCreateValue(new QualifiedValue(qualifier, new Value(ContentType.Unspecified, value)));
+            localization.ValueManager.UpdateCreateValue(new QualifiedValue(qualifier, value));
 
             return Json(new { ok = true });
         }
@@ -378,7 +378,7 @@ namespace BLocal.Web.Manager.Controllers
             foreach (var update in configuration.Data) {
                 providerPair.ValueManager.UpdateCreateValue(new QualifiedValue(
                     new Qualifier.Unique(Part.Parse(update.Part), selectedLocale, update.Key),
-                    new Value(ContentType.Unspecified, update.Value)
+                    update.Value
                 ));
             }
             return Json(new { ok = true });

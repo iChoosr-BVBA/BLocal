@@ -73,13 +73,13 @@ namespace BLocal.Providers
             var value = _valueTable.GetValue(part, locale, qualifier.Key);
             if(value == null && defaultValue != null)
                 using(var connection = Connect())
-                    value = _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Unspecified.ToString(), defaultValue), connection);
+                    value = _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, defaultValue), connection);
 
             if (value == null && _insertDummyValues)
                 using (var connection = Connect())
-                    value = _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Unspecified.ToString(), "[-" + qualifier.Key + "-]"), connection);
+                    value = _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, "[-" + qualifier.Key + "-]"), connection);
 
-            return value == null ? null : value.DecodedContent;
+            return value == null ? null : value.Content;
         }
 
         public void SetValue(Qualifier.Unique qualifier, string value)
@@ -108,7 +108,7 @@ namespace BLocal.Providers
                 }
             }
 
-            var dbval = new ValueTable.DBValue(part.Id, locale.Id, value.Qualifier.Key, value.Value.ContentType.Name, value.Value.Content);
+            var dbval = new ValueTable.DBValue(part.Id, locale.Id, value.Qualifier.Key, value.Value);
 
             using(var connection = Connect())
                 _valueTable.UpdateCreate(dbval, connection);
@@ -135,14 +135,14 @@ namespace BLocal.Providers
                 using (var connection = Connect())
                     qualifiedValue = new QualifiedValue(
                         qualifier,
-                        _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Unspecified.ToString(), defaultValue), connection)
+                        _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, defaultValue), connection).Content
                     );
 
             if (qualifiedValue == null && _insertDummyValues)
                 using (var connection = Connect())
                     qualifiedValue = new QualifiedValue(
                         qualifier,
-                        _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Unspecified.ToString(), "[-" + qualifier.Key + "-]"), connection)
+                        _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, "[-" + qualifier.Key + "-]"), connection).Content
                     );
             
             return qualifiedValue;
@@ -184,7 +184,7 @@ namespace BLocal.Providers
             var qualifiedValue = _valueTable.GetQualifiedValue(part, locale, qualifier.Key);
             if (qualifiedValue == null || !qualifiedValue.Qualifier.Equals(qualifier))
                 using(var connector = Connect())
-                    _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, ContentType.Unspecified.Name, value), connector);
+                    _valueTable.Insert(new ValueTable.DBValue(part.Id, locale.Id, qualifier.Key, value), connector);
         }
 
         public IEnumerable<QualifiedValue> GetAllValuesQualified()
@@ -597,7 +597,6 @@ namespace BLocal.Providers
             public const String PartIdColumn = "PartId";
             public const String LocaleIdColumn = "LocaleId";
             public const String KeyColumn = "QualifierKey";
-            public const String ContentTypeColumn = "ContentType";
             public const String ContentColumn = "Content";
             private readonly Table _table;
             private readonly Dictionary<InternalQualifier, DBValue> _valuesByQualifier = new Dictionary<InternalQualifier, DBValue>();
@@ -616,7 +615,6 @@ namespace BLocal.Providers
                 var partIdColumn = _table.Columns[PartIdColumn];
                 var localeIdColumn = _table.Columns[LocaleIdColumn];
                 var keyColumn = _table.Columns[KeyColumn];
-                var contentTypeColumn = _table.Columns[ContentTypeColumn];
                 var contentColumn = _table.Columns[ContentColumn];
 
                 if (partIdColumn == null || partIdColumn.DataType.Name != DataType.BigInt.Name)
@@ -625,8 +623,6 @@ namespace BLocal.Providers
                     throw new InvalidArgumentException("Table does not contain column " + LocaleIdColumn + " or column is not " + DataType.Int);
                 if (keyColumn == null || keyColumn.DataType.Name != DataType.VarChar(500).Name)
                     throw new InvalidArgumentException("Table does not contain column " + KeyColumn + " or column is not " + DataType.VarCharMax);
-                if (contentTypeColumn == null || contentTypeColumn.DataType.Name != DataType.VarCharMax.Name)
-                    throw new InvalidArgumentException("Table does not contain column " + ContentTypeColumn + " or column is not " + DataType.VarCharMax);
                 if (contentColumn == null || contentColumn.DataType.Name != DataType.VarCharMax.Name)
                     throw new InvalidArgumentException("Table does not contain column " + ContentColumn + " or column is not " + DataType.VarCharMax);
             }
@@ -637,7 +633,6 @@ namespace BLocal.Providers
                 table.Columns.Add(new Column(table, PartIdColumn, DataType.BigInt));
                 table.Columns.Add(new Column(table, LocaleIdColumn, DataType.Int));
                 table.Columns.Add(new Column(table, KeyColumn, DataType.VarChar(500)));
-                table.Columns.Add(new Column(table, ContentTypeColumn, DataType.VarCharMax));
                 table.Columns.Add(new Column(table, ContentColumn, DataType.VarCharMax));
 
                 var primaryKey = new Index(table, "PK_" + configuration.ValueTableName) { IndexKeyType = IndexKeyType.DriPrimaryKey };
@@ -672,15 +667,15 @@ namespace BLocal.Providers
                 _valuesByQualifier.Clear();
 
                 var command = new SqlCommand(String.Format(
-                    "select {0}, {1}, {2}, {3}, {4} from {5}",
-                    PartIdColumn, LocaleIdColumn, KeyColumn, ContentTypeColumn, ContentColumn, _table
+                    "select {0}, {1}, {2}, {3} from {4}",
+                    PartIdColumn, LocaleIdColumn, KeyColumn, ContentColumn, _table
                 ), connection);
                 
                 using(var result = command.ExecuteReader()){
                     if (!result.HasRows) return;
 
                     while (result.Read()) {
-                        var value = new DBValue(result.GetInt64(0), result.GetInt32(1), result.GetString(2), result.GetString(3), result.GetString(4));
+                        var value = new DBValue(result.GetInt64(0), result.GetInt32(1), result.GetString(2), result.GetString(3));
                         _valuesByQualifier.Add(value.Qualifier, value);
                     }
                 }
@@ -705,7 +700,7 @@ namespace BLocal.Providers
             public QualifiedValue GetQualifiedValue(PartTable.DBPart part, LocaleTable.DBLocale locale, String key)
             {
                 try {
-                    return new QualifiedValue(new Qualifier.Unique(part, locale, key), _valuesByQualifier[new InternalQualifier(part.Id, locale.Id, key)]);
+                    return new QualifiedValue(new Qualifier.Unique(part, locale, key), _valuesByQualifier[new InternalQualifier(part.Id, locale.Id, key)].Content);
                 }
                 catch (KeyNotFoundException) {
                     var parent = part.Parent as PartTable.DBPart;
@@ -724,7 +719,7 @@ namespace BLocal.Providers
                             localeTable.GetLocale(qv.Key.LocaleId),
                             qv.Key.Key
                         ),
-                        qv.Value
+                        qv.Value.Content
                     )).ToList();
             }
 
@@ -760,13 +755,12 @@ namespace BLocal.Providers
 
                 if (_valuesByQualifier.ContainsKey(dbval.Qualifier)) {
                     var command = new SqlCommand(String.Format(
-                            "update {0} set {1} = @content, {2} = @contenttype where {3} = @part and {4} = @locale and {5} = @key",
-                            _table, ContentColumn, ContentTypeColumn, PartIdColumn, LocaleIdColumn, KeyColumn
+                            "update {0} set {1} = @content where {2} = @part and {3} = @locale and {4} = @key",
+                            _table, ContentColumn, PartIdColumn, LocaleIdColumn, KeyColumn
                         ), connection
                     );
 
                     command.Parameters.Add(new SqlParameter("content", SqlDbType.VarChar) { Value = dbval.Content });
-                    command.Parameters.Add(new SqlParameter("contenttype", SqlDbType.VarChar) { Value = dbval.ContentType.Name });
                     command.Parameters.Add(new SqlParameter("part", SqlDbType.BigInt) { Value = dbval.Qualifier.PartId });
                     command.Parameters.Add(new SqlParameter("locale", SqlDbType.Int) { Value = dbval.Qualifier.LocaleId });
                     command.Parameters.Add(new SqlParameter("key", SqlDbType.VarChar) { Value = dbval.Qualifier.Key });
@@ -776,13 +770,12 @@ namespace BLocal.Providers
                 }
                 else {
                     var command = new SqlCommand(String.Format(
-                            "insert into {0}({1}, {2}, {3}, {4}, {5}) values(@content, @contenttype, @part, @locale, @key)",
-                            _table, ContentColumn, ContentTypeColumn, PartIdColumn, LocaleIdColumn, KeyColumn
+                            "insert into {0}({1}, {2}, {3}, {4}) values(@content, @part, @locale, @key)",
+                            _table, ContentColumn, PartIdColumn, LocaleIdColumn, KeyColumn
                         ), connection
                     );
 
                     command.Parameters.Add(new SqlParameter("content", SqlDbType.VarChar) { Value = dbval.Content });
-                    command.Parameters.Add(new SqlParameter("contenttype", SqlDbType.VarChar) { Value = dbval.ContentType.Name });
                     command.Parameters.Add(new SqlParameter("part", SqlDbType.BigInt) { Value = dbval.Qualifier.PartId });
                     command.Parameters.Add(new SqlParameter("locale", SqlDbType.Int) { Value = dbval.Qualifier.LocaleId });
                     command.Parameters.Add(new SqlParameter("key", SqlDbType.VarChar) { Value = dbval.Qualifier.Key });
@@ -801,15 +794,14 @@ namespace BLocal.Providers
                 _valuesByQualifier.Add(value.Qualifier, value);
 
                 var command = new SqlCommand(String.Format(
-                        "insert into {0}({1}, {2}, {3}, {4}, {5}) values(@part, @locale, @key, @contenttype, @content)",
-                        _table, PartIdColumn, LocaleIdColumn, KeyColumn, ContentTypeColumn, ContentColumn
+                        "insert into {0}({1}, {2}, {3}, {4}) values(@part, @locale, @key, @content)",
+                        _table, PartIdColumn, LocaleIdColumn, KeyColumn, ContentColumn
                     ), connection
                 );
 
                 command.Parameters.Add(new SqlParameter("part", SqlDbType.BigInt) { Value = value.Qualifier.PartId });
                 command.Parameters.Add(new SqlParameter("locale", SqlDbType.Int) { Value = value.Qualifier.LocaleId });
                 command.Parameters.Add(new SqlParameter("key", SqlDbType.VarChar) { Value = value.Qualifier.Key });
-                command.Parameters.Add(new SqlParameter("contenttype", SqlDbType.VarChar) { Value = value.ContentType.ToString() });
                 command.Parameters.Add(new SqlParameter("content", SqlDbType.VarChar) { Value = value.Content });
                 command.ExecuteNonQuery();
                 return value;
@@ -836,14 +828,14 @@ namespace BLocal.Providers
                     _valuesByQualifier.Remove(qualifier);
             }
 
-            public class DBValue : Value
+            public class DBValue
             {
                 public InternalQualifier Qualifier { get; private set; }
+                public String Content;
 
-                public DBValue(long partId, int localeId, String key, String contentTypeName, String content)
+                public DBValue(long partId, int localeId, String key, String content)
                 {
                     Qualifier = new InternalQualifier(partId, localeId, key);
-                    ContentType = ContentType.Find(contentTypeName);
                     Content = content;
                 }
             }

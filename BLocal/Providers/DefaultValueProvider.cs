@@ -25,7 +25,7 @@ namespace BLocal.Providers
             if(defaultValue == null)
                 throw new ValueNotFoundException(qualifier);
 
-            return new QualifiedValue(qualifier, new Value(ContentType.Unknown, defaultValue));
+            return new QualifiedValue(qualifier, defaultValue);
         }
 
         public void Reload()

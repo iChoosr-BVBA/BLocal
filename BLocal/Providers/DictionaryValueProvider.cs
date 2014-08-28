@@ -9,29 +9,29 @@ namespace BLocal.Providers
     /// </summary>
     public class DictionaryValueProvider : ILocalizedValueProvider
     {
-        public Dictionary<Qualifier, Value> Values { get; set; }
+        public Dictionary<Qualifier, String> Values { get; set; }
 
         public DictionaryValueProvider()
         {
-            Values = new Dictionary<Qualifier, Value>();
+            Values = new Dictionary<Qualifier, String>();
         }
 
-        public string GetValue(Qualifier.Unique qualifier, String defaultValue = null)
+        public String GetValue(Qualifier.Unique qualifier, String defaultValue = null)
         {
             try
             {
-                return Values[qualifier].DecodedContent;
+                return Values[qualifier];
             }
             catch
             {
-                Values[qualifier] = new Value(ContentType.Unknown, defaultValue);
+                Values[qualifier] = defaultValue;
                 return defaultValue;
             }
         }
 
         public void SetValue(Qualifier.Unique qualifier, String value)
         {
-            Values[qualifier].Content = value;
+            Values[qualifier] = value;
         }
 
         public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier, String defaultValue = null)
@@ -42,7 +42,7 @@ namespace BLocal.Providers
             }
             catch
             {
-                var qualifiedValue = new QualifiedValue(qualifier, new Value(ContentType.Unknown, defaultValue));
+                var qualifiedValue = new QualifiedValue(qualifier, defaultValue);
                 Values[qualifier] = qualifiedValue.Value;
                 return qualifiedValue;
             }

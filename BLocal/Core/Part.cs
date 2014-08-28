@@ -44,6 +44,10 @@ namespace BLocal.Core
             return parsed;
         }
 
+        public Part()
+        {
+        }
+
         /// <summary>
         /// Creates a new part based on the name
         /// </summary>

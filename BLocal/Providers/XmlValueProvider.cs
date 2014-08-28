@@ -274,7 +274,7 @@ namespace BLocal.Providers
         public void UpdateCreateValue(QualifiedValue value)
         {
             var group = GetOrCreateGroupNode(value.Qualifier.Part);
-            group.SetOrCreateValue(value.Qualifier, value.Value.Content);
+            group.SetOrCreateValue(value.Qualifier, value.Value);
             Save();
         }
 
@@ -359,7 +359,7 @@ namespace BLocal.Providers
             {
                 try
                 {
-                    return new QualifiedValue(new Qualifier.Unique(Part.Parse(ToString()), qualifier.Locale, qualifier.Key), new Value(ContentType.Unspecified, Content[qualifier.Key][qualifier.Locale.ToString()]));
+                    return new QualifiedValue(new Qualifier.Unique(Part.Parse(ToString()), qualifier.Locale, qualifier.Key), Content[qualifier.Key][qualifier.Locale.ToString()]);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -420,7 +420,7 @@ namespace BLocal.Providers
                 lock(Content)
                     foreach (var keyContainer in Content)
                         foreach (var localContainer in keyContainer.Value)
-                            yield return new QualifiedValue(new Qualifier.Unique(myPart, new Locale(localContainer.Key), keyContainer.Key), new Value(ContentType.Unspecified, localContainer.Value));
+                            yield return new QualifiedValue(new Qualifier.Unique(myPart, new Locale(localContainer.Key), keyContainer.Key), localContainer.Value);
             }
 
             public void RemoveValue(Qualifier.Unique qualifier, Action<GroupNode> killNode)

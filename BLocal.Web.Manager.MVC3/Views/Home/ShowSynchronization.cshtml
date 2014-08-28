@@ -97,7 +97,7 @@
                 <tr class="lrvalue">
                     <td style="white-space: nowrap"><input type="checkbox" name="values" data-side="Left" data-part="@value.Qualifier.Part" data-locale="@value.Qualifier.Locale" data-key="@value.Qualifier.Key"/></td>
                     <td style="white-space: nowrap">@value.Qualifier</td>
-                    <td style="width: 99%;">@value.Value.Content</td>
+                    <td style="width: 99%;">@value.Value</td>
                 </tr>
             }
         </tbody></table>
@@ -115,7 +115,7 @@
                 <tr class="lrvalue">
                     <td style="white-space: nowrap"><input type="checkbox" name="values" data-side="Right" data-part="@value.Qualifier.Part" data-locale="@value.Qualifier.Locale" data-key="@value.Qualifier.Key"/></td>
                     <td style="white-space: nowrap">@value.Qualifier</td>
-                    <td style="width: 99%;">@value.Value.Content</td>
+                    <td style="width: 99%;">@value.Value</td>
                 </tr>
             }
         </tbody></table>
@@ -127,8 +127,8 @@
             <section class="difference">
                 <p>@value.Left.Qualifier</p>
                 <section class="comparison">
-                    <p class="left"><input type="button" value="Use" data-side="Left" data-part="@value.Left.Qualifier.Part" data-locale="@value.Left.Qualifier.Locale" data-key="@value.Left.Qualifier.Key" disabled="disabled"/> @value.Left.Value.Content</p>
-                    <p class="right"><input type="button" value="Use" data-side="Right" data-part="@value.Right.Qualifier.Part" data-locale="@value.Right.Qualifier.Locale" data-key="@value.Right.Qualifier.Key" disabled="disabled"/> @value.Right.Value.Content</p>
+                    <p class="left"><input type="button" value="Use" data-side="Left" data-part="@value.Left.Qualifier.Part" data-locale="@value.Left.Qualifier.Locale" data-key="@value.Left.Qualifier.Key" disabled="disabled"/> @value.Left.Value</p>
+                    <p class="right"><input type="button" value="Use" data-side="Right" data-part="@value.Right.Qualifier.Part" data-locale="@value.Right.Qualifier.Locale" data-key="@value.Right.Qualifier.Key" disabled="disabled"/> @value.Right.Value</p>
                     <div class="clear"></div>
                 </section>
             </section>

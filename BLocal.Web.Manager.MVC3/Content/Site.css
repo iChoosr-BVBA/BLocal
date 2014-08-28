@@ -48,10 +48,9 @@ section.part, section.general {
 section.values { margin-top: 10px; }
 section.values span { display: block; overflow: hidden; float: left;}
 section.values .key { width: 20%;}
-section.values .locale { width: 5%; }
-section.values .contenttype { width: 10%; }
+section.values .locale { width: 10%; }
 section.values .lastlog { width: 10%; }
-section.values .content { width: 55%; }
+section.values .content { width: 60%; }
 section.values .clear { height: 0; width: 0; padding: 0; margin: 0; border: none; float: none; clear: both;}
     
 section.values p { cursor: pointer;margin: 0;padding-top: 5px;padding-bottom: 5px;}
