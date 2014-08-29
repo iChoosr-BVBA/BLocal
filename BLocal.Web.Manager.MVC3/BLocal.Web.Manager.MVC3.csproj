@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="Configuration\ValueProviderConfigurationSection.cs" />
     <Compile Include="Context\AuthorizedAttribute.cs" />
+    <Compile Include="Controllers\AutomaticSynchronizationController.cs" />
     <Compile Include="Controllers\ExternalSynchronizationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Business\ImportConfiguration.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AutomaticSynchronization\SynchronizationSettings.cs" />
     <Compile Include="Models\Home\ConnectionData.cs" />
     <Compile Include="Models\Home\ImportExportData.cs" />
     <Compile Include="Models\Home\ImportReportData.cs" />

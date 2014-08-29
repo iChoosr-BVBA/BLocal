@@ -63,7 +63,7 @@ namespace BLocal.Web.Manager.Controllers
 
             foreach (var missingLeft in rightNotLeft)
             {
-                switch (settings.RightMissingStrategy)
+                switch (settings.LeftMissingStrategy)
                 {
                     case SynchronizationSettings.MissingResolutionStrategy.CopyNew:
                         if (settings.Execute)
