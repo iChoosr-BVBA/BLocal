@@ -34,7 +34,7 @@ namespace BLocal.Web.Manager.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost, ValidateInput(false)]
         public ActionResult Authenticate(String password)
         {
             if(password == ConfigurationManager.AppSettings["password"])
@@ -42,7 +42,7 @@ namespace BLocal.Web.Manager.Controllers
             return RedirectToAction("Overview");
         }
 
-        [HttpPost]
+        [HttpPost, ValidateInput(false)]
         public ActionResult LoadLocalization(String providerConfigName)
         {
             Session["manualProviderPair"] = null;
@@ -50,7 +50,7 @@ namespace BLocal.Web.Manager.Controllers
             return RedirectToAction("EditLocalization");
         }
 
-        [HttpPost]
+        [HttpPost, ValidateInput(false)]
         public ActionResult Synchronize(String leftConfigName, String rightConfigName)
         {
             Session["synchronizationLeftProviderPair"] = null;
@@ -190,7 +190,7 @@ namespace BLocal.Web.Manager.Controllers
             return View(new ImportExportData(partNodes.Values, allLocales, providerConfigName));
         }
 
-        [HttpPost]
+        [HttpPost, ValidateInput(false)]
         public ActionResult Export(String providerConfigName, String[] parts, String format, String locale)
         {
             var providerPair = ProviderPairFactory.CreateProviderPair(providerConfigName);
@@ -245,7 +245,7 @@ namespace BLocal.Web.Manager.Controllers
             throw new Exception("Unknown data format: " + format);
         }
 
-        [HttpPost]
+        [HttpPost, ValidateInput(false)]
         public ActionResult Import(String providerConfigName, String locale, HttpPostedFileBase postedFile)
         {
             var providerPair = ProviderPairFactory.CreateProviderPair(providerConfigName);
@@ -296,6 +296,7 @@ namespace BLocal.Web.Manager.Controllers
             return View(new ImportReportData(providerConfigName, postedFile.FileName, selectedLocale, inserts, updates, deletes));
         }
 
+        [ValidateInput(false)]
         public JsonResult Create(String part, String locale, String key, String content)
         {
             var localization = Session["manualProviderPair"] as ProviderPair;
@@ -310,6 +311,7 @@ namespace BLocal.Web.Manager.Controllers
             return Json(new {ok = true});
         }
 
+        [ValidateInput(false)]
         public JsonResult Remove(String part, String locale, String key)
         {
             var localization = Session["manualProviderPair"] as ProviderPair;
@@ -322,6 +324,7 @@ namespace BLocal.Web.Manager.Controllers
             return Json(new { ok = true });
         }
 
+        [ValidateInput(false)]
         public JsonResult SyncRemove(String side, String part, String locale, String key)
         {
             var localization = Session["synchronization" + side + "ProviderPair"] as ProviderPair;
@@ -334,6 +337,7 @@ namespace BLocal.Web.Manager.Controllers
             return Json(new { ok = true });
         }
 
+        [ValidateInput(false)]
         public JsonResult SyncDuplicate(String side, String part, String locale, String key)
         {
             var localizationFrom = Session["synchronization" + side + "ProviderPair"] as ProviderPair;
@@ -348,6 +352,7 @@ namespace BLocal.Web.Manager.Controllers
             return Json(new { ok = true });
         }
 
+        [ValidateInput(false)]
         public JsonResult TransUpdate(String part, String locale, String key, String value)
         {
             var localization = Session["translationProviderPair"] as ProviderPair;
@@ -360,6 +365,7 @@ namespace BLocal.Web.Manager.Controllers
             return Json(new { ok = true });
         }
 
+        [ValidateInput(false)]
         public JsonResult TransDelete(String part, String key)
         {
             var localization = Session["translationProviderPair"] as ProviderPair;
@@ -371,6 +377,7 @@ namespace BLocal.Web.Manager.Controllers
             return Json(new { ok = true });
         }
 
+        [ValidateInput(false)]
         public JsonResult ImportFinalizeUpdate(ImportConfiguration configuration)
         {
             var providerPair = ProviderPairFactory.CreateProviderPair(configuration.ProviderConfigName);
@@ -383,6 +390,8 @@ namespace BLocal.Web.Manager.Controllers
             }
             return Json(new { ok = true });
         }
+
+        [ValidateInput(false)]
         public JsonResult ImportFinalizeInsert(ImportConfiguration configuration)
         {
             var providerPair = ProviderPairFactory.CreateProviderPair(configuration.ProviderConfigName);
@@ -395,6 +404,8 @@ namespace BLocal.Web.Manager.Controllers
             }
             return Json(new { ok = true });
         }
+
+        [ValidateInput(false)]
         public JsonResult ImportFinalizeDelete(ImportConfiguration configuration)
         {
             var providerPair = ProviderPairFactory.CreateProviderPair(configuration.ProviderConfigName);
