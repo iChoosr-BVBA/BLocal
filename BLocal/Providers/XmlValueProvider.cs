@@ -286,8 +286,14 @@ namespace BLocal.Providers
         }
         public IEnumerable<QualifiedValue> GetAllValuesQualified()
         {
-            return _groups.SelectMany(group => group.Value.GetAllQualified());
+            return _groups.SelectMany(group => group.Value.GetAllQualified()).Select(v => new QualifiedValue(v.Qualifier, v.Value));
         }
+
+        public void SetAudits(IEnumerable<LocalizationAudit> audits)
+        {
+            
+        }
+
         public void DeleteValue(Qualifier.Unique qualifier)
         {
             _groups[qualifier.Part.ToString()].RemoveValue(qualifier, node => { lock (_groups) { _groups.Remove(node.ToString()); } });
@@ -296,6 +302,11 @@ namespace BLocal.Providers
         {
             foreach(var localization in _groups[part.ToString()].GetAllQualified().Where(qv => qv.Qualifier.Key == key).ToArray())
                 DeleteValue(localization.Qualifier);
+        }
+
+        public IEnumerable<LocalizationAudit> GetAudits()
+        {
+            return Enumerable.Empty<LocalizationAudit>();
         }
 
         private GroupNode GetOrCreateGroupNode(Part part)

@@ -84,6 +84,7 @@
     <Compile Include="Core\INotifier.cs" />
     <Compile Include="Core\IPartProvider.cs" />
     <Compile Include="Core\Locale.cs" />
+    <Compile Include="Core\LocalizationAudit.cs" />
     <Compile Include="Core\LocalizationRepository.cs" />
     <Compile Include="Core\Log.cs" />
     <Compile Include="Core\Part.cs" />

@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\LocalizationAudit.cs" />
     <Compile Include="Core\Log.cs" />
     <Compile Include="Core\ILocalizedValueLogger.cs" />
     <Compile Include="Core\ILocalizedValueManager.cs" />

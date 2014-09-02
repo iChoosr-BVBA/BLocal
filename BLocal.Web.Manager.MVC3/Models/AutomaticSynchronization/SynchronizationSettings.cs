@@ -13,6 +13,7 @@ namespace BLocal.Web.Manager.Models.AutomaticSynchronization
 
         public enum MissingResolutionStrategy
         {
+            Audit,
             CopyNew,
             DeleteExisting,
             Ignore,
@@ -21,6 +22,7 @@ namespace BLocal.Web.Manager.Models.AutomaticSynchronization
 
         public enum DifferingResolutionStrategy
         {
+            Audit,
             UseLeft,
             UseRight,
             Ignore,

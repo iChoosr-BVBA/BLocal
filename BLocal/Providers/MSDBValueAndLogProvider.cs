@@ -189,7 +189,17 @@ namespace BLocal.Providers
 
         public IEnumerable<QualifiedValue> GetAllValuesQualified()
         {
-            return _valueTable.GetQualifiedValues(_partTable, _localeTable);
+            return _valueTable.GetQualifiedValues(_partTable, _localeTable).Select(v => new QualifiedValue(v.Qualifier, v.Value));
+        }
+
+        public IEnumerable<LocalizationAudit> GetAudits()
+        {
+            return Enumerable.Empty<LocalizationAudit>();
+        }
+
+        public void SetAudits(IEnumerable<LocalizationAudit> audits)
+        {
+            
         }
 
         public void DeleteValue(Qualifier.Unique qualifier)

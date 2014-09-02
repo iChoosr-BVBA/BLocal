@@ -6,7 +6,7 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
 {
     public class LocaleValueContainer
     {
-        private readonly Dictionary<string, string> _localeValues = new Dictionary<string, string>();
+        private readonly Dictionary<String, String> _localeValues = new Dictionary<String, String>();
 
         public string GetValueFor(String locale)
         {

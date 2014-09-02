@@ -23,10 +23,7 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
 
         public void SetValue(Qualifier.Unique qualifier, String value)
         {
-            if(!_localizedValues.ContainsKey(qualifier.Part))
-                _localizedValues.Add(qualifier.Part, new KeyLocaleValueContainer());
-
-            _localizedValues[qualifier.Part].SetValueForKeyAndLocale(qualifier.Key, qualifier.Locale.Name, value, true);
+            _connector.UpdateCreateValue(new QualifiedValue(qualifier, value));
         }
 
         public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier, String defaultValue = null)
@@ -75,6 +72,11 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             Reload(_connector.CreateValue(qualifier, value));
         }
 
+        public void SetAudits(IEnumerable<LocalizationAudit> audits)
+        {
+            _connector.SetAudits(audits);
+        }
+
         public void DeleteValue(Qualifier.Unique qualifier)
         {
             Reload(_connector.DeleteValue(qualifier));
@@ -85,6 +87,11 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             Reload(_connector.DeleteLocalizationsFor(part, key));
         }
 
+        public IEnumerable<LocalizationAudit> GetAudits()
+        {
+            return _connector.GetAudits();
+        } 
+
         public IEnumerable<QualifiedValue> GetAllValuesQualified()
         {
             foreach (var localization in _localizedValues)
@@ -94,8 +101,7 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
                     foreach (var languageBasedLocalization in keyBasedLocalization.Value.GetAllLocaleBasedValues())
                     {
                         var qualifier = new Qualifier.Unique(localization.Key, new Locale(languageBasedLocalization.Key), keyBasedLocalization.Key);
-                        var value = languageBasedLocalization.Value;
-                        yield return new QualifiedValue(qualifier, value);
+                        yield return new QualifiedValue(qualifier, languageBasedLocalization.Value);
                     }
                 }
             }

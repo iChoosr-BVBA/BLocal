@@ -36,21 +36,51 @@ namespace BLocal.Web.Manager.Controllers
                 .Where(dv => !Equals(dv.Left.Value, dv.Right.Value))
                 .ToArray();
 
+            var leftAudits = leftPair.ValueManager.GetAudits().ToDictionary(a => a.Qualifier);
+            var rightAudits = rightPair.ValueManager.GetAudits().ToDictionary(a => a.Qualifier);
+
             var synchronizationResult = new SynchronizationResult();
 
             foreach (var missingRight in leftNotRight)
             {
                 switch (settings.RightMissingStrategy)
                 {
+                    case SynchronizationSettings.MissingResolutionStrategy.Audit:
+                            if (!rightAudits.ContainsKey(missingRight.Qualifier))
+                            {
+                                Create(settings.Execute, rightPair, leftAudits, rightAudits, missingRight, synchronizationResult);
+                                break;
+                            }
+
+                            var rightAudit = rightAudits[missingRight.Qualifier];
+                            var leftAudit = leftAudits[missingRight.Qualifier];
+                            if (leftAudit.LatestValueHash == rightAudit.PreviousValueHash && leftAudit.PreviousValueHash == rightAudit.LatestValueHash)
+                            {
+                                if(leftAudit.LatestUpdate > rightAudit.LatestUpdate)
+                                    Create(settings.Execute, rightPair, leftAudits, rightAudits, missingRight, synchronizationResult);
+                                else if (leftAudit.LatestUpdate < rightAudit.LatestUpdate)
+                                    Delete(settings.Execute, leftPair, rightAudits, leftAudits, missingRight, synchronizationResult);
+                                else
+                                    synchronizationResult.Unresolved.Add(new Conflict(leftPair.Name, missingRight.Qualifier.ToString()));
+                                break;
+                            }
+                            if (rightAudit.LatestValueHash == leftAudit.PreviousValueHash)
+                            {
+                                Create(settings.Execute, rightPair, leftAudits, rightAudits, missingRight, synchronizationResult);
+                                break;
+                            }
+                            if (leftAudit.LatestValueHash == rightAudit.PreviousValueHash)
+                            {
+                                Delete(settings.Execute, leftPair, rightAudits, leftAudits, missingRight, synchronizationResult);
+                                break;
+                            }
+                            synchronizationResult.Unresolved.Add(new Conflict(leftPair.Name, missingRight.Qualifier.ToString()));
+                            break;
                         case SynchronizationSettings.MissingResolutionStrategy.CopyNew:
-                            if (settings.Execute)
-                                rightPair.ValueManager.CreateValue(missingRight.Qualifier, missingRight.Value);
-                            synchronizationResult.Created.Add(new Creation(rightPair.Name, missingRight.Qualifier.ToString(), missingRight.Value));
+                            Create(settings.Execute, rightPair, leftAudits, rightAudits, missingRight, synchronizationResult);
                             break;
                         case SynchronizationSettings.MissingResolutionStrategy.DeleteExisting:
-                            if (settings.Execute)
-                                leftPair.ValueManager.DeleteValue(missingRight.Qualifier);
-                            synchronizationResult.Removed.Add(new Removal(leftPair.Name, missingRight.Qualifier.ToString(), missingRight.Value));
+                            Delete(settings.Execute, leftPair, rightAudits, leftAudits, missingRight, synchronizationResult);
                             break;
                         case SynchronizationSettings.MissingResolutionStrategy.Ignore:
                             synchronizationResult.Ignored.Add(new Ignore(leftPair.Name, missingRight.Qualifier.ToString()));
@@ -65,15 +95,42 @@ namespace BLocal.Web.Manager.Controllers
             {
                 switch (settings.LeftMissingStrategy)
                 {
+                    case SynchronizationSettings.MissingResolutionStrategy.Audit:
+                        if (!leftAudits.ContainsKey(missingLeft.Qualifier))
+                        {
+                            Create(settings.Execute, leftPair, rightAudits, leftAudits, missingLeft, synchronizationResult);
+                            break;
+                        }
+
+                        var rightAudit = rightAudits[missingLeft.Qualifier];
+                        var leftAudit = leftAudits[missingLeft.Qualifier];
+                        if (leftAudit.LatestValueHash == rightAudit.PreviousValueHash && leftAudit.PreviousValueHash == rightAudit.LatestValueHash)
+                        {
+                            if (leftAudit.LatestUpdate > rightAudit.LatestUpdate)
+                                Delete(settings.Execute, rightPair, leftAudits, rightAudits, missingLeft, synchronizationResult);
+                            else if (leftAudit.LatestUpdate < rightAudit.LatestUpdate)
+                                Create(settings.Execute, leftPair, rightAudits, leftAudits, missingLeft, synchronizationResult);
+                            else
+                                synchronizationResult.Unresolved.Add(new Conflict(leftPair.Name, missingLeft.Qualifier.ToString()));
+                            break;
+                        }
+                        if (leftAudit.LatestValueHash == rightAudit.PreviousValueHash)
+                        {
+                            Create(settings.Execute, leftPair, rightAudits, leftAudits, missingLeft, synchronizationResult);
+                            break;
+                        }
+                        if (rightAudit.LatestValueHash == leftAudit.PreviousValueHash)
+                        {
+                            Delete(settings.Execute, rightPair, leftAudits, rightAudits, missingLeft, synchronizationResult);
+                            break;
+                        }
+                        synchronizationResult.Unresolved.Add(new Conflict(leftPair.Name, missingLeft.Qualifier.ToString()));
+                        break;
                     case SynchronizationSettings.MissingResolutionStrategy.CopyNew:
-                        if (settings.Execute)
-                            leftPair.ValueManager.CreateValue(missingLeft.Qualifier, missingLeft.Value);
-                        synchronizationResult.Created.Add(new Creation(leftPair.Name, missingLeft.Qualifier.ToString(), missingLeft.Value));
+                        Create(settings.Execute, leftPair, rightAudits, leftAudits, missingLeft, synchronizationResult);
                         break;
                     case SynchronizationSettings.MissingResolutionStrategy.DeleteExisting:
-                        if (settings.Execute)
-                            rightPair.ValueManager.DeleteValue(missingLeft.Qualifier);
-                        synchronizationResult.Removed.Add(new Removal(rightPair.Name, missingLeft.Qualifier.ToString(), missingLeft.Value));
+                        Delete(settings.Execute, rightPair, leftAudits, rightAudits, missingLeft, synchronizationResult);
                         break;
                     case SynchronizationSettings.MissingResolutionStrategy.Ignore:
                         synchronizationResult.Ignored.Add(new Ignore(rightPair.Name, missingLeft.Qualifier.ToString()));
@@ -88,15 +145,37 @@ namespace BLocal.Web.Manager.Controllers
             {
                 switch (settings.DifferingStrategy)
                 {
+                    case SynchronizationSettings.DifferingResolutionStrategy.Audit:
+                        var rightAudit = rightAudits[difference.Right.Qualifier];
+                        var leftAudit = leftAudits[difference.Left.Qualifier];
+                        if (leftAudit.LatestValueHash == rightAudit.PreviousValueHash && leftAudit.PreviousValueHash == rightAudit.LatestValueHash)
+                        {
+                            if (leftAudit.LatestUpdate > rightAudit.LatestUpdate)
+                                UpdateCreate(settings.Execute, rightPair, leftAudits, rightAudits, difference.Left, difference.Right.Value, synchronizationResult);
+                            else if (leftAudit.LatestUpdate < rightAudit.LatestUpdate)
+                                UpdateCreate(settings.Execute, leftPair, rightAudits, leftAudits, difference.Right, difference.Left.Value, synchronizationResult);
+                            else
+                                synchronizationResult.Unresolved.Add(new Conflict(rightPair.Name + " <> " + leftPair.Name, difference.Left.Qualifier.ToString()));
+                            break;
+                        }
+                        if (leftAudit.LatestValueHash == rightAudit.PreviousValueHash)
+                        {
+                            UpdateCreate(settings.Execute, leftPair, rightAudits, leftAudits, difference.Right, difference.Left.Value, synchronizationResult);
+                            break;
+                        }
+                        if (rightAudit.LatestValueHash == leftAudit.PreviousValueHash)
+                        {
+                            UpdateCreate(settings.Execute, rightPair, leftAudits, rightAudits, difference.Left, difference.Right.Value, synchronizationResult);
+                            break;
+                        }
+                        synchronizationResult.Unresolved.Add(new Conflict(rightPair.Name + " <> " + leftPair.Name, difference.Left.Qualifier.ToString()));
+                        break;
+
                     case SynchronizationSettings.DifferingResolutionStrategy.UseLeft:
-                        if (settings.Execute)
-                            rightPair.ValueManager.UpdateCreateValue(new QualifiedValue(difference.Left.Qualifier, difference.Left.Value));
-                        synchronizationResult.Updated.Add(new Update(rightPair.Name, difference.Left.Qualifier.ToString(), difference.Right.Value, difference.Left.Value));
+                        UpdateCreate(settings.Execute, rightPair, leftAudits, rightAudits, difference.Left, difference.Right.Value, synchronizationResult);
                         break;
                     case SynchronizationSettings.DifferingResolutionStrategy.UseRight:
-                        if (settings.Execute)
-                            leftPair.ValueManager.UpdateCreateValue(new QualifiedValue(difference.Right.Qualifier, difference.Right.Value));
-                        synchronizationResult.Updated.Add(new Update(leftPair.Name, difference.Right.Qualifier.ToString(), difference.Left.Value, difference.Right.Value));
+                        UpdateCreate(settings.Execute, leftPair, rightAudits, leftAudits, difference.Right, difference.Left.Value, synchronizationResult);
                         break;
                     case SynchronizationSettings.DifferingResolutionStrategy.Ignore:
                         synchronizationResult.Ignored.Add(new Ignore(rightPair.Name + " <> " + leftPair.Name, difference.Left.Qualifier.ToString()));
@@ -107,7 +186,55 @@ namespace BLocal.Web.Manager.Controllers
                 }
             }
 
+            if (settings.Execute)
+            {
+                foreach (var audit in leftAudits.Where(audit => !rightAudits.ContainsKey(audit.Key)))
+                    rightAudits.Add(audit.Key, audit.Value);
+                foreach (var audit in rightAudits.Where(audit => !leftAudits.ContainsKey(audit.Key)))
+                    leftAudits.Add(audit.Key, audit.Value);
+
+                leftPair.ValueManager.SetAudits(leftAudits.Values);
+                rightPair.ValueManager.SetAudits(rightAudits.Values);
+            }
+
             return Content(JsonConvert.SerializeObject(synchronizationResult), "application/json", Encoding.UTF8);
+        }
+
+        private void UpdateCreate(bool execute, ProviderPair targetPair, Dictionary<Qualifier.Unique, LocalizationAudit> sourceAudits, Dictionary<Qualifier.Unique, LocalizationAudit> targetAudits, QualifiedValue sourceQualifiedValue, String targetOldValue, SynchronizationResult result)
+        {
+            if (execute)
+            {
+                if (sourceAudits.ContainsKey(sourceQualifiedValue.Qualifier))
+                    targetAudits[sourceQualifiedValue.Qualifier] = sourceAudits[sourceQualifiedValue.Qualifier];
+
+                targetPair.ValueManager.UpdateCreateValue(new QualifiedValue(sourceQualifiedValue.Qualifier, sourceQualifiedValue.Value));
+            }
+            result.Updated.Add(new Update(targetPair.Name, sourceQualifiedValue.Qualifier.ToString(), targetOldValue, sourceQualifiedValue.Value));
+        }
+
+        private void Create(bool execute, ProviderPair targetPair, Dictionary<Qualifier.Unique, LocalizationAudit> sourceAudits, Dictionary<Qualifier.Unique, LocalizationAudit> targetAudits, QualifiedValue sourceQualifiedValue, SynchronizationResult result)
+        {
+            if (execute)
+            {
+                if(sourceAudits.ContainsKey(sourceQualifiedValue.Qualifier))
+                    targetAudits[sourceQualifiedValue.Qualifier] = sourceAudits[sourceQualifiedValue.Qualifier];
+
+                targetPair.ValueManager.CreateValue(sourceQualifiedValue.Qualifier, sourceQualifiedValue.Value);
+            }
+            result.Created.Add(new Creation(targetPair.Name, sourceQualifiedValue.Qualifier.ToString(), sourceQualifiedValue.Value));
+        }
+
+        private void Delete(bool execute, ProviderPair targetPair, Dictionary<Qualifier.Unique, LocalizationAudit> sourceAudits, Dictionary<Qualifier.Unique, LocalizationAudit> targetAudits, QualifiedValue targetQualifiedValue, SynchronizationResult result)
+        {
+
+            if (execute)
+            {
+                if (sourceAudits.ContainsKey(targetQualifiedValue.Qualifier))
+                    targetAudits[targetQualifiedValue.Qualifier] = sourceAudits[targetQualifiedValue.Qualifier];
+
+                targetPair.ValueManager.DeleteValue(targetQualifiedValue.Qualifier);
+            }
+            result.Removed.Add(new Removal(targetPair.Name, targetQualifiedValue.Qualifier.ToString(), targetQualifiedValue.Value));
         }
 
         public class SynchronizationResult

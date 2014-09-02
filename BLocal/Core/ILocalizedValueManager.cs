@@ -28,6 +28,18 @@ namespace BLocal.Core
         IEnumerable<QualifiedValue> GetAllValuesQualified();
 
         /// <summary>
+        /// When implemented, returns all audits for qualifiers
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<LocalizationAudit> GetAudits();
+
+        /// <summary>
+        /// When implemented, overrides all audits internally
+        /// </summary>
+        /// <returns></returns>
+        void SetAudits(IEnumerable<LocalizationAudit> audits); 
+
+        /// <summary>
         /// When implemented, removes a value completely from the system
         /// </summary>
         /// <param name="qualifier"></param>

@@ -95,6 +95,26 @@ namespace BLocal.Web.Manager.Controllers
             return Content(json, "application/json", Encoding.Unicode);
         }
 
+        [HttpPost, ValidateInput(false)]
+        public ContentResult GetAudits(ExternalSynchronizationRequest request)
+        {
+            var providerPair = GetProviderPair(request);
+            var getAuditsRequest = JsonConvert.DeserializeObject<GetAuditsRequest>(request.RequestData, _partConverter);
+            providerPair.ValueManager.Reload();
+            var json = JsonConvert.SerializeObject(new GetAuditsResponse { Audits = providerPair.ValueManager.GetAudits().ToArray() }, _partConverter);
+            return Content(json, "application/json", Encoding.Unicode);
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ContentResult SetAudits(ExternalSynchronizationRequest request)
+        {
+            var providerPair = GetProviderPair(request);
+            var setAuditsRequest = JsonConvert.DeserializeObject<SetAuditsRequest>(request.RequestData, _partConverter);
+            providerPair.ValueManager.SetAudits(setAuditsRequest.Audits);
+            var json = JsonConvert.SerializeObject(new SetAuditsResponse(), _partConverter);
+            return Content(json, "application/json", Encoding.Unicode);
+        }
+
         private ProviderPair GetProviderPair(ExternalSynchronizationRequest synchronizationRequest)
         {
             var dictionary = (Dictionary<Guid, SynchronizationSession>)(Request.RequestContext.HttpContext.Application["sessions"]

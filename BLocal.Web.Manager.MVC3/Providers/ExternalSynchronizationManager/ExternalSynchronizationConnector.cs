@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
-using System.Web;
 using BLocal.Core;
 using Newtonsoft.Json;
 
@@ -64,6 +63,19 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             var request = new DeleteLocalizationsRequest { Part = part, Key = key };
             var response = MakeRequest(request);
             return response.AllValues;
+        }
+
+        public void SetAudits(IEnumerable<LocalizationAudit> audits)
+        {
+            var request = new SetAuditsRequest { Audits = audits.ToArray() };
+            MakeRequest(request);
+        }
+
+        public IEnumerable<LocalizationAudit> GetAudits()
+        {
+            var request = new GetAuditsRequest();
+            var response = MakeRequest(request);
+            return response.Audits;
         }
 
         private TResponse MakeRequest<TResponse>(IRequest<TResponse> request)
