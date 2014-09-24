@@ -34,10 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BLocal, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\GroupSales\ThirdParty\BLocal\BLocal.dll</HintPath>
-    </Reference>
     <Reference Include="CsvHelper">
       <HintPath>..\packages\CsvHelper.2.7.0\lib\net40-client\CsvHelper.dll</HintPath>
     </Reference>
@@ -189,6 +185,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\ExternalSynchronization\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BLocal\BLocal.csproj">
+      <Project>{446DA010-F56F-4084-B961-A116D5AAC872}</Project>
+      <Name>BLocal</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
