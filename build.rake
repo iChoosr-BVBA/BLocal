@@ -1,4 +1,5 @@
 require 'albacore'
+require 'albacore/tasks/versionizer'
 require 'albacore/ext/teamcity'
 require 'fileutils'
 require 'rubygems'
@@ -19,8 +20,13 @@ def correct_path_slashes path
 	return path.gsub("\\", "/")
 end
 
-namespace :manager do
-	build :msbuild => [:load_config] do |b|
+namespace :manager do	
+	nugets_restore :restore do |p|
+	  p.out = Paths.join(@base_dir, "packages").to_s
+	  p.exe = Paths.join(@base_dir, "tools/NuGet.exe").to_s
+	end
+	
+	build :msbuild => [:load_config, :restore] do |b|
 	  b.sln   = Paths.join @base_dir, 'BLocal.Legacy.sln'
 	  b.target = ['Rebuild']              
 	  b.prop 'Configuration', 'Release'            
