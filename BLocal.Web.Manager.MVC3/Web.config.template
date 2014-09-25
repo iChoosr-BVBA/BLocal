@@ -7,7 +7,7 @@
   <appSettings>
     <add key="ClientValidationEnabled" value="true"/>
     <add key="UnobtrusiveJavaScriptEnabled" value="true"/>
-    <add key="password" value="iChoosr=c00l"/>
+    <add key="password" value="left-out-for-safety"/>
   </appSettings>
   <!-- do not rename -->
   <providerPairsConfiguration>
@@ -22,7 +22,7 @@
       <valueProvider type="BLocal.Web.Manager.Providers.ExternalSynchronizationManager.ExternalSynchronizationManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral">
         <!-- Add constructor parameters -->
         <add name="targetUrl" value="http://10.120.3.199:7000/ExternalSynchronization/" />
-        <add name="targetPassword" value="iChoosr=c00l"/>
+        <add name="targetPassword" value="left-out-for-safety"/>
         <add name="targetProviderPair" value="iChoosr - Test"/>
       </valueProvider>
       <logProvider type="BLocal.Providers.VoidLogger, BLocal, Version=1.0.0.0, Culture=neutral" />
