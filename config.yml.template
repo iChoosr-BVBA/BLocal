@@ -1,6 +1,5 @@
 ﻿manager:
   deploydir: C:/some/folder/where-you-want-to-host-the-cms/
-  configpath: C:/path/to/your/customized/web.config
   customLibraries: [
     'C:/path/to/your/custom/library.dll',
     'C:/path/to/your/custom/library.pdb',
