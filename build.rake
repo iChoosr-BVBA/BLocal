@@ -50,8 +50,8 @@ namespace :manager do
 		end
 		
 		FileUtils.cp_r Paths.join(@deploy_dir, 'Web.config').to_s, Paths.join(temp_path, 'Web.config').to_s
-		FileUtils.rm_rf @deploy_dir
-		FileUtils.mkdir @deploy_dir
+		FileUtils.rm_rf Dir.glob(Paths.join(@deploy_dir, "*").to_s)
+		FileUtils.mkdir_p @deploy_dir
 		FileUtils.cp_r Paths.join(temp_path, 'Web.config').to_s, Paths.join(@deploy_dir, 'Web.config').to_s
 		
 		FileUtils.rm_rf temp_path
