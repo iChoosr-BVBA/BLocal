@@ -1,33 +1,27 @@
 ﻿@using BLocal.Web.Manager.Business
-@model IEnumerable<BLocal.Web.Manager.Business.LocalizedPart>
+@model IEnumerable<LocalizedPart>
 @{
-    Layout = null;
+    ViewBag.Title = "Manual Editing";
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Localization management</title>
-    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Site.css")"/>
-    <script src="@Url.Content("~/Scripts/jquery-1.4.4.min.js")" type="text/javascript"></script>
-    <script src="@Url.Content("~/Scripts/homebrew.popup.js")" type="text/javascript"></script>
+@section Head {
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             $("section.values").hide();
-            $(".open").click(function () {
+            $(".open").click(function() {
                 $("section.values").show();
             });
-            $(".collapse").click(function () {
+            $(".collapse").click(function() {
                 $("section.values").hide();
             });
-            $(".reload").click(function () {
+            $(".reload").click(function() {
                 window.location.reload();
             });
-            $(".hardreload").click(function () {
+            $(".hardreload").click(function() {
                 window.location = '@Url.Action("ReloadLocalization")';
             });
 
-            $("h2").click(function () {
+            $("h2").click(function() {
                 var valueChildren = $(this).parent(".part").find(".values");
                 var anyVisible = valueChildren.filter(":visible").length > 0;
                 if (anyVisible)
@@ -36,34 +30,34 @@
                     valueChildren.show();
             });
 
-            var create = function (part, key, locale, content, callback) {
+            var create = function(part, key, locale, content, callback) {
                 $.ajax({
                     url: '@Url.Action("Create", "Home")',
                     data: { part: part, key: key, locale: locale, content: content },
                     type: 'POST',
                     success: callback,
-                    error: function () {
-                        alert(":'(");
+                    error: function() {
+                        alert("Something went wrong. Check your internet connection and try again. If the problem persists, contact IT.");
                     }
                 });
             };
 
-            var remove = function (part, key, locale, callback) {
+            var remove = function(part, key, locale, callback) {
                 $.ajax({
                     url: '@Url.Action("Remove", "Home")',
                     data: { part: part, key: key, locale: locale },
                     type: 'POST',
                     success: callback,
-                    error: function () {
-                        alert(":'(");
+                    error: function() {
+                        alert("Something went wrong. Check your internet connection and try again. If the problem persists, contact IT.");
                     }
                 });
             };
 
             var details = $.popup($("#details"));
-            $(".values > p").click(function () {
+            $(".values > p").click(function() {
                 var p = $(this);
-                details.onOpen = function (elements) {
+                details.onOpen = function(elements) {
                     var part = p.parent(".values").parent(".part").children("h2").children("span.title").text();
                     var key = p.find(".key").text();
                     var locale = p.find(".locale").text();
@@ -74,16 +68,16 @@
                     var localeEl = elements.find("input.locale").val(locale);
                     var contentEl = elements.find("textarea.content").val(content);
 
-                    elements.find(".updatecopy").click(function () {
-                        create(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val(), function () {
+                    elements.find(".updatecopy").click(function() {
+                        create(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val(), function() {
                             if (partEl.val() == part && localeEl.val() == locale && keyEl.val() == key)
                                 p.find(".content").html(contentEl.val());
                             details.close();
                         });
                     });
-                    elements.find(".updaterecreate").click(function () {
-                        remove(part, key, locale, function () {
-                            create(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val(), function () {
+                    elements.find(".updaterecreate").click(function() {
+                        remove(part, key, locale, function() {
+                            create(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val(), function() {
                                 if (partEl.val() == part && localeEl.val() == locale && keyEl.val() == key)
                                     p.find(".content").html(contentEl.val());
                                 else
@@ -92,8 +86,8 @@
                             });
                         });
                     });
-                    elements.find(".updatedelete").click(function () {
-                        remove(part, key, locale, function () {
+                    elements.find(".updatedelete").click(function() {
+                        remove(part, key, locale, function() {
                             p.remove();
                             details.close();
                         });
@@ -102,87 +96,90 @@
                 details.open();
             });
 
-            $("input.dofilter").click(function () {
+            $("#filterform").submit(function (event) {
+                event.preventDefault();
 
-                var autohide = $("input.autohide:checked").length == 1;
                 $(".values > p").show().removeAttr("data-hidden");
                 $("section.part").show();
 
-                $("input.filter").each(function () {
+                $("input.filter").each(function() {
                     var filter = $(this);
                     var filterval = $(this).val().toLowerCase();
                     if (filterval.length == 0)
                         return true;
 
                     var filterspans = $("span." + filter.attr("id"));
-                    filterspans.each(function () {
+                    filterspans.each(function() {
                         if ($(this).html().toLowerCase().indexOf(filterval) == -1)
                             $(this).parent("p").hide().attr("data-hidden", "");
                     });
 
-                    return true;
+                    return false;
                 });
 
-                if (autohide) {
-                    $("section.part").each(function () {
-                        if ($(this).find("section.values > p:not([data-hidden])").length == 0)
-                            $(this).hide();
-                    });
-                }
-                $(".result").html("displaying " + ($(".values > p").length - $(".values > p[data-hidden]").length) + " out of " + $(".values > p").length + " values");
+                $("section.part").each(function() {
+                    if ($(this).find("section.values > p:not([data-hidden])").length == 0)
+                        $(this).hide();
+                });
+                var totalValueCount = $(".values > p").length;
+                var visibleValueCount = (totalValueCount - $(".values > p[data-hidden]").length);
+                $(".result").html("displaying " + visibleValueCount + " out of " + totalValueCount + " values");
+                if (visibleValueCount < 500)
+                    $("span.open").click();
             });
         });
     </script>
-</head>
+}
 
-<body>
-    <h1>@Html.ActionLink("Home", "Overview") - Manual Edit - [@(((ProviderPair) Session["manualProviderPair"]).Name)]</h1>
-    <p><span class="open">open</span> | <span class="collapse">collapse</span> | <span class="reload">reload</span> | <span class="hardreload" title="dump localization cache, reload from scratch">hard reload</span></p>
+<h1>@Html.ActionLink("Home", "Overview") - Manual Editing of <span class="accent">@(((ProviderPair) Session["manualProviderPair"]).Name)</span></h1>
+<p><span class="open">open</span> | <span class="collapse">collapse</span> | <span class="reload">reload</span> | <span class="hardreload" title="dump localization cache, reload from scratch">hard reload</span></p>
     
-    <section class="general">
-        <h2>Filter</h2>
+<section class="general">
+    <h2>Filter</h2>
+    <form id="filterform">
         <div><label for="key">Key</label> <input type="text" class="filter" id="key" /></div>
         <div><label for="locale">Locale</label> <input type="text" class="filter" id="locale" /></div>
         <div><label for="content">Content</label> <input type="text" class="filter" id="content" /></div>
-        <div><label for="autohide">Auto-hide</label> <input class="autohide" id="autohide" type="checkbox" checked="checked" /></div>
-        <div><input type="button" class="dofilter" value="filter" /></div>
-        <div><p class="result"></p></div>
-    </section>
+        <div><input type="submit" value="Apply Filter" /></div>
+    </form>
+    <div><p class="result"></p></div>
+</section>
 
-    @foreach(var localizedPart in Model) {
-        @RenderPart(localizedPart)
-    }
+@foreach(var localizedPart in Model) {
+    @RenderPart(localizedPart)
+}
 
-    @helper RenderPart(LocalizedPart part) {
-        <section class="part">
-            <h2><span class="title">@part.Part.ToString()</span> [@part.Localizations.Count]</h2>
-            <section class="values">
-                @foreach (var value in part.Localizations.OrderBy(value => value.Qualifier.Key).ThenBy(value => value.Qualifier.Locale.Name)) {
-                    <p>
-                        <span class="key">@value.Qualifier.Key</span>
-                        <span class="locale">@value.Qualifier.Locale</span>
-                        <span class="lastlog">@value.LastAcces</span>
-                        <span class="content" title="@value.Value.Replace(@"""", @"'")">@value.Value</span>
-                        <span class="clear"></span>
-                    </p>
-                }
-            </section>
-            @foreach(var subpart in part.Subparts) {
-                @RenderPart(subpart)
+@helper RenderPart(LocalizedPart part) {
+    <section class="part">
+        <h2><span class="title">@part.Part.ToString()</span> [@part.Localizations.Count]</h2>
+        <section class="values">
+            @foreach (var value in part.Localizations.OrderBy(value => value.Qualifier.Key).ThenBy(value => value.Qualifier.Locale.Name)) {
+                <p>
+                    <span class="key">@value.Qualifier.Key</span>
+                    <span class="locale"><nobr>@value.Qualifier.Locale</nobr></span>
+                    <span class="content" title="@value.Value.Replace(@"""", @"'")">@value.Value</span>
+                    <span class="clear"></span>
+                </p>
             }
         </section>
-    }
+        @foreach(var subpart in part.Subparts) {
+            @RenderPart(subpart)
+        }
+    </section>
+}
     
-    <div id="details" class="popup">
-        <h2>Details</h2>
-        <form>
-            <p><span class="lbl part">Part</span><span class="lbl key">Key</span><span class="lbl locale">Locale</span></p>
-            <p><input type="text" class="val part"></input><input type="text" class="val key"></input><input type="text" class="val locale"></input></p>
-            <p><span class="lbl">Content</span></p>
-            <div><textarea class="content"></textarea></div>
-            <div><input type="button" class="updatecopy" value="Update Copy" title="creates a copy if key or part changed, does not delete original" /> <input type="button" class="updaterecreate" value="Update Recreate" title="deletes current value, recreates to new value" /> <input class="updatedelete" type="button" value="Clean Delete" title="bye-bye" /> (visible changes are indications, press reload to confirm)</div>
-        </form>
-    </div>
-
-</body>
-</html>
+<div id="details" class="popup">
+    <h2>Details</h2>
+    <form>
+        <p><span class="lbl part">Part</span><span class="lbl key">Key</span><span class="lbl locale">Locale</span></p>
+        <p><input type="text" class="val part"></input><input type="text" class="val key"></input><input type="text" class="val locale"></input></p>
+        <p><span class="lbl">Content</span></p>
+        <div><textarea class="content"></textarea></div>
+        <div>
+            <input type="button" class="updaterecreate" value="Save to Original" title="deletes current value, recreates to new value" />
+            <input type="button" class="updatecopy" value="Save to Copy" title="creates a copy if key or part changed, does not delete original" />
+            <input class="updatedelete" type="button" value="Clean Delete" title="bye-bye" />
+            <p>(visible changes are indications, press reload to confirm)</p>
+        </div>
+    </form>
+</div>

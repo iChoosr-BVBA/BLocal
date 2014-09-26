@@ -10,6 +10,7 @@ using BLocal.Core;
 using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Context;
 using BLocal.Web.Manager.Models;
+using BLocal.Web.Manager.Models.Home;
 using CsvHelper;
 
 namespace BLocal.Web.Manager.Controllers
@@ -325,29 +326,35 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [ValidateInput(false)]
-        public JsonResult SyncRemove(String side, String part, String locale, String key)
+        public JsonResult SyncRemove(SynchronizationItem[] items)
         {
-            var localization = Session["synchronization" + side + "ProviderPair"] as ProviderPair;
-            if (localization == null)
-                throw new Exception("Localization not loaded!");
+            foreach (var item in items)
+            {
+                var localization = Session["synchronization" + item.Side + "ProviderPair"] as ProviderPair;
+                if (localization == null)
+                    throw new Exception("Localization not loaded!");
 
-            var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
-            localization.ValueManager.DeleteValue(qualifier);
+                var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
+                localization.ValueManager.DeleteValue(qualifier);
+            }
 
             return Json(new { ok = true });
         }
 
         [ValidateInput(false)]
-        public JsonResult SyncDuplicate(String side, String part, String locale, String key)
+        public JsonResult SyncDuplicate(SynchronizationItem[] items)
         {
-            var localizationFrom = Session["synchronization" + side + "ProviderPair"] as ProviderPair;
-            var localizationTo = Session["synchronization" + (side == "Right" ? "Left" : "Right") + "ProviderPair"] as ProviderPair;
+            foreach (var item in items)
+            {
+                var localizationFrom = Session["synchronization" + item.Side + "ProviderPair"] as ProviderPair;
+                var localizationTo = Session["synchronization" + (item.Side == "Right" ? "Left" : "Right") + "ProviderPair"] as ProviderPair;
 
-            if (localizationFrom == null || localizationTo == null)
-                throw new Exception("Localization not loaded!");
+                if (localizationFrom == null || localizationTo == null)
+                    throw new Exception("Localization not loaded!");
 
-            var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
-            localizationTo.ValueManager.UpdateCreateValue(localizationFrom.ValueManager.GetQualifiedValue(qualifier));
+                var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
+                localizationTo.ValueManager.UpdateCreateValue(localizationFrom.ValueManager.GetQualifiedValue(qualifier));
+            }
 
             return Json(new { ok = true });
         }

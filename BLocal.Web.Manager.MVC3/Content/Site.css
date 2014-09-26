@@ -4,62 +4,76 @@
     float: none;
 }
 body {
-    background-color:black;
-    color: #EEEEEE;
-    font-family: sans-serif;
+    background-color: #FAFAFA;
+    color: #222244;
+    font-family: verdana, helvetica, arial, sans-serif;
+    font-size: 15px;
+    line-height: 22px;
 }
 h1, h2 {
-    color: rgb(180, 240, 210);
-    font-family: courier;
+    color: #9999EE;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 section.general label {
     width: 100px;
     display: inline-block;
+    margin: 5px;
+}
+section.general input[type=text] {
+    width: 300px;
+}
+section.general input[type=submit] {
+    margin-top: 5px;
 }
 .open, .collapse, .reload, .hardreload {
     cursor: pointer;
-    color: #DDFFFF;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: bold;
+    color: #55BB55;
 }
 .open:hover, .collapse:hover, .reload:hover, .hardreload:hover {
-    font-weight: bold;
+    text-decoration: underline;
 }
 section.part h2 {
     font-size: 26px;
+    line-height: 34px;
     cursor: pointer;
     margin: 0;
 }
 section.part section.part h2 {
     font-size: 22px;
+    line-height: 30px;
 }
 section.part section.part section.part h2 {
     font-size: 18px;
+    line-height: 25px;
 }
 section.part section.part section.part section.part h2 {
-    font-size: 14px;
+    font-size: 15px;
+    line-height: 22px;
 }
 section.part, section.general {
     padding: 10px;
     margin-top: 10px;
-    border: 1px solid black;
+    border: 1px solid #9999EE;
     border-radius: 5px;
-    background-color: rgb(20, 40, 40);
-    background-color: rgba(100, 200, 200, 0.2);
+    background-color: rgba(150, 200, 200, 0.25);
 }
 section.values { margin-top: 10px; }
 section.values span { display: block; overflow: hidden; float: left;}
-section.values .key { width: 20%;}
-section.values .locale { width: 10%; }
-section.values .lastlog { width: 10%; }
-section.values .content { width: 60%; }
+section.values .key { width: 20%; }
+section.values .locale { width: 8%; overflow: hidden;height: 18px; margin-right: 1%; margin-left: 1%; }
+section.values .content { width: 70%; }
 section.values .clear { height: 0; width: 0; padding: 0; margin: 0; border: none; float: none; clear: both;}
     
 section.values p { cursor: pointer;margin: 0;padding-top: 5px;padding-bottom: 5px;}
-section.values p:hover { background-color: #333333;}
+section.values p:hover { background-color: rgba(0, 0, 255, 0.3);}
         
-section.comparison {
-    border-bottom: 1px solid white;
+section.difference {
+    border-top: 1px solid white;
 }
-section.comparison p.left, section.comparison p.right {
+section.comparison .left, section.comparison .right {
     margin-top: 0;
     width: 48%;
     margin-left: 1%;
@@ -81,7 +95,7 @@ tr.lrvalue {
     color: #99FF99;
 }
 tr.lrvalue:hover {
-    background-color: black;
+    background-color: #7777BB;
     border-radius: 5px;
 }
 tr.lrvalue td {
@@ -90,22 +104,19 @@ tr.lrvalue td {
     border-collapse:collapse;
 }
 .missingValue {
-    background-color: rgb(50, 50, 50);
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(255, 255, 255, 0.4);
     padding: 10px;
     border-radius: 10px;
     margin: 5px;
     cursor: pointer;
 }
 .missingValue:hover {
-    background-color: rgb(50, 100, 100);
-    background-color: rgba(0, 20, 20, 0.5);
+    background-color: rgba(255, 255, 255, 0.9);
 }
 .missingValue h3 {
     margin: 0 0 5px 0;
 }
 .innerPart {
-    background-color: rgb(20, 40, 40);
     background-color: rgba(100, 200, 200, 0.15);
     margin: 5px 5px 0 15px;
     padding: 5px;
@@ -116,7 +127,7 @@ tr.lrvalue td {
     padding-right: 5px;
 }
 .innerPart p:hover {
-    background-color: black;
+    background-color: #4444BB;
     border-radius: 5px;
 }
 .innerPart span {
@@ -125,7 +136,7 @@ tr.lrvalue td {
     float: right;
 }
 .innerPart span a {
-    color: white;
+    color: #9999EE;
 }
 .innerPart span a:hover {
     color: lightblue;
@@ -134,25 +145,60 @@ div.popup {
     margin: 100px auto 0 auto;
     padding: 15px;
     border-radius: 15px;
-    background-color: rgb(40, 50, 50);
-    background-color: rgba(40, 50, 50, 0.8);
+    background-color: rgb(240, 255, 255);
+    border: 1px solid #9999EE;
     width: 800px;
     min-height: 20px;
     display: none;
 }
 div.popup span.lbl {
-    width: 190px;
+    width: 256px;
     margin: 0 5px 0 5px;
     display: inline-block;
     font-weight: bold;
 }
 div.popup input.val {
-    width: 190px;
-    margin: 0 3px 0 3px;
+    width: 244px;
+    margin: 0 5px 0 5px;
     display: inline-block;
 }
 div.popup textarea {
     width: 792px;
     height: 250px;
     margin-bottom: 10px;
+}
+input, textarea, select {
+    padding: 5px;
+}
+button, input[type=button], input[type=submit] {
+    padding: 10px 20px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #9999EE;
+    color: #9999EE;
+    background-color: #F8F8FF;
+    cursor: pointer;
+}
+button:hover, input[type=button]:hover, input[type=submit]:hover {
+    background-color: #FFFFFF;
+}
+button[disabled] {
+    background-color: #CCCCCC;
+    border-color: #AAAAAA;
+    color: #AAAAAA;
+    cursor: default;
+}
+button[disabled]:after {
+    content: "[locked]";
+}
+.accent {
+    color: #55BB55;
+}
+.localepart {
+    color: #225522;
+    font-size: 13px;
+    line-height: 19px;
+}
+.difference .localepart {
+    margin: -10px 0 0 0;
 }
