@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo -e "Attempting to build BLocal.Web.Mvc3"
+echo -e "(to re-trigger this manually: 'git hooks run post-merge')"
+cmd.exe /c "rake -f ${PWD}/build.rake manager:build"

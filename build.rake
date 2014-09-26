@@ -9,6 +9,10 @@ task :load_config do
 	@base_dir = correct_path_slashes "#{ENV['checkoutDir']}"
 	@manager_dir = Paths.join @base_dir, 'BLocal.Web.Manager.MVC3'
 	
+	unless File.exists? Paths.join(@base_dir, 'config.yml').to_s
+		puts ""
+		raise "config.yml missing from root directory, fill in config.yml.template and save as config.yml to create one."
+	end
 	@conf = YAML.load_file("config.yml")
 	
 	@deploy_dir = @conf["manager"]["deploydir"]
@@ -27,7 +31,7 @@ namespace :manager do
 	
 	build :msbuild => [:load_config, :restore] do |b|
 	  b.sln   = Paths.join @base_dir, 'BLocal.Legacy.sln'
-	  b.target = ['Rebuild']              
+	  b.target = ['Rebuild']
 	  b.prop 'Configuration', 'Release'            
 	  b.clp 'ErrorsOnly'  
 	  b.be_quiet                                 
@@ -41,6 +45,7 @@ namespace :manager do
 		FileUtils.mkdir temp_path
 		
 		unless File.exists? Paths.join(@deploy_dir, 'Web.config').to_s
+			puts ""
 			raise "Web.config missing: copy BLocal.Web.Manager.MVC3/web.config.template to the deployment directory, rename to web.config and customize."
 		end
 		
