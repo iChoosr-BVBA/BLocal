@@ -14,6 +14,7 @@ A better way of Internationalization/Globalization/Localization for .NET
 3. run "git hooks init"
 4. set up the manager
 	* create a folder for the website to be hosted in
+	* make sure that the user executing git hooks (usually your current user) has read/write access to this folder
 	* configure the website in IIS
 		* make sure ASP.NET MVC 3 is installed
 		* run in .NET v4.x
