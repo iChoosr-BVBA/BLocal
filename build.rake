@@ -50,7 +50,12 @@ namespace :manager do
 		end
 		
 		FileUtils.cp_r Paths.join(@deploy_dir, 'Web.config').to_s, Paths.join(temp_path, 'Web.config').to_s
-		FileUtils.rm_rf Dir.glob(Paths.join(@deploy_dir, "*").to_s)
+		
+		Dir.foreach(@deploy_dir) do |item|			
+			next if item == '.' or item == '..'			
+			FileUtils.rm_rf Paths.join(@deploy_dir, item).to_s
+		end
+		
 		FileUtils.mkdir_p @deploy_dir
 		FileUtils.cp_r Paths.join(temp_path, 'Web.config').to_s, Paths.join(@deploy_dir, 'Web.config').to_s
 		
