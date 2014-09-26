@@ -56,15 +56,15 @@ namespace :manager do
 		
 		FileUtils.rm_rf temp_path
 		
+		@libraryPaths.each do |libraryPath|
+			libraryPathName = Pathname.new libraryPath
+			FileUtils.cp_r libraryPath, Paths.join(@manager_dir, 'bin', libraryPathName.basename).to_s
+		end
+		
 		FileUtils.cp_r Paths.join(@manager_dir, 'bin').to_s, Paths.join(@deploy_dir, 'bin').to_s
 		FileUtils.cp_r Paths.join(@manager_dir, 'Content').to_s, Paths.join(@deploy_dir, 'Content').to_s
 		FileUtils.cp_r Paths.join(@manager_dir, 'Scripts').to_s, Paths.join(@deploy_dir, 'Scripts').to_s
 		FileUtils.cp_r Paths.join(@manager_dir, 'Views').to_s, Paths.join(@deploy_dir, 'Views').to_s
-		FileUtils.cp_r Paths.join(@manager_dir, 'Global.asax').to_s, Paths.join(@deploy_dir, 'Global.asax').to_s
-		
-		@libraryPaths.each do |libraryPath|
-			libraryPathName = Pathname.new libraryPath
-			FileUtils.cp_r libraryPath, Paths.join(@deploy_dir, 'bin', libraryPathName.basename).to_s
-		end
+		FileUtils.cp_r Paths.join(@manager_dir, 'Global.asax').to_s, Paths.join(@deploy_dir, 'Global.asax').to_s		
 	end
 end
