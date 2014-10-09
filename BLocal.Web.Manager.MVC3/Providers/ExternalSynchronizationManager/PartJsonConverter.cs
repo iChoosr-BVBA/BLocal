@@ -15,11 +15,11 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             writer.WriteEndObject();
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             reader.Read(); // property name
             reader.Read(); // property value
-            var part = Part.Parse((String) reader.Value);
+            var part = Part.Parse((String)reader.Value);
             reader.Read();
             return part;
         }
