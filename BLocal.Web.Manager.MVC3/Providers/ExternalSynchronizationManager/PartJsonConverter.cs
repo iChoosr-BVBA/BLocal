@@ -15,7 +15,7 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             writer.WriteEndObject();
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, JsonSerializer serializer)
         {
             reader.Read(); // property name
             reader.Read(); // property value
