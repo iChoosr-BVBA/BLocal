@@ -19,7 +19,7 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
         {
             reader.Read(); // property name
             reader.Read(); // property value
-            var part = Part.Parse((String) reader.Value);
+            var part = Part.Parse((String)reader.Value);
             reader.Read();
             return part;
         }
