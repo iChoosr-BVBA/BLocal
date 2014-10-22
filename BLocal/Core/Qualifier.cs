@@ -22,7 +22,7 @@ namespace BLocal.Core
 
         public override string ToString()
         {
-            return string.Format("[{0}.{1}-{2}]", Part, Locale, Key);
+            return string.Format("[{0}.{1}:{2}]", Part, Locale, Key);
         }
 
         public bool Equals(Qualifier other)
