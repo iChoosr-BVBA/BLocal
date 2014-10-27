@@ -80,7 +80,7 @@
              elements.find(".updatecopy").click(function () {
                  createKey(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val(), function () {
                      if (partEl.val() == part && localeEl.val() == locale && keyEl.val() == key)
-                         p.find(".content").html(contentEl.val());
+                         p.find(".content").val(contentEl.val());
                      details.close();
                  });
              });
@@ -88,7 +88,7 @@
                  removeKey(part, key, locale, function () {
                      createKey(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val(), function () {
                          if (partEl.val() == part && localeEl.val() == locale && keyEl.val() == key)
-                             p.find(".content").html(contentEl.val());
+                             p.find(".content").val(contentEl.val());
                          else
                              p.remove();
                          details.close();

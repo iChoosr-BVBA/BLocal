@@ -47,8 +47,7 @@
                 </p>
             }
         </section>
-        @foreach(var subpart in part.Subparts)
-        {
+        @foreach(var subpart in part.Subparts) {
             @RenderPart(subpart)
         }
     </section>
