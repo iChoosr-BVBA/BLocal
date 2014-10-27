@@ -1,137 +1,22 @@
 ﻿@using BLocal.Web.Manager.Business
+@using BLocal.Web.Manager.Extensions
 @model IEnumerable<LocalizedPart>
 @{
     ViewBag.Title = "Manual Editing";
 }
 @section Head {
     <script type="text/javascript">
-        $(document).ready(function() {
-
-            $("section.values").hide();
-            $(".open").click(function() {
-                $("section.values").show();
-            });
-            $(".collapse").click(function() {
-                $("section.values").hide();
-            });
-            $(".reload").click(function() {
-                window.location.reload();
-            });
-            $(".hardreload").click(function() {
-                window.location = '@Url.Action("ReloadLocalization")';
-            });
-
-            $("h2").click(function() {
-                var valueChildren = $(this).parent(".part").find(".values");
-                var anyVisible = valueChildren.filter(":visible").length > 0;
-                if (anyVisible)
-                    valueChildren.hide();
-                else
-                    valueChildren.show();
-            });
-
-            var create = function(part, key, locale, content, callback) {
-                $.ajax({
-                    url: '@Url.Action("Create", "Home")',
-                    data: { part: part, key: key, locale: locale, content: content },
-                    type: 'POST',
-                    success: callback,
-                    error: function() {
-                        alert("Something went wrong. Check your internet connection and try again. If the problem persists, contact IT.");
-                    }
-                });
-            };
-
-            var remove = function(part, key, locale, callback) {
-                $.ajax({
-                    url: '@Url.Action("Remove", "Home")',
-                    data: { part: part, key: key, locale: locale },
-                    type: 'POST',
-                    success: callback,
-                    error: function() {
-                        alert("Something went wrong. Check your internet connection and try again. If the problem persists, contact IT.");
-                    }
-                });
-            };
-
-            var details = $.popup($("#details"));
-            $(".values > p").click(function() {
-                var p = $(this);
-                details.onOpen = function(elements) {
-                    var part = p.parent(".values").parent(".part").children("h2").children("span.title").text();
-                    var key = p.find(".key").text();
-                    var locale = p.find(".locale").text();
-                    var content = p.find(".content").text();
-
-                    var partEl = elements.find("input.part").val(part);
-                    var keyEl = elements.find("input.key").val(key);
-                    var localeEl = elements.find("input.locale").val(locale);
-                    var contentEl = elements.find("textarea.content").val(content);
-
-                    elements.find(".updatecopy").click(function() {
-                        create(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val(), function() {
-                            if (partEl.val() == part && localeEl.val() == locale && keyEl.val() == key)
-                                p.find(".content").html(contentEl.val());
-                            details.close();
-                        });
-                    });
-                    elements.find(".updaterecreate").click(function() {
-                        remove(part, key, locale, function() {
-                            create(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val(), function() {
-                                if (partEl.val() == part && localeEl.val() == locale && keyEl.val() == key)
-                                    p.find(".content").html(contentEl.val());
-                                else
-                                    p.remove();
-                                details.close();
-                            });
-                        });
-                    });
-                    elements.find(".updatedelete").click(function() {
-                        remove(part, key, locale, function() {
-                            p.remove();
-                            details.close();
-                        });
-                    });
-                };
-                details.open();
-            });
-
-            $("#filterform").submit(function (event) {
-                event.preventDefault();
-
-                $(".values > p").show().removeAttr("data-hidden");
-                $("section.part").show();
-
-                $("input.filter").each(function() {
-                    var filter = $(this);
-                    var filterval = $(this).val().toLowerCase();
-                    if (filterval.length == 0)
-                        return true;
-
-                    var filterspans = $("span." + filter.attr("id"));
-                    filterspans.each(function() {
-                        if ($(this).html().toLowerCase().indexOf(filterval) == -1)
-                            $(this).parent("p").hide().attr("data-hidden", "");
-                    });
-
-                    return false;
-                });
-
-                $("section.part").each(function() {
-                    if ($(this).find("section.values > p:not([data-hidden])").length == 0)
-                        $(this).hide();
-                });
-                var totalValueCount = $(".values > p").length;
-                var visibleValueCount = (totalValueCount - $(".values > p[data-hidden]").length);
-                $(".result").html("displaying " + visibleValueCount + " out of " + totalValueCount + " values");
-                if (visibleValueCount < 500)
-                    $("span.open").click();
-            });
+        this.pages = this.pages || {};
+        
+        $(document).ready(function () {
+            pages.current = '@Url.Action("ReloadLocalization")';
+            pages.createKey = '@Url.Action("Create", "Home")';
+            pages.removeKey = '@Url.Action("Remove", "Home")';
         });
     </script>
 }
 
-<h1>@Html.ActionLink("Home", "Overview") - Manual Editing of <span class="accent">@(((ProviderPair) Session["manualProviderPair"]).Name)</span></h1>
+<h1>@Html.ActionLink("Home", "Overview") - Manual Editing of <span class="accent">@(Session.Get<ProviderPair>("manualProviderPair").Name)</span></h1>
 <p><span class="open">open</span> | <span class="collapse">collapse</span> | <span class="reload">reload</span> | <span class="hardreload" title="dump localization cache, reload from scratch">hard reload</span></p>
     
 <section class="general">
@@ -162,7 +47,8 @@
                 </p>
             }
         </section>
-        @foreach(var subpart in part.Subparts) {
+        @foreach(var subpart in part.Subparts)
+        {
             @RenderPart(subpart)
         }
     </section>
