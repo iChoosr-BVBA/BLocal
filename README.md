@@ -12,6 +12,7 @@ A better way of Internationalization/Globalization/Localization for .NET
 	* ruby gems
 	* git hooks (https://github.com/icefox/git-hooks)
 	* mvc 3: http://www.asp.net/mvc/mvc3
+	* mvc 3.0.0.1 patch: http://www.microsoft.com/en-us/download/details.aspx?id=44533
 3. run "git hooks init"
 4. set up the manager
 	* create a folder for the website to be hosted in
