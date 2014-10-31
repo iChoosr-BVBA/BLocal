@@ -13,7 +13,6 @@ using BLocal.Web.Manager.Extensions;
 using BLocal.Web.Manager.Models;
 using BLocal.Web.Manager.Models.Home;
 using CsvHelper;
-using iChoosr.Common.System.Extensions;
 
 namespace BLocal.Web.Manager.Controllers
 {
@@ -348,7 +347,9 @@ namespace BLocal.Web.Manager.Controllers
                     changedLocalizationSides.Add(localization.ValueManager);
             }
 
-            changedLocalizationSides.ForEach(v => v.Persist());
+            foreach(var localization in changedLocalizationSides)
+                localization.Persist();
+
             return Json(new { ok = true });
         }
 
@@ -371,7 +372,9 @@ namespace BLocal.Web.Manager.Controllers
                     changedLocalizationSides.Add(localizationTo.ValueManager);
             }
 
-            changedLocalizationSides.ForEach(v => v.Persist());
+            foreach (var localization in changedLocalizationSides)
+                localization.Persist();
+
             return Json(new { ok = true });
         }
 
