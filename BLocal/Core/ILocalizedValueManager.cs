@@ -6,7 +6,7 @@ namespace BLocal.Core
     /// <summary>
     /// Provides management of localized values (creating, reading, updating, deleting)
     /// </summary>
-    public interface ILocalizedValueManager : ILocalizedValueProvider
+    public interface ILocalizedValueManager
     {
         /// <summary>
         /// When implemented, tries to update a localized value. If that doesn't work, tries to create it
@@ -51,5 +51,23 @@ namespace BLocal.Core
         /// <param name="part">The part for which to remove all translations</param>
         /// <param name="key">The key for which to remove all translations</param>
         void DeleteLocalizationsFor(Part part, string key);
+
+        /// <summary>
+        /// When implemented, persists all non-persisted values (if applicable)
+        /// </summary>
+        void Persist();
+
+        /// <summary>
+        /// When implemented, un-caches any cached values
+        /// </summary>
+        void Reload();
+
+        /// <summary>
+        /// When implemented, returns the Fully Qualified value for a specified qualifier
+        /// </summary>
+        /// <param name="qualifier">Unique qualifier</param>
+        /// <param name="defaultValue">Default value to be used if applicable</param>
+        /// <returns></returns>
+        QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier, String defaultValue = null);
     }
 }

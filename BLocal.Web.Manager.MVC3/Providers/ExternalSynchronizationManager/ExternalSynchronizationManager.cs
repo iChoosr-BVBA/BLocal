@@ -43,6 +43,12 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             throw new KeyNotFoundException();
         }
 
+        public void Persist()
+        {
+            _connector.Persist();
+            Reload();
+        }
+
         public void Reload()
         {
             _connector.Authenticate(_targetPassword);

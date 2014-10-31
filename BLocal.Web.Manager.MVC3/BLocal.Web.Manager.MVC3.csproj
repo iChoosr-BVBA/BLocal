@@ -37,6 +37,7 @@
     <Reference Include="CsvHelper">
       <HintPath>..\packages\CsvHelper.2.7.1\lib\net40-client\CsvHelper.dll</HintPath>
     </Reference>
+    <Reference Include="iChoosr.System, Version=1.231.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\ThirdParty\Json.Net\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -96,6 +97,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\AuthenticationRequest.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\AuthenticationResponse.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\PersistResponse.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\PersistRequest.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\SetAuditsResponse.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\SetAuditsRequest.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\GetAuditsResponse.cs" />

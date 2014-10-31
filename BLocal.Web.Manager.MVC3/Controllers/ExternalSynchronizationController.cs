@@ -106,6 +106,16 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
+        public ContentResult Persist(ExternalSynchronizationRequest request)
+        {
+            var providerPair = GetProviderPair(request);
+            var persistRequest = JsonConvert.DeserializeObject<PersistRequest>(request.RequestData, _partConverter);
+            providerPair.ValueManager.Persist();
+            var json = JsonConvert.SerializeObject(new PersistResponse(), _partConverter);
+            return Content(json, "application/json", Encoding.Unicode);
+        }
+
+        [HttpPost, ValidateInput(false)]
         public ContentResult SetAudits(ExternalSynchronizationRequest request)
         {
             var providerPair = GetProviderPair(request);

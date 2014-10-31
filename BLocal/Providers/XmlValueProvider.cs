@@ -12,7 +12,7 @@ namespace BLocal.Providers
     /// <summary>
     /// Provides xml-driven localization. Editing values will get slower with larger amounts of values stored.
     /// </summary>
-    public class XmlValueProvider : ILocalizedValueManager
+    public class XmlValueProvider : ILocalizedValueManager, ILocalizedValueProvider
     {
         private readonly Dictionary<String, GroupNode> _groups = new Dictionary<String, GroupNode>();
         private readonly String _file;
@@ -79,7 +79,7 @@ namespace BLocal.Providers
             group.Content.Add(textNode.Attributes["key"].Value, languages);
         }
 
-        public void Save()
+        public void Persist()
         {
             lock (_groups)
             {
@@ -202,7 +202,7 @@ namespace BLocal.Providers
                 }
             }
             if (save)
-                Save();
+                Persist();
         }
 
         #endregion
@@ -264,7 +264,7 @@ namespace BLocal.Providers
         {
             lock (_groups)
                 _groups[qualifier.Part.ToString()].SetValue(qualifier, value);
-            Save();
+            Persist();
         }
 
         #endregion
@@ -275,14 +275,14 @@ namespace BLocal.Providers
         {
             var group = GetOrCreateGroupNode(value.Qualifier.Part);
             group.SetOrCreateValue(value.Qualifier, value.Value);
-            Save();
+            Persist();
         }
 
         public void CreateValue(Qualifier.Unique qualifier, string value)
         {
             var group = GetOrCreateGroupNode(qualifier.Part);
             group.SetOrCreateValue(qualifier, value);
-            Save();
+            Persist();
         }
         public IEnumerable<QualifiedValue> GetAllValuesQualified()
         {

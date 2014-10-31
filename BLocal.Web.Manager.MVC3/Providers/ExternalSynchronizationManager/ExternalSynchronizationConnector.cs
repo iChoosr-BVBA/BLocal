@@ -78,6 +78,12 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             return response.Audits;
         }
 
+        public void Persist()
+        {
+            var request = new PersistRequest();
+            var response = MakeRequest(request);
+        }
+
         private TResponse MakeRequest<TResponse>(IRequest<TResponse> request)
         {
             using (var client = new WebClient())

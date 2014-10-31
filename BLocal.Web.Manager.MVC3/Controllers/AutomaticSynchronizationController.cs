@@ -195,6 +195,9 @@ namespace BLocal.Web.Manager.Controllers
 
                 leftPair.ValueManager.SetAudits(leftAudits.Values);
                 rightPair.ValueManager.SetAudits(rightAudits.Values);
+
+                leftPair.ValueManager.Persist();
+                rightPair.ValueManager.Persist();
             }
 
             return Content(JsonConvert.SerializeObject(synchronizationResult), "application/json", Encoding.UTF8);

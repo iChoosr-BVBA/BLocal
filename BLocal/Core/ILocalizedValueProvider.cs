@@ -16,7 +16,7 @@ namespace BLocal.Core
         String GetValue(Qualifier.Unique qualifier, String defaultValue = null);
 
         /// <summary>
-        /// When implemented, sets the value for a specified qualifier. If the value does not exist, nothing happens.
+        /// When implemented, sets the value for a specified qualifier and persists. If the value does not exist, nothing happens.
         /// </summary>
         /// <param name="qualifier">Unique qualifier for which to get set value</param>
         /// <param name="value">Value to set for the qualifier</param>

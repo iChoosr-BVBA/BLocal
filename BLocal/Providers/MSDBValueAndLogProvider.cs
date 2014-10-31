@@ -13,7 +13,7 @@ namespace BLocal.Providers
     /// <summary>
     /// Provides localization and logging based off of a Microsoft SQL Database
     /// </summary>
-    public class MSDBValueAndLogProvider : ILocalizedValueManager, ILocalizationLogger
+    public class MSDBValueAndLogProvider : ILocalizedValueManager, ILocalizedValueProvider, ILocalizationLogger
     {
         private readonly String _connectionString;
         private readonly String _databaseName;
@@ -190,6 +190,11 @@ namespace BLocal.Providers
         public IEnumerable<QualifiedValue> GetAllValuesQualified()
         {
             return _valueTable.GetQualifiedValues(_partTable, _localeTable).Select(v => new QualifiedValue(v.Qualifier, v.Value));
+        }
+
+        public void Persist()
+        {
+            // all values are already persisted
         }
 
         public IEnumerable<LocalizationAudit> GetAudits()

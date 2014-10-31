@@ -13,6 +13,7 @@ using BLocal.Web.Manager.Extensions;
 using BLocal.Web.Manager.Models;
 using BLocal.Web.Manager.Models.Home;
 using CsvHelper;
+using iChoosr.Common.System.Extensions;
 
 namespace BLocal.Web.Manager.Controllers
 {
@@ -102,6 +103,7 @@ namespace BLocal.Web.Manager.Controllers
             foreach (var kvp in nodesWithParents)
                 groupedParts.Remove(kvp.Key);
 
+            localization.ValueManager.Persist();
             return View(groupedParts.Values);
         }
 
@@ -295,6 +297,7 @@ namespace BLocal.Web.Manager.Controllers
                     inserts.Add(new QualifiedValue(recordQualfier, record.Value));
             }
 
+            providerPair.ValueManager.Persist();
             return View(new ImportReportData(providerConfigName, postedFile.FileName, selectedLocale, inserts, updates, deletes));
         }
 
@@ -310,6 +313,7 @@ namespace BLocal.Web.Manager.Controllers
             var qualifiedValue = new QualifiedValue(qualifier, value);
             localization.ValueManager.UpdateCreateValue(qualifiedValue);
 
+            localization.ValueManager.Persist();
             return Json(new {ok = true});
         }
 
@@ -323,12 +327,14 @@ namespace BLocal.Web.Manager.Controllers
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
             localization.ValueManager.DeleteValue(qualifier);
 
+            localization.ValueManager.Persist();
             return Json(new { ok = true });
         }
 
         [ValidateInput(false)]
         public JsonResult SyncRemove(SynchronizationItem[] items)
         {
+            var changedLocalizationSides = new HashSet<ILocalizedValueManager>();
             foreach (var item in items)
             {
                 var localization = Session.Get<ProviderPair>(String.Format(SynchronizationProviderPairNameBase, item.Side));
@@ -337,14 +343,19 @@ namespace BLocal.Web.Manager.Controllers
 
                 var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
                 localization.ValueManager.DeleteValue(qualifier);
+
+                if (!changedLocalizationSides.Contains(localization.ValueManager))
+                    changedLocalizationSides.Add(localization.ValueManager);
             }
 
+            changedLocalizationSides.ForEach(v => v.Persist());
             return Json(new { ok = true });
         }
 
         [ValidateInput(false)]
         public JsonResult SyncDuplicate(SynchronizationItem[] items)
         {
+            var changedLocalizationSides = new HashSet<ILocalizedValueManager>();
             foreach (var item in items)
             {
                 var localizationFrom = Session.Get<ProviderPair>(String.Format(SynchronizationProviderPairNameBase, item.Side));
@@ -355,8 +366,12 @@ namespace BLocal.Web.Manager.Controllers
 
                 var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
                 localizationTo.ValueManager.UpdateCreateValue(localizationFrom.ValueManager.GetQualifiedValue(qualifier));
+
+                if (!changedLocalizationSides.Contains(localizationTo.ValueManager))
+                    changedLocalizationSides.Add(localizationTo.ValueManager);
             }
 
+            changedLocalizationSides.ForEach(v => v.Persist());
             return Json(new { ok = true });
         }
 
@@ -370,6 +385,7 @@ namespace BLocal.Web.Manager.Controllers
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
             localization.ValueManager.UpdateCreateValue(new QualifiedValue(qualifier, value));
 
+            localization.ValueManager.Persist();
             return Json(new { ok = true });
         }
 
@@ -382,6 +398,7 @@ namespace BLocal.Web.Manager.Controllers
 
             localization.ValueManager.DeleteLocalizationsFor(Part.Parse(part), key);
 
+            localization.ValueManager.Persist();
             return Json(new { ok = true });
         }
 
@@ -396,6 +413,7 @@ namespace BLocal.Web.Manager.Controllers
                     update.Value
                 ));
             }
+            providerPair.ValueManager.Persist();
             return Json(new { ok = true });
         }
 
@@ -410,6 +428,7 @@ namespace BLocal.Web.Manager.Controllers
                     insert.Value
                 );
             }
+            providerPair.ValueManager.Persist();
             return Json(new { ok = true });
         }
 
@@ -421,6 +440,7 @@ namespace BLocal.Web.Manager.Controllers
             foreach (var delete in configuration.Data) {
                 providerPair.ValueManager.DeleteValue(new Qualifier.Unique(Part.Parse(delete.Part), selectedLocale, delete.Key));
             }
+            providerPair.ValueManager.Persist();
             return Json(new { ok = true });
         }
 

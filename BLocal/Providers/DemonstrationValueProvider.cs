@@ -52,6 +52,11 @@ namespace BLocal.Providers
             return qualifiedValue;
         }
 
+        public void Persist()
+        {
+            
+        }
+
         public void Reload()
         {
             AllValues = DefaultValues;
