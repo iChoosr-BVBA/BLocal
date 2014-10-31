@@ -25,9 +25,6 @@ namespace BLocal.Web.Manager.Controllers
             var leftPair = ProviderPairFactory.CreateProviderPair(settings.LeftProviderPairName);
             var rightPair = ProviderPairFactory.CreateProviderPair(settings.RightProviderPairName);
 
-            leftPair.ValueManager.Reload();
-            rightPair.ValueManager.Reload();
-
             var leftValues = leftPair.ValueManager.GetAllValuesQualified().ToDictionary(qv => qv.Qualifier);
             var rightValues = rightPair.ValueManager.GetAllValuesQualified().ToDictionary(qv => qv.Qualifier);
             
