@@ -1,4 +1,5 @@
 ﻿@using BLocal.Web.Manager.Configuration
+@using BLocal.Web.Manager.Models.AutomaticSynchronization
 @model BLocal.Web.Manager.Models.ConnectionData
 @{
     ViewBag.Title = "Localization Manager";
@@ -53,6 +54,56 @@
                 <option>@config.Name</option>
             }
         </select>
+    }
+</section>
+<section class="general left">
+    <h2>Automatic Synchronization</h2>
+    <p>Automatically synchronize between two environments.</p>
+    @using (Html.BeginForm("Index", "AutomaticSynchronization", FormMethod.Get))
+    {
+        <div class="automatic">
+            <select name="LeftProviderPairName">
+                <option value="empty">Left side</option>
+                @foreach (var config in ProviderConfig.ProviderPairs)
+                {
+                    <option>@config.Name</option>
+                }
+            </select>
+            <select name="RightProviderPairName">
+                <option value="empty">Right side</option>
+                @foreach (var config in ProviderConfig.ProviderPairs)
+                {
+                    <option>@config.Name</option>
+                }
+            </select>
+            <select name="LeftMissingStrategy">
+                <option value="empty">When values are missing on the left side.</option>
+                @foreach (var missingStrategyName in Enum.GetNames(typeof(SynchronizationSettings.MissingResolutionStrategy)))
+                {
+                    <option>@missingStrategyName</option>
+                }
+            </select>
+            <select name="RightMissingStrategy">
+                <option value="empty">When values are missing on the right side.</option>
+                @foreach (var missingStrategyName in Enum.GetNames(typeof(SynchronizationSettings.MissingResolutionStrategy)))
+                {
+                    <option>@missingStrategyName</option>
+                }
+            </select>
+            <select name="DifferingStrategy">
+                <option value="empty">When values are different left and right.</option>
+                @foreach (var differingStrategyName in Enum.GetNames(typeof(SynchronizationSettings.DifferingResolutionStrategy)))
+                {
+                    <option>@differingStrategyName</option>
+                }
+            </select>
+            <select name="Execute">
+                <option value="empty">For real?</option>
+                <option value="false">Just show output</option>
+                <option value="true">Execute for real</option>
+            </select>
+            <button type="submit">Synchronize</button>
+        </div>
     }
 </section>
     
