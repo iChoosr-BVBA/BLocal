@@ -72,8 +72,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\QualifiedHistoryEntry.cs" />
     <Compile Include="Core\ILocalizationHistoryManager.cs" />
-    <Compile Include="Core\LocalizationAudit.cs" />
+    <Compile Include="Core\QualifiedHistory.cs" />
     <Compile Include="Core\Log.cs" />
     <Compile Include="Core\ILocalizedValueLogger.cs" />
     <Compile Include="Core\ILocalizedValueManager.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Providers\CulturedThreadLocaleProvider.cs" />
     <Compile Include="Providers\DelegateNotifier.cs" />
     <Compile Include="Providers\DemonstrationValueProvider.cs" />
+    <Compile Include="Providers\VoidHistoryProvider.cs" />
     <Compile Include="Providers\VoidLogger.cs" />
     <Compile Include="Providers\VolatileLocaleProvider.cs" />
     <Compile Include="Providers\MSDBValueAndLogProvider.cs" />

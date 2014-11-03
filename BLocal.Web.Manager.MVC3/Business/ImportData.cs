@@ -1,6 +1,6 @@
 using System;
 
-namespace BLocal.Web.Manager.Controllers
+namespace BLocal.Web.Manager.Business
 {
     public class ImportData
     {

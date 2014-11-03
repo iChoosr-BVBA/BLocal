@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using BLocal.Core;
 using BLocal.Web.Manager.Business;
-using BLocal.Web.Manager.Controllers;
 
-namespace BLocal.Web.Manager.Models
+namespace BLocal.Web.Manager.Models.Home
 {
     public class ImportExportData
     {

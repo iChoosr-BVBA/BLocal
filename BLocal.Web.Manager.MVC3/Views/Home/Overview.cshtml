@@ -1,6 +1,6 @@
 ﻿@using BLocal.Web.Manager.Configuration
 @using BLocal.Web.Manager.Models.AutomaticSynchronization
-@model BLocal.Web.Manager.Models.ConnectionData
+@model BLocal.Web.Manager.Models.Home.ConnectionData
 @{
     ViewBag.Title = "Localization Manager";
 }
@@ -27,7 +27,7 @@
     {
         <select name="providerConfigName">
             <option>Select a connection to get started.</option>
-            @foreach (var config in ProviderConfig.ProviderPairs)
+            @foreach (var config in ProviderConfig.ProviderGroups)
             {
                 <option>@config.Name</option>
             }
@@ -42,14 +42,14 @@
     {
         <select name="leftConfigName">
             <option value="loc-flar">Select two providers to get a synrchronization overview.</option>
-            @foreach (var config in ProviderConfig.ProviderPairs)
+            @foreach (var config in ProviderConfig.ProviderGroups)
             {
                 <option>@config.Name</option>
             }
         </select>
         <select name="rightConfigName">
             <option value="loc-flar">Select two providers to get a synrchronization overview.</option>
-            @foreach (var config in ProviderConfig.ProviderPairs)
+            @foreach (var config in ProviderConfig.ProviderGroups)
             {
                 <option>@config.Name</option>
             }
@@ -62,16 +62,16 @@
     @using (Html.BeginForm("Index", "AutomaticSynchronization", FormMethod.Get))
     {
         <div class="automatic">
-            <select name="LeftProviderPairName">
+            <select name="LeftProviderGroupName">
                 <option value="empty">Left side</option>
-                @foreach (var config in ProviderConfig.ProviderPairs)
+                @foreach (var config in ProviderConfig.ProviderGroups)
                 {
                     <option>@config.Name</option>
                 }
             </select>
-            <select name="RightProviderPairName">
+            <select name="RightProviderGroupName">
                 <option value="empty">Right side</option>
-                @foreach (var config in ProviderConfig.ProviderPairs)
+                @foreach (var config in ProviderConfig.ProviderGroups)
                 {
                     <option>@config.Name</option>
                 }
@@ -114,7 +114,7 @@
     {
         <select name="providerConfigName">
             <option>Select a connection to get started.</option>
-            @foreach (var config in ProviderConfig.ProviderPairs)
+            @foreach (var config in ProviderConfig.ProviderGroups)
             {
                 <option>@config.Name</option>
             }
@@ -128,7 +128,7 @@
     {
         <select name="providerConfigName">
             <option>Select a connection to get started.</option>
-            @foreach (var config in ProviderConfig.ProviderPairs)
+            @foreach (var config in ProviderConfig.ProviderGroups)
             {
                 <option>@config.Name</option>
             }

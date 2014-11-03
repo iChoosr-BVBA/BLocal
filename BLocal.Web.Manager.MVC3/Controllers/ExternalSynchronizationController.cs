@@ -6,6 +6,7 @@ using System.Security.Authentication;
 using System.Text;
 using System.Web.Mvc;
 using BLocal.Web.Manager.Business;
+using BLocal.Web.Manager.Models.ExternalSynchronization;
 using BLocal.Web.Manager.Providers.ExternalSynchronizationManager;
 using Newtonsoft.Json;
 
@@ -13,12 +14,12 @@ namespace BLocal.Web.Manager.Controllers
 {
     public class ExternalSynchronizationController : Controller
     {
-        public ProviderPairFactory ProviderPairFactory { get; set; }
+        public ProviderGroupFactory ProviderGroupFactory { get; set; }
         private readonly PartJsonConverter _partConverter = new PartJsonConverter();
 
         public ExternalSynchronizationController()
         {
-            ProviderPairFactory = new ProviderPairFactory();
+            ProviderGroupFactory = new ProviderGroupFactory();
         }
 
         [HttpPost, ValidateInput(false)]
@@ -48,84 +49,101 @@ namespace BLocal.Web.Manager.Controllers
         [HttpPost, ValidateInput(false)]
         public ContentResult CreateValue(ExternalSynchronizationRequest request)
         {
-            var providerPair = GetProviderPair(request);
+            var providerGroup = GetProviderGroup(request);
             var createValueRequest = JsonConvert.DeserializeObject<CreateValueRequest>(request.RequestData, _partConverter);
-            providerPair.ValueManager.CreateValue(createValueRequest.Qualifier, createValueRequest.Value);
-            var json = JsonConvert.SerializeObject(new FullContentResponse { AllValues = providerPair.ValueManager.GetAllValuesQualified().ToArray() }, _partConverter);
+            providerGroup.ValueManager.CreateValue(createValueRequest.Qualifier, createValueRequest.Value);
+            var json = JsonConvert.SerializeObject(new FullContentResponse { AllValues = providerGroup.ValueManager.GetAllValuesQualified().ToArray() }, _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
 
         [HttpPost, ValidateInput(false)]
         public ContentResult DeleteValue(ExternalSynchronizationRequest request)
         {
-            var providerPair = GetProviderPair(request);
+            var providerGroup = GetProviderGroup(request);
             var deleteValueRequest = JsonConvert.DeserializeObject<DeleteValueRequest>(request.RequestData, _partConverter);
-            providerPair.ValueManager.DeleteValue(deleteValueRequest.Qualifier);
-            var json = JsonConvert.SerializeObject(new FullContentResponse { AllValues = providerPair.ValueManager.GetAllValuesQualified().ToArray() }, _partConverter);
+            providerGroup.ValueManager.DeleteValue(deleteValueRequest.Qualifier);
+            var json = JsonConvert.SerializeObject(new FullContentResponse { AllValues = providerGroup.ValueManager.GetAllValuesQualified().ToArray() }, _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
 
         [HttpPost, ValidateInput(false)]
         public ContentResult DeleteLocalizations(ExternalSynchronizationRequest request)
         {
-            var providerPair = GetProviderPair(request);
+            var providerGroup = GetProviderGroup(request);
             var deleteLocalizationsRequest = JsonConvert.DeserializeObject<DeleteLocalizationsRequest>(request.RequestData, _partConverter);
-            providerPair.ValueManager.DeleteLocalizationsFor(deleteLocalizationsRequest.Part, deleteLocalizationsRequest.Key);
-            var json = JsonConvert.SerializeObject(new FullContentResponse { AllValues = providerPair.ValueManager.GetAllValuesQualified().ToArray() }, _partConverter);
+            providerGroup.ValueManager.DeleteLocalizationsFor(deleteLocalizationsRequest.Part, deleteLocalizationsRequest.Key);
+            var json = JsonConvert.SerializeObject(new FullContentResponse { AllValues = providerGroup.ValueManager.GetAllValuesQualified().ToArray() }, _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
 
         [HttpPost, ValidateInput(false)]
         public ContentResult UpdateCreateValue(ExternalSynchronizationRequest request)
         {
-            var providerPair = GetProviderPair(request);
+            var providerGroup = GetProviderGroup(request);
             var updateCreateValueRequest = JsonConvert.DeserializeObject<UpdateCreateValueRequest>(request.RequestData, _partConverter);
-            providerPair.ValueManager.UpdateCreateValue(updateCreateValueRequest.QualifiedValue);
-            var json = JsonConvert.SerializeObject(new FullContentResponse { AllValues = providerPair.ValueManager.GetAllValuesQualified().ToArray() }, _partConverter);
+            providerGroup.ValueManager.UpdateCreateValue(updateCreateValueRequest.QualifiedValue);
+            var json = JsonConvert.SerializeObject(new FullContentResponse { AllValues = providerGroup.ValueManager.GetAllValuesQualified().ToArray() }, _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
 
         [HttpPost, ValidateInput(false)]
         public ContentResult Reload(ExternalSynchronizationRequest request)
         {
-            var providerPair = GetProviderPair(request);
+            var providerGroup = GetProviderGroup(request);
             var reloadRequest = JsonConvert.DeserializeObject<ReloadRequest>(request.RequestData, _partConverter);
-            providerPair.ValueManager.Reload();
-            var json = JsonConvert.SerializeObject(new FullContentResponse { AllValues = providerPair.ValueManager.GetAllValuesQualified().ToArray() }, _partConverter);
-            return Content(json, "application/json", Encoding.Unicode);
-        }
-
-        [HttpPost, ValidateInput(false)]
-        public ContentResult GetAudits(ExternalSynchronizationRequest request)
-        {
-            var providerPair = GetProviderPair(request);
-            var getAuditsRequest = JsonConvert.DeserializeObject<GetAuditsRequest>(request.RequestData, _partConverter);
-            providerPair.ValueManager.Reload();
-            var json = JsonConvert.SerializeObject(new GetAuditsResponse { Audits = providerPair.ValueManager.GetAudits().ToArray() }, _partConverter);
+            providerGroup.ValueManager.Reload();
+            var json = JsonConvert.SerializeObject(new FullContentResponse {
+                AllValues = providerGroup.ValueManager.GetAllValuesQualified().ToArray(),
+                AllHistory = providerGroup.HistoryManager.ProvideHistory().ToArray()
+            }, _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
 
         [HttpPost, ValidateInput(false)]
         public ContentResult Persist(ExternalSynchronizationRequest request)
         {
-            var providerPair = GetProviderPair(request);
+            var providerGroup = GetProviderGroup(request);
             var persistRequest = JsonConvert.DeserializeObject<PersistRequest>(request.RequestData, _partConverter);
-            providerPair.ValueManager.Persist();
+
+            providerGroup.ValueManager.Persist();
+            if(providerGroup.ValueManager != providerGroup.HistoryManager)
+                providerGroup.HistoryManager.Persist();
+
             var json = JsonConvert.SerializeObject(new PersistResponse(), _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult SetAudits(ExternalSynchronizationRequest request)
+        public ContentResult ProvideHistory(ExternalSynchronizationRequest request)
         {
-            var providerPair = GetProviderPair(request);
-            var setAuditsRequest = JsonConvert.DeserializeObject<SetAuditsRequest>(request.RequestData, _partConverter);
-            providerPair.ValueManager.SetAudits(setAuditsRequest.Audits);
-            var json = JsonConvert.SerializeObject(new SetAuditsResponse(), _partConverter);
+            var providerGroup = GetProviderGroup(request);
+            var provideHistoryRequest = JsonConvert.DeserializeObject<ProvideHistoryRequest>(request.RequestData, _partConverter);
+            providerGroup.HistoryManager.Reload();
+            var json = JsonConvert.SerializeObject(new ProvideHistoryResponse { History = providerGroup.HistoryManager.ProvideHistory().ToArray() }, _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
 
-        private ProviderPair GetProviderPair(ExternalSynchronizationRequest synchronizationRequest)
+        [HttpPost, ValidateInput(false)]
+        public ContentResult AdjustHistory(ExternalSynchronizationRequest request)
+        {
+            var providerGroup = GetProviderGroup(request);
+            var adjustHistoryRequest = JsonConvert.DeserializeObject<AdjustHistoryRequest>(request.RequestData, _partConverter);
+            providerGroup.HistoryManager.AdjustHistory(adjustHistoryRequest.CurrentValues, adjustHistoryRequest.Author);
+            var json = JsonConvert.SerializeObject(new ProvideHistoryResponse { History = providerGroup.HistoryManager.ProvideHistory().ToArray() }, _partConverter);
+            return Content(json, "application/json", Encoding.Unicode);
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ContentResult RewriteHistory(ExternalSynchronizationRequest request)
+        {
+            var providerGroup = GetProviderGroup(request);
+            var rewriteHistoryRequest = JsonConvert.DeserializeObject<RewriteHistoryRequest>(request.RequestData, _partConverter);
+            providerGroup.HistoryManager.RewriteHistory(rewriteHistoryRequest.History);
+            var json = JsonConvert.SerializeObject(new RewriteHistoryResponse { AllValues = providerGroup.HistoryManager.ProvideHistory() }, _partConverter);
+            return Content(json, "application/json", Encoding.Unicode);
+        }
+
+        private ProviderGroup GetProviderGroup(ExternalSynchronizationRequest synchronizationRequest)
         {
             var dictionary = (Dictionary<Guid, SynchronizationSession>)(Request.RequestContext.HttpContext.Application["sessions"]
                 ?? (Request.RequestContext.HttpContext.Application["sessions"] = new Dictionary<Guid, SynchronizationSession>()));
@@ -135,28 +153,10 @@ namespace BLocal.Web.Manager.Controllers
 
             var session = dictionary[synchronizationRequest.ApiKey];
 
-            return session.ProviderPairs.ContainsKey(synchronizationRequest.ProviderPairName)
-                ? session.ProviderPairs[synchronizationRequest.ProviderPairName]
-                : session.ProviderPairs[synchronizationRequest.ProviderPairName] =
-                    ProviderPairFactory.CreateProviderPair(synchronizationRequest.ProviderPairName);
-        }
-
-        public class ExternalSynchronizationRequest
-        {
-            public Guid ApiKey { get; set; }
-            public String ProviderPairName { get; set; }
-            public String RequestData { get; set; }
-        }
-
-        public class SynchronizationSession
-        {
-            public DateTime StartDateTime { get; private set; }
-            public readonly Dictionary<String, ProviderPair> ProviderPairs = new Dictionary<string, ProviderPair>();
-
-            public SynchronizationSession()
-            {
-                StartDateTime = DateTime.Now;
-            }
+            return session.ProviderGroups.ContainsKey(synchronizationRequest.ProviderGroupName)
+                ? session.ProviderGroups[synchronizationRequest.ProviderGroupName]
+                : session.ProviderGroups[synchronizationRequest.ProviderGroupName] =
+                    ProviderGroupFactory.CreateProviderGroup(synchronizationRequest.ProviderGroupName);
         }
     }
 }

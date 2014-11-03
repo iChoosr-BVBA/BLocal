@@ -2,8 +2,8 @@ using BLocal.Core;
 
 namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
 {
-    public class GetAuditsResponse
+    public class ProvideHistoryResponse
     {
-        public LocalizationAudit[] Audits { get; set; }
+        public QualifiedHistory[] History { get; set; }
     }
 }

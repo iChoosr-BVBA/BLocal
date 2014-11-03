@@ -5,30 +5,30 @@ using System.Linq;
 
 namespace BLocal.Web.Manager.Configuration
 {
-    public class ProviderPairsConfigurationSection : ConfigurationSection
+    public class ProviderGroupsConfigurationSection : ConfigurationSection
     {
         [ConfigurationProperty("", IsRequired = true, IsDefaultCollection = true)]
-        public ProviderPairCollection ProviderPairs
+        public ProviderGroupCollection ProviderGroups
         {
-            get { return (ProviderPairCollection)this[""]; }
+            get { return (ProviderGroupCollection)this[""]; }
             set { this[""] = value; }
         }
 
-        public class ProviderPairCollection : ConfigurationElementCollection
+        public class ProviderGroupCollection : ConfigurationElementCollection
         {
             protected override ConfigurationElement CreateNewElement()
             {
-                return new ProviderPairElement();
+                return new ProviderGroupElement();
             }
 
             protected override object GetElementKey(ConfigurationElement element)
             {
-                return ((ProviderPairElement) element).Name;
+                return ((ProviderGroupElement)element).Name;
             }
         }
     }
 
-    public class ProviderPairElement : ConfigurationElement
+    public class ProviderGroupElement : ConfigurationElement
     {
         [ConfigurationProperty("name", IsKey = true, IsRequired = true)]
         public String Name
@@ -36,19 +36,29 @@ namespace BLocal.Web.Manager.Configuration
             get { return (String) base["name"]; }
             set { base["name"] = value; }
         }
+
         [ConfigurationProperty("valueProvider", IsKey = true, IsRequired = true)]
         public ValueProviderElement ValueProvider
         {
             get { return (ValueProviderElement)base["valueProvider"]; }
             set { base["valueProvider"] = value; }
         }
+
         [ConfigurationProperty("logProvider", IsKey = true, IsRequired = true)]
         public LogProviderElement LogProvider
         {
             get { return (LogProviderElement)base["logProvider"]; }
             set { base["logProvider"] = value; }
         }
+
+        [ConfigurationProperty("historyProvider", IsKey = true, IsRequired = true)]
+        public HistoryProviderElement HistoryProvider
+        {
+            get { return (HistoryProviderElement)base["historyProvider"]; }
+            set { base["historyProvider"] = value; }
+        }
     }
+
     public class ValueProviderElement : ConfigurationElement
     {
         [ConfigurationProperty("type", IsRequired = true)]
@@ -64,20 +74,32 @@ namespace BLocal.Web.Manager.Configuration
             get { return (ConstructorArgumentCollection)this[""]; }
             set { this[""] = value; }
         }
-
-        public class ConstructorArgumentCollection : ConfigurationElementCollection
-        {
-            protected override ConfigurationElement CreateNewElement()
-            {
-                return new ConstructorArgumentElement();
-            }
-
-            protected override object GetElementKey(ConfigurationElement element)
-            {
-                return ((ConstructorArgumentElement)element).Name;
-            }
-        } 
     }
+
+    public class HistoryProviderElement : ConfigurationElement
+    {
+        [ConfigurationProperty("type", IsRequired = true)]
+        public String Type
+        {
+            get { return (String)base["type"]; }
+            set { base["type"] = value; }
+        }
+
+        [ConfigurationProperty("isValueProvider", IsRequired = false)]
+        public bool IsValueProvider
+        {
+            get { return (bool)base["isValueProvider"]; }
+            set { base["isValueProvider"] = value; }
+        }
+        
+        [ConfigurationProperty("", IsRequired = true, IsDefaultCollection = true)]
+        public ConstructorArgumentCollection ConstructorArguments
+        {
+            get { return (ConstructorArgumentCollection)this[""]; }
+            set { this[""] = value; }
+        }
+    }
+
     public class LogProviderElement : ConfigurationElement
     {
         [ConfigurationProperty("type", IsRequired = true)]
@@ -86,6 +108,7 @@ namespace BLocal.Web.Manager.Configuration
             get { return (String)base["type"]; }
             set { base["type"] = value; }
         }
+
         [ConfigurationProperty("isValueProvider", IsRequired = false)]
         public bool IsValueProvider
         {
@@ -99,18 +122,18 @@ namespace BLocal.Web.Manager.Configuration
             get { return (ConstructorArgumentCollection)this[""]; }
             set { this[""] = value; }
         }
+    }
 
-        public class ConstructorArgumentCollection : ConfigurationElementCollection
+    public class ConstructorArgumentCollection : ConfigurationElementCollection
+    {
+        protected override ConfigurationElement CreateNewElement()
         {
-            protected override ConfigurationElement CreateNewElement()
-            {
-                return new ConstructorArgumentElement();
-            }
+            return new ConstructorArgumentElement();
+        }
 
-            protected override object GetElementKey(ConfigurationElement element)
-            {
-                return ((ConstructorArgumentElement)element).Name;
-            }
+        protected override object GetElementKey(ConfigurationElement element)
+        {
+            return ((ConstructorArgumentElement)element).Name;
         }
     }
 
@@ -133,15 +156,15 @@ namespace BLocal.Web.Manager.Configuration
 
     public class ProviderConfig
     {
-        protected static ProviderPairElement[] ValueProviderElements;
+        protected static ProviderGroupElement[] ValueProviderElements;
 
         static ProviderConfig()
         {
-            var sec = (ProviderPairsConfigurationSection)ConfigurationManager.GetSection("providerPairsConfiguration");
-            ValueProviderElements = sec.ProviderPairs.Cast<ProviderPairElement>().ToArray();
+            var sec = (ProviderGroupsConfigurationSection)ConfigurationManager.GetSection("providerGroupsConfiguration");
+            ValueProviderElements = sec.ProviderGroups.Cast<ProviderGroupElement>().ToArray();
         }
 
-        public static IEnumerable<ProviderPairElement> ProviderPairs
+        public static IEnumerable<ProviderGroupElement> ProviderGroups
         {
             get { return ValueProviderElements; }
         }

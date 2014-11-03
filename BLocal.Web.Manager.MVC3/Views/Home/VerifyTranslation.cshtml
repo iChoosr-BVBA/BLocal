@@ -1,5 +1,5 @@
 ﻿@using BLocal.Web.Manager.Business
-@model BLocal.Web.Manager.Models.TranslationVerificationData
+@model BLocal.Web.Manager.Models.Home.TranslationVerificationData
 @{
     ViewBag.Title = "Verify Translations";
 }
@@ -73,7 +73,7 @@
     </script>
 }
 
-<h1>@Html.ActionLink("Home", "Overview") - Translation Verification on <span class="accent">@(((ProviderPair) Session["translationProviderPair"]).Name)</span></h1>
+<h1>@Html.ActionLink("Home", "Overview") - Translation Verification on <span class="accent">@(((ProviderGroup) Session["translationProviderGroup"]).Name)</span></h1>
     
 @foreach (var locale in Model.LocalesAvailable) {
     var missingGroups = Model.LocaleIndepandantValueLookup.Where(group => !group.Any(qv => qv.Qualifier.Locale.Equals(locale))).ToArray();

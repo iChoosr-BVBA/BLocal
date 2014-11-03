@@ -1,4 +1,4 @@
-﻿@model BLocal.Web.Manager.Models.ImportReportData
+﻿@model BLocal.Web.Manager.Models.Home.ImportReportData
 
 @{
     ViewBag.Title = "Import";
@@ -75,19 +75,19 @@
     </script>
 }
 
-<h1>@Html.ActionLink("Home", "Overview") - Import / Export - [@Model.ProviderPairName]</h1>
+<h1>@Html.ActionLink("Home", "Overview") - Import / Export - [@Model.ProviderGroupName]</h1>
     
 <section class="general">
     <h2>Import | Step 2</h2>
     <p>
-        Exporting from <strong>[ @Model.UploadedFileName ]</strong> to <strong>[ @Model.ProviderPairName ]</strong>.<br />
+        Exporting from <strong>[ @Model.UploadedFileName ]</strong> to <strong>[ @Model.ProviderGroupName ]</strong>.<br />
         Detected <strong>[ @Model.Inserts.Count ]</strong> new values, <strong>[ @Model.Updates.Count ]</strong> changes, <strong>[ @Model.Deletes.Count ]</strong> deleted values.<br />
         Affected locale is <strong>[ @Model.AffectedLocale ]</strong>.
     </p>
     <p>Please check the data before pressing the finalize button. Only actions selected below (all are selected by default) will be finalized.</p>
     <p><input type="button" class="finalize" value="Finalize selected actions"/></p>
     <input type="hidden" class="locale" value="@Model.AffectedLocale"/>
-    <input type="hidden" class="provider" value="@Model.ProviderPairName"/>
+    <input type="hidden" class="provider" value="@Model.ProviderGroupName"/>
 </section>
 <section class="general">
     <h2>Newly added values</h2>

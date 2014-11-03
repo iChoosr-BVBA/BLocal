@@ -13,14 +13,14 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
     {
         private Guid ApiKey { get; set; }
         private String BaseUrl { get; set; }
-        private String ProviderPairName { get; set; }
+        private String ProviderGroupName { get; set; }
 
         private readonly PartJsonConverter _partConverter = new PartJsonConverter();
 
-        public ExternalSynchronizationConnector(String baseUrl, String providerPairName)
+        public ExternalSynchronizationConnector(String baseUrl, String providerGroupName)
         {
             BaseUrl = baseUrl;
-            ProviderPairName = providerPairName;
+            ProviderGroupName = providerGroupName;
         }
 
         public void Authenticate(String password)
@@ -65,17 +65,25 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             return response.AllValues;
         }
 
-        public void SetAudits(IEnumerable<LocalizationAudit> audits)
+        public IEnumerable<QualifiedHistory> RewriteHistory(IEnumerable<QualifiedHistory> history)
         {
-            var request = new SetAuditsRequest { Audits = audits.ToArray() };
-            MakeRequest(request);
+            var request = new RewriteHistoryRequest { History = history.ToArray() };
+            var response = MakeRequest(request);
+            return response.AllValues;
         }
 
-        public IEnumerable<LocalizationAudit> GetAudits()
+        public IEnumerable<QualifiedHistory> ProvideHistory()
         {
-            var request = new GetAuditsRequest();
+            var request = new ProvideHistoryRequest();
             var response = MakeRequest(request);
-            return response.Audits;
+            return response.History;
+        }
+
+        public IEnumerable<QualifiedHistory> AdjustHistory(IEnumerable<QualifiedValue> currentValues, String author)
+        {
+            var request = new AdjustHistoryRequest { CurrentValues = currentValues.ToArray(), Author = author };
+            var response = MakeRequest(request);
+            return response.History;
         }
 
         public void Persist()
@@ -91,7 +99,7 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
                 var values = new NameValueCollection
                 {
                     {"ApiKey", ApiKey.ToString()},
-                    {"ProviderPairName", ProviderPairName},
+                    {"ProviderGroupName", ProviderGroupName},
                     {"RequestData", JsonConvert.SerializeObject(request, _partConverter)}
                 };
 

@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BLocal.Core;
 
 namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
 {
-    public class ExternalSynchronizationManager : ILocalizedValueManager
+    public class ExternalSynchronizationManager : ILocalizedValueManager, ILocalizationHistoryManager
     {
         private readonly string _targetPassword;
         private readonly ExternalSynchronizationConnector _connector;
-        private Dictionary<Part, KeyLocaleValueContainer> _localizedValues = new Dictionary<Part, KeyLocaleValueContainer>(); 
+        private Dictionary<Part, KeyLocaleValueContainer> _localizedValues = new Dictionary<Part, KeyLocaleValueContainer>();
+        private Dictionary<Qualifier.Unique, QualifiedHistory> _history = new Dictionary<Qualifier.Unique, QualifiedHistory>();
 
-        public ExternalSynchronizationManager(String targetUrl, String targetPassword, String targetProviderPair)
+        public ExternalSynchronizationManager(String targetUrl, String targetPassword, String targetProviderGroup)
         {
             _targetPassword = targetPassword;
-            _connector = new ExternalSynchronizationConnector(targetUrl, targetProviderPair);
+            _connector = new ExternalSynchronizationConnector(targetUrl, targetProviderGroup);
         }
 
         public String GetValue(Qualifier.Unique qualifier, String defaultValue = null)
@@ -53,6 +55,7 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
         {
             _connector.Authenticate(_targetPassword);
             Reload(_connector.GetAllQualifiedValues());
+            Reload(_connector.ProvideHistory());
         }
 
         private void Reload(IEnumerable<QualifiedValue> allValues)
@@ -68,6 +71,11 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             }
         }
 
+        private void Reload(IEnumerable<QualifiedHistory> history)
+        {
+            _history = history.ToDictionary(h => h.Qualifier);
+        }
+
         public void UpdateCreateValue(QualifiedValue value)
         {
             Reload(_connector.UpdateCreateValue(value));
@@ -76,11 +84,6 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
         public void CreateValue(Qualifier.Unique qualifier, String value)
         {
             Reload(_connector.CreateValue(qualifier, value));
-        }
-
-        public void SetAudits(IEnumerable<LocalizationAudit> audits)
-        {
-            _connector.SetAudits(audits);
         }
 
         public void DeleteValue(Qualifier.Unique qualifier)
@@ -92,11 +95,6 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
         {
             Reload(_connector.DeleteLocalizationsFor(part, key));
         }
-
-        public IEnumerable<LocalizationAudit> GetAudits()
-        {
-            return _connector.GetAudits();
-        } 
 
         public IEnumerable<QualifiedValue> GetAllValuesQualified()
         {
@@ -111,6 +109,21 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
                     }
                 }
             }
+        }
+
+        public IEnumerable<QualifiedHistory> ProvideHistory()
+        {
+            return _history.Values;
+        }
+
+        public void AdjustHistory(IEnumerable<QualifiedValue> currentValues, String author)
+        {
+            Reload(_connector.AdjustHistory(currentValues, author));
+        }
+
+        public void RewriteHistory(IEnumerable<QualifiedHistory> newHistory)
+        {
+            Reload(_connector.RewriteHistory(newHistory));
         }
     }
 }

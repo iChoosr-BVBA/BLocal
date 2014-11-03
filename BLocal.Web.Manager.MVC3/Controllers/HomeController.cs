@@ -10,7 +10,6 @@ using BLocal.Core;
 using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Context;
 using BLocal.Web.Manager.Extensions;
-using BLocal.Web.Manager.Models;
 using BLocal.Web.Manager.Models.Home;
 using CsvHelper;
 
@@ -19,15 +18,15 @@ namespace BLocal.Web.Manager.Controllers
     [Authenticate]
     public class HomeController : Controller
     {
-        private const string TranslationProviderPairName = "translationProviderPair";
-        private const string ManualProviderPairName = "manualProviderPair";
-        private const String SynchronizationProviderPairNameBase = "synchronization{0}ProviderPair";
+        private const string TranslationProviderGroupName = "translationProviderGroup";
+        private const string ManualProviderGroupName = "manualProviderGroup";
+        private const String SynchronizationProviderGroupNameBase = "synchronization{0}ProviderGroup";
 
-        public ProviderPairFactory ProviderPairFactory { get; set; }
+        public ProviderGroupFactory ProviderGroupFactory { get; set; }
 
         public HomeController()
         {
-            ProviderPairFactory = new ProviderPairFactory();
+            ProviderGroupFactory = new ProviderGroupFactory();
         }
 
         public ActionResult Index()
@@ -51,28 +50,28 @@ namespace BLocal.Web.Manager.Controllers
         [HttpPost, ValidateInput(false)]
         public ActionResult LoadLocalization(String providerConfigName)
         {
-            Session.Set(ManualProviderPairName, ProviderPairFactory.CreateProviderPair(providerConfigName));
+            Session.Set(ManualProviderGroupName, ProviderGroupFactory.CreateProviderGroup(providerConfigName));
             return RedirectToAction("EditLocalization");
         }
 
         [HttpPost, ValidateInput(false)]
         public ActionResult Synchronize(String leftConfigName, String rightConfigName)
         {
-            Session.Set(String.Format(SynchronizationProviderPairNameBase, "Left"), ProviderPairFactory.CreateProviderPair(leftConfigName));
-            Session.Set(String.Format(SynchronizationProviderPairNameBase, "Right"), ProviderPairFactory.CreateProviderPair(rightConfigName));
+            Session.Set(String.Format(SynchronizationProviderGroupNameBase, "Left"), ProviderGroupFactory.CreateProviderGroup(leftConfigName));
+            Session.Set(String.Format(SynchronizationProviderGroupNameBase, "Right"), ProviderGroupFactory.CreateProviderGroup(rightConfigName));
             return RedirectToAction("ShowSynchronization");
         }
 
         [HttpPost]
         public ActionResult LoadTranslations(String providerConfigName)
         {
-            Session.Set(TranslationProviderPairName, ProviderPairFactory.CreateProviderPair(providerConfigName));
+            Session.Set(TranslationProviderGroupName, ProviderGroupFactory.CreateProviderGroup(providerConfigName));
             return RedirectToAction("VerifyTranslation");
         }
 
         public ActionResult EditLocalization()
         {
-            var localization = Session.Get<ProviderPair>(ManualProviderPairName);
+            var localization = Session.Get<ProviderGroup>(ManualProviderGroupName);
             if (localization == null)
                 return RedirectToAction("Overview");
 
@@ -108,8 +107,8 @@ namespace BLocal.Web.Manager.Controllers
 
         public ActionResult ShowSynchronization(bool hardReload = false)
         {
-            var leftPair = Session.Get<ProviderPair>(String.Format(SynchronizationProviderPairNameBase, "Left"));
-            var rightPair = Session.Get<ProviderPair>(String.Format(SynchronizationProviderPairNameBase, "Right"));
+            var leftPair = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, "Left"));
+            var rightPair = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, "Right"));
 
             if (hardReload) {
                 leftPair.ValueManager.Reload();
@@ -132,7 +131,7 @@ namespace BLocal.Web.Manager.Controllers
 
         public ActionResult VerifyTranslation()
         {
-            var localization = Session.Get<ProviderPair>(TranslationProviderPairName);
+            var localization = Session.Get<ProviderGroup>(TranslationProviderGroupName);
             if (localization == null)
                 return RedirectToAction("Overview");
 
@@ -151,7 +150,7 @@ namespace BLocal.Web.Manager.Controllers
 
         public ActionResult ReloadLocalization()
         {
-            var localization = Session.Get<ProviderPair>(ManualProviderPairName);
+            var localization = Session.Get<ProviderGroup>(ManualProviderGroupName);
             if (localization == null)
                 return RedirectToAction("Index");
 
@@ -161,8 +160,8 @@ namespace BLocal.Web.Manager.Controllers
 
         public ActionResult ShowImportExport(String providerConfigName)
         {
-            var providerPair = ProviderPairFactory.CreateProviderPair(providerConfigName);
-            var allValues = providerPair.ValueManager.GetAllValuesQualified().ToArray();
+            var providerGroup = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
+            var allValues = providerGroup.ValueManager.GetAllValuesQualified().ToArray();
             var allParts = allValues.Select(value => value.Qualifier.Part).Distinct().OrderBy(p => p.ToString()).ToArray();
             var allLocales = allValues.Select(value => value.Qualifier.Locale).Distinct().OrderBy(l => l.ToString()).ToArray();
 
@@ -196,8 +195,8 @@ namespace BLocal.Web.Manager.Controllers
         [HttpPost, ValidateInput(false)]
         public ActionResult Export(String providerConfigName, String[] parts, String format, String locale)
         {
-            var providerPair = ProviderPairFactory.CreateProviderPair(providerConfigName);
-            var allValues = providerPair.ValueManager.GetAllValuesQualified().ToArray();
+            var providerGroup = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
+            var allValues = providerGroup.ValueManager.GetAllValuesQualified().ToArray();
             var selectedLocale = new Locale(locale);
             var groupedTranslations = allValues
                 .Where(v => parts.Contains(v.Qualifier.Part.ToString()))
@@ -251,8 +250,8 @@ namespace BLocal.Web.Manager.Controllers
         [HttpPost, ValidateInput(false)]
         public ActionResult Import(String providerConfigName, String locale, HttpPostedFileBase postedFile)
         {
-            var providerPair = ProviderPairFactory.CreateProviderPair(providerConfigName);
-            var allValues = providerPair.ValueManager.GetAllValuesQualified().ToArray();
+            var providerGroup = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
+            var allValues = providerGroup.ValueManager.GetAllValuesQualified().ToArray();
             var selectedLocale = new Locale(locale);
             var valuesByPartKey = allValues
                 .Where(value => value.Qualifier.Locale.Equals(selectedLocale))
@@ -296,14 +295,14 @@ namespace BLocal.Web.Manager.Controllers
                     inserts.Add(new QualifiedValue(recordQualfier, record.Value));
             }
 
-            providerPair.ValueManager.Persist();
+            providerGroup.ValueManager.Persist();
             return View(new ImportReportData(providerConfigName, postedFile.FileName, selectedLocale, inserts, updates, deletes));
         }
 
         [ValidateInput(false)]
         public JsonResult Create(String part, String locale, String key, String content)
         {
-            var localization = Session.Get<ProviderPair>(ManualProviderPairName);
+            var localization = Session.Get<ProviderGroup>(ManualProviderGroupName);
             if (localization == null)
                 throw new Exception("Localization not loaded!");
 
@@ -319,7 +318,7 @@ namespace BLocal.Web.Manager.Controllers
         [ValidateInput(false)]
         public JsonResult Remove(String part, String locale, String key)
         {
-            var localization = Session.Get<ProviderPair>(ManualProviderPairName);
+            var localization = Session.Get<ProviderGroup>(ManualProviderGroupName);
             if (localization == null)
                 throw new Exception("Localization not loaded!");
 
@@ -336,7 +335,7 @@ namespace BLocal.Web.Manager.Controllers
             var changedLocalizationSides = new HashSet<ILocalizedValueManager>();
             foreach (var item in items)
             {
-                var localization = Session.Get<ProviderPair>(String.Format(SynchronizationProviderPairNameBase, item.Side));
+                var localization = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, item.Side));
                 if (localization == null)
                     throw new Exception("Localization not loaded!");
 
@@ -359,8 +358,8 @@ namespace BLocal.Web.Manager.Controllers
             var changedLocalizationSides = new HashSet<ILocalizedValueManager>();
             foreach (var item in items)
             {
-                var localizationFrom = Session.Get<ProviderPair>(String.Format(SynchronizationProviderPairNameBase, item.Side));
-                var localizationTo = Session.Get<ProviderPair>(String.Format(SynchronizationProviderPairNameBase, (item.Side == "Right" ? "Left" : "Right")));
+                var localizationFrom = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, item.Side));
+                var localizationTo = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, (item.Side == "Right" ? "Left" : "Right")));
 
                 if (localizationFrom == null || localizationTo == null)
                     throw new Exception("Localization not loaded!");
@@ -381,7 +380,7 @@ namespace BLocal.Web.Manager.Controllers
         [ValidateInput(false)]
         public JsonResult TransUpdate(String part, String locale, String key, String value)
         {
-            var localization = Session.Get<ProviderPair>(TranslationProviderPairName);
+            var localization = Session.Get<ProviderGroup>(TranslationProviderGroupName);
             if (localization == null)
                 throw new Exception("Localization not loaded!");
 
@@ -395,7 +394,7 @@ namespace BLocal.Web.Manager.Controllers
         [ValidateInput(false)]
         public JsonResult TransDelete(String part, String key)
         {
-            var localization = Session.Get<ProviderPair>(TranslationProviderPairName);
+            var localization = Session.Get<ProviderGroup>(TranslationProviderGroupName);
             if (localization == null)
                 throw new Exception("Localization not loaded!");
 
@@ -408,42 +407,42 @@ namespace BLocal.Web.Manager.Controllers
         [ValidateInput(false)]
         public JsonResult ImportFinalizeUpdate(ImportConfiguration configuration)
         {
-            var providerPair = ProviderPairFactory.CreateProviderPair(configuration.ProviderConfigName);
+            var providerGroup = ProviderGroupFactory.CreateProviderGroup(configuration.ProviderConfigName);
             var selectedLocale = new Locale(configuration.Locale);
             foreach (var update in configuration.Data) {
-                providerPair.ValueManager.UpdateCreateValue(new QualifiedValue(
+                providerGroup.ValueManager.UpdateCreateValue(new QualifiedValue(
                     new Qualifier.Unique(Part.Parse(update.Part), selectedLocale, update.Key),
                     update.Value
                 ));
             }
-            providerPair.ValueManager.Persist();
+            providerGroup.ValueManager.Persist();
             return Json(new { ok = true });
         }
 
         [ValidateInput(false)]
         public JsonResult ImportFinalizeInsert(ImportConfiguration configuration)
         {
-            var providerPair = ProviderPairFactory.CreateProviderPair(configuration.ProviderConfigName);
+            var providerGroup = ProviderGroupFactory.CreateProviderGroup(configuration.ProviderConfigName);
             var selectedLocale = new Locale(configuration.Locale);
             foreach (var insert in configuration.Data) {
-                providerPair.ValueManager.CreateValue(
+                providerGroup.ValueManager.CreateValue(
                     new Qualifier.Unique(Part.Parse(insert.Part), selectedLocale, insert.Key),
                     insert.Value
                 );
             }
-            providerPair.ValueManager.Persist();
+            providerGroup.ValueManager.Persist();
             return Json(new { ok = true });
         }
 
         [ValidateInput(false)]
         public JsonResult ImportFinalizeDelete(ImportConfiguration configuration)
         {
-            var providerPair = ProviderPairFactory.CreateProviderPair(configuration.ProviderConfigName);
+            var providerGroup = ProviderGroupFactory.CreateProviderGroup(configuration.ProviderConfigName);
             var selectedLocale = new Locale(configuration.Locale);
             foreach (var delete in configuration.Data) {
-                providerPair.ValueManager.DeleteValue(new Qualifier.Unique(Part.Parse(delete.Part), selectedLocale, delete.Key));
+                providerGroup.ValueManager.DeleteValue(new Qualifier.Unique(Part.Parse(delete.Part), selectedLocale, delete.Key));
             }
-            providerPair.ValueManager.Persist();
+            providerGroup.ValueManager.Persist();
             return Json(new { ok = true });
         }
 

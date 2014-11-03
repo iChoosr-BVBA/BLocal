@@ -77,16 +77,6 @@ namespace BLocal.Providers
             return AllValues.Values.Select(v => new QualifiedValue(v.Qualifier, v.Value));
         }
 
-        public IEnumerable<LocalizationAudit> GetAudits()
-        {
-            return Enumerable.Empty<LocalizationAudit>();
-        }
-
-        public void SetAudits(IEnumerable<LocalizationAudit> audits)
-        {
-            
-        }
-
         public void DeleteValue(Qualifier.Unique qualifier)
         {
             if (AllValues.ContainsKey(qualifier))

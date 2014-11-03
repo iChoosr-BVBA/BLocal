@@ -197,16 +197,6 @@ namespace BLocal.Providers
             // all values are already persisted
         }
 
-        public IEnumerable<LocalizationAudit> GetAudits()
-        {
-            return Enumerable.Empty<LocalizationAudit>();
-        }
-
-        public void SetAudits(IEnumerable<LocalizationAudit> audits)
-        {
-            
-        }
-
         public void DeleteValue(Qualifier.Unique qualifier)
         {
             using(var connection = Connect())

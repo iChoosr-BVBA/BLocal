@@ -17,6 +17,7 @@
         <add name="localizationRoot" value="C:\Workspaces\iChoosr\Content\VersionContainer" />
       </valueProvider>
       <logProvider type="BLocal.Providers.VoidLogger, BLocal, Version=1.0.0.0, Culture=neutral" />
+      <logProvider type="BLocal.Providers.VoidHistoryProvider, BLocal, Version=1.0.0.0, Culture=neutral" />
     </add>
     <add name="iChoosr - Test">
       <valueProvider type="BLocal.Web.Manager.Providers.ExternalSynchronizationManager.ExternalSynchronizationManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral">
@@ -26,6 +27,7 @@
         <add name="targetProviderPair" value="iChoosr - Test"/>
       </valueProvider>
       <logProvider type="BLocal.Providers.VoidLogger, BLocal, Version=1.0.0.0, Culture=neutral" />
+      <historyProvider type="BLocal.Web.Manager.Providers.ExternalSynchronizationManager.ExternalSynchronizationManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral" isValueProvider="True" />    
     </add>
     <!-- add (or remove) any providers -->
   </providerPairsConfiguration>

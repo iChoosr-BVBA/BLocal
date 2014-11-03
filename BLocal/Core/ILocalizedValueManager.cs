@@ -9,6 +9,14 @@ namespace BLocal.Core
     public interface ILocalizedValueManager
     {
         /// <summary>
+        /// When implemented, returns the Fully Qualified value for a specified qualifier
+        /// </summary>
+        /// <param name="qualifier">Unique qualifier</param>
+        /// <param name="defaultValue">Default value to be used if applicable</param>
+        /// <returns></returns>
+        QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier, String defaultValue = null);
+
+        /// <summary>
         /// When implemented, tries to update a localized value. If that doesn't work, tries to create it
         /// </summary>
         /// <param name="value">the value to create</param>
@@ -26,18 +34,6 @@ namespace BLocal.Core
         /// </summary>
         /// <returns></returns>
         IEnumerable<QualifiedValue> GetAllValuesQualified();
-
-        /// <summary>
-        /// When implemented, returns all audits for qualifiers
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<LocalizationAudit> GetAudits();
-
-        /// <summary>
-        /// When implemented, overrides all audits internally
-        /// </summary>
-        /// <returns></returns>
-        void SetAudits(IEnumerable<LocalizationAudit> audits); 
 
         /// <summary>
         /// When implemented, removes a value completely from the system
@@ -61,13 +57,5 @@ namespace BLocal.Core
         /// When implemented, un-caches any cached values
         /// </summary>
         void Reload();
-
-        /// <summary>
-        /// When implemented, returns the Fully Qualified value for a specified qualifier
-        /// </summary>
-        /// <param name="qualifier">Unique qualifier</param>
-        /// <param name="defaultValue">Default value to be used if applicable</param>
-        /// <returns></returns>
-        QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier, String defaultValue = null);
     }
 }

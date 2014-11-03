@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using BLocal.Core;
 using BLocal.Web.Manager.Models;
+using BLocal.Web.Manager.Models.Home;
 
 namespace BLocal.Web.Manager.Business
 {

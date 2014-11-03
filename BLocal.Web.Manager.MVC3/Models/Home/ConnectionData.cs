@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BLocal.Web.Manager.Models
+namespace BLocal.Web.Manager.Models.Home
 {
     public class ConnectionData
     {

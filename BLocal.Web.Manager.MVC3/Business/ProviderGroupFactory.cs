@@ -6,11 +6,11 @@ using BLocal.Web.Manager.Configuration;
 
 namespace BLocal.Web.Manager.Business
 {
-    public class ProviderPairFactory
+    public class ProviderGroupFactory
     {
-        public ProviderPair CreateProviderPair(String providerConfigName)
+        public ProviderGroup CreateProviderGroup(String providerConfigName)
         {
-            var providerConfig = ProviderConfig.ProviderPairs.Single(vp => vp.Name == providerConfigName);
+            var providerConfig = ProviderConfig.ProviderGroups.Single(vp => vp.Name == providerConfigName);
 
             var valueProviderType = Type.GetType(providerConfig.ValueProvider.Type);
             if (valueProviderType == null)
@@ -22,22 +22,44 @@ namespace BLocal.Web.Manager.Business
             if (valueProvider == null)
                 throw new Exception("Could not initialize value provider, incorrect constructor arguments!");
 
+            ILocalizationLogger logProvider;
+            ILocalizationHistoryManager historyProvider;
+
+            if (providerConfig.HistoryProvider.IsValueProvider)
+                historyProvider = valueProvider as ILocalizationHistoryManager;
+            else
+            {
+                var historyProviderType = Type.GetType(providerConfig.HistoryProvider.Type);
+                if (historyProviderType == null)
+                    throw new Exception("Cannot find type \"" + providerConfig.HistoryProvider.Type + "\"");
+                if (!typeof(ILocalizationHistoryManager).IsAssignableFrom(historyProviderType))
+                    throw new Exception("Type \"" + historyProviderType + "\" does not implement " + typeof(ILocalizationLogger).Name + "!");
+
+                historyProvider = (ILocalizationHistoryManager)ConstructProvider(historyProviderType, providerConfig.HistoryProvider.ConstructorArguments.Cast<ConstructorArgumentElement>().ToArray());
+            }
+            if (historyProvider == null)
+                throw new Exception("Could not initialize history provider, incorrect constructor arguments!");
+
+
             if (providerConfig.LogProvider.IsValueProvider)
-                return new ProviderPair(providerConfigName, valueProvider as ILocalizedValueManager, valueProvider as ILocalizationLogger);
+                logProvider = valueProvider as ILocalizationLogger;
+            else
+            {
+                var logProviderType = Type.GetType(providerConfig.LogProvider.Type);
+                if (logProviderType == null)
+                    throw new Exception("Cannot find type \"" + providerConfig.LogProvider.Type + "\"");
+                if (!typeof(ILocalizationLogger).IsAssignableFrom(logProviderType))
+                    throw new Exception("Type \"" + logProviderType + "\" does not implement " + typeof(ILocalizationLogger).Name + "!");
 
-            var logProviderType = Type.GetType(providerConfig.LogProvider.Type);
-            if (logProviderType == null)
-                throw new Exception("Cannot find type \"" + providerConfig.LogProvider.Type + "\"");
-            if (!typeof(ILocalizationLogger).IsAssignableFrom(logProviderType))
-                throw new Exception("Type \"" + logProviderType + "\" does not implement " + typeof(ILocalizationLogger).Name + "!");
-
-            var logProvider = ConstructProvider(logProviderType, providerConfig.LogProvider.ConstructorArguments.Cast<ConstructorArgumentElement>().ToArray());
+                logProvider = (ILocalizationLogger) ConstructProvider(logProviderType, providerConfig.LogProvider.ConstructorArguments.Cast<ConstructorArgumentElement>().ToArray());
+            }
             if (logProvider == null)
                 throw new Exception("Could not initialize log provider, incorrect constructor arguments!");
 
-            var pair = new ProviderPair(providerConfigName, valueProvider as ILocalizedValueManager, logProvider as ILocalizationLogger);
-            pair.ValueManager.Reload();
-            return pair;
+            var group = new ProviderGroup(providerConfigName, valueProvider as ILocalizedValueManager, historyProvider, logProvider);
+            group.ValueManager.Reload();
+            group.HistoryManager.Reload();
+            return group;
         }
 
         private static Object ConstructProvider(Type providerType, ICollection<ConstructorArgumentElement> arguments)

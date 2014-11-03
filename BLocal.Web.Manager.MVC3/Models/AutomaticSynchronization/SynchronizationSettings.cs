@@ -5,15 +5,17 @@ namespace BLocal.Web.Manager.Models.AutomaticSynchronization
     public class SynchronizationSettings
     {
         public bool Execute { get; set; }
-        public String LeftProviderPairName { get; set; }
-        public String RightProviderPairName { get; set; }
+        public String LeftProviderGroupName { get; set; }
+        public String RightProviderGroupName { get; set; }
+        public String LeftAuthorName { get; set; }
+        public String RightAuthorName { get; set; }
         public MissingResolutionStrategy LeftMissingStrategy { get; set; }
         public MissingResolutionStrategy RightMissingStrategy { get; set; }
         public DifferingResolutionStrategy DifferingStrategy { get; set; }
 
         public enum MissingResolutionStrategy
         {
-            Audit,
+            History,
             CopyNew,
             DeleteExisting,
             Ignore,
@@ -22,7 +24,7 @@ namespace BLocal.Web.Manager.Models.AutomaticSynchronization
 
         public enum DifferingResolutionStrategy
         {
-            Audit,
+            History,
             UseLeft,
             UseRight,
             Ignore,
