@@ -3,15 +3,6 @@
 @{
     ViewBag.Title = "Authentication";
 }
-@section Head {
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $("select[name='providerConfigName']").change(function() {
-                $(this).parents("form").submit();
-            });
-        });
-    </script>
-}
 <h1>Authentication</h1>
     
 @if (String.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["password"])) {
@@ -19,9 +10,9 @@
 }
 else {
     <section class="general">
-        <h2>Please provide access password</h2>
+        <h2>Please provide first name and password</h2>
         @using (Html.BeginForm("Authenticate", "Home", FormMethod.Post)) {
-            <input type="text" name="username" value="notrequired" style="display: none;" placeholder="just here for password remember :)"/>
+            <input type="text" name="username" value="" placeholder="first name"/>
             <input type="password" name="password" placeholder="password"/> <input type="submit" value="Authenticate"/>
         }
     </section>

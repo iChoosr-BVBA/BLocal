@@ -31,7 +31,7 @@ namespace BLocal.Web.Manager.Controllers
 
             var dictionary = (Dictionary<Guid, SynchronizationSession>)(Request.RequestContext.HttpContext.Application["sessions"]
                 ?? (Request.RequestContext.HttpContext.Application["sessions"] = new Dictionary<Guid, SynchronizationSession>()));
-            
+
             var key = Guid.NewGuid();
             dictionary[key] = new SynchronizationSession();
 
@@ -92,7 +92,8 @@ namespace BLocal.Web.Manager.Controllers
             var providerGroup = GetProviderGroup(request);
             var reloadRequest = JsonConvert.DeserializeObject<ReloadRequest>(request.RequestData, _partConverter);
             providerGroup.ValueManager.Reload();
-            var json = JsonConvert.SerializeObject(new FullContentResponse {
+            var json = JsonConvert.SerializeObject(new FullContentResponse
+            {
                 AllValues = providerGroup.ValueManager.GetAllValuesQualified().ToArray(),
                 AllHistory = providerGroup.HistoryManager.ProvideHistory().ToArray()
             }, _partConverter);
@@ -106,7 +107,7 @@ namespace BLocal.Web.Manager.Controllers
             var persistRequest = JsonConvert.DeserializeObject<PersistRequest>(request.RequestData, _partConverter);
 
             providerGroup.ValueManager.Persist();
-            if(providerGroup.ValueManager != providerGroup.HistoryManager)
+            if (providerGroup.ValueManager != providerGroup.HistoryManager)
                 providerGroup.HistoryManager.Persist();
 
             var json = JsonConvert.SerializeObject(new PersistResponse(), _partConverter);
@@ -148,7 +149,7 @@ namespace BLocal.Web.Manager.Controllers
             var dictionary = (Dictionary<Guid, SynchronizationSession>)(Request.RequestContext.HttpContext.Application["sessions"]
                 ?? (Request.RequestContext.HttpContext.Application["sessions"] = new Dictionary<Guid, SynchronizationSession>()));
 
-            if(!dictionary.ContainsKey(synchronizationRequest.ApiKey))
+            if (!dictionary.ContainsKey(synchronizationRequest.ApiKey))
                 throw new AuthenticationException();
 
             var session = dictionary[synchronizationRequest.ApiKey];

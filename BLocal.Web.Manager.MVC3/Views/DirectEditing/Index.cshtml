@@ -3,20 +3,21 @@
 @model IEnumerable<LocalizedPart>
 @{
     ViewBag.Title = "Manual Editing";
+    ViewBag.PageName = "DirectEditing.Index";
 }
 @section Head {
     <script type="text/javascript">
         this.pages = this.pages || {};
         
         $(document).ready(function () {
-            pages.current = '@Url.Action("ReloadLocalization")';
-            pages.createKey = '@Url.Action("Create", "Home")';
-            pages.removeKey = '@Url.Action("Remove", "Home")';
+            pages.current = '@Url.Action("ReloadLocalization", "DirectEditing")';
+            pages.updateCreateValue = '@Url.Action("UpdateCreateValue", "DirectEditing")';
+            pages.deleteValue = '@Url.Action("DeleteValue", "DirectEditing")';
         });
     </script>
 }
 
-<h1>@Html.ActionLink("Home", "Overview") - Manual Editing of <span class="accent">@(Session.Get<ProviderGroup>("manualProviderGroup").Name)</span></h1>
+<h1>@Html.ActionLink("Home", "Overview", "Home") - Manual Editing of <span class="accent">@(Session.Get<ProviderGroup>("manualProviderGroup").Name)</span></h1>
 <p><span class="open">open</span> | <span class="collapse">collapse</span> | <span class="reload">reload</span> | <span class="hardreload" title="dump localization cache, reload from scratch">hard reload</span></p>
     
 <section class="general">
@@ -35,11 +36,11 @@
 }
 
 @helper RenderPart(LocalizedPart part) {
-    <section class="part">
-        <h2><span class="title">@part.Part.ToString()</span> [@part.Localizations.Count]</h2>
+    <section class="part" data-part="@part.Part.ToString()">
+        <h2><span class="title">@part.Part.ToString()</span> [<span class="count">@part.Localizations.Count</span>]</h2>
         <section class="values">
             @foreach (var value in part.Localizations.OrderBy(value => value.Qualifier.Key).ThenBy(value => value.Qualifier.Locale.Name)) {
-                <p>
+                <p class="value" data-locale="@value.Qualifier.Locale" data-key="@value.Qualifier.Key">
                     <span class="key">@value.Qualifier.Key</span>
                     <span class="locale"><nobr>@value.Qualifier.Locale</nobr></span>
                     <span class="content" title="@value.Value.Replace(@"""", @"'")">@value.Value</span>
@@ -61,9 +62,9 @@
         <p><span class="lbl">Content</span></p>
         <div><textarea class="content"></textarea></div>
         <div>
-            <input type="button" class="updaterecreate" value="Save to Original" title="deletes current value, recreates to new value" />
-            <input type="button" class="updatecopy" value="Save to Copy" title="creates a copy if key or part changed, does not delete original" />
-            <input class="updatedelete" type="button" value="Clean Delete" title="bye-bye" />
+            <input type="button" class="updaterecreate" value="Overwrite original" title="deletes current value, recreates to new value" />
+            <input type="button" class="updatecopy" value="Save to copy" title="creates a copy if key or part changed, does not delete original" />
+            <input class="updatedelete" type="button" value="Remove" title="bye-bye" />
             <p>(visible changes are indications, press reload to confirm)</p>
         </div>
     </form>

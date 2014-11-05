@@ -72,6 +72,7 @@
     <Compile Include="Configuration\ValueProviderConfigurationSection.cs" />
     <Compile Include="Context\AuthorizedAttribute.cs" />
     <Compile Include="Controllers\AutomaticSynchronizationController.cs" />
+    <Compile Include="Controllers\DirectEditingController.cs" />
     <Compile Include="Models\AutomaticSynchronization\Conflict.cs" />
     <Compile Include="Models\AutomaticSynchronization\Creation.cs" />
     <Compile Include="Controllers\ExternalSynchronizationController.cs" />
@@ -131,6 +132,7 @@
     <Content Include="Scripts\homebrew.popup.js" />
     <Content Include="Scripts\jquery-1.11.1.js" />
     <Content Include="Scripts\main.app.js" />
+    <Content Include="Scripts\Pages\DirectEditing.Index.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -146,7 +148,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\EditLocalization.cshtml" />
+    <Content Include="Views\DirectEditing\Index.cshtml" />
     <Content Include="Views\Home\Import.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Overview.cshtml" />
@@ -155,7 +157,9 @@
     <Content Include="Views\Home\VerifyTranslation.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -51,7 +51,7 @@ namespace BLocal.Web.Manager.Business
                 if (!typeof(ILocalizationLogger).IsAssignableFrom(logProviderType))
                     throw new Exception("Type \"" + logProviderType + "\" does not implement " + typeof(ILocalizationLogger).Name + "!");
 
-                logProvider = (ILocalizationLogger) ConstructProvider(logProviderType, providerConfig.LogProvider.ConstructorArguments.Cast<ConstructorArgumentElement>().ToArray());
+                logProvider = (ILocalizationLogger)ConstructProvider(logProviderType, providerConfig.LogProvider.ConstructorArguments.Cast<ConstructorArgumentElement>().ToArray());
             }
             if (logProvider == null)
                 throw new Exception("Could not initialize log provider, incorrect constructor arguments!");

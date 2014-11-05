@@ -27,7 +27,7 @@ namespace BLocal.Web.Manager.Controllers
 
             var leftValues = leftProviders.ValueManager.GetAllValuesQualified().ToDictionary(qv => qv.Qualifier);
             var rightValues = rightProviders.ValueManager.GetAllValuesQualified().ToDictionary(qv => qv.Qualifier);
-            
+
             var leftNotRight = leftValues.Where(lv => !rightValues.ContainsKey(lv.Key)).Select(lv => lv.Value).ToArray();
             var rightNotLeft = rightValues.Where(rv => !leftValues.ContainsKey(rv.Key)).Select(rv => rv.Value).ToArray();
 
@@ -57,7 +57,7 @@ namespace BLocal.Web.Manager.Controllers
 
                         var leftHistory = leftHistoryCollection[missingRight.Qualifier];
                         var rightHistory = rightHistoryCollection[missingRight.Qualifier];
-                        
+
                         if (leftHistory.IsPreviousVersionOf(rightHistory))
                         {
                             Delete(settings.Execute, leftProviders, rightHistoryCollection, leftHistoryCollection, missingRight, synchronizationResult);
@@ -175,10 +175,10 @@ namespace BLocal.Web.Manager.Controllers
                 leftProviders.ValueManager.Persist();
                 rightProviders.ValueManager.Persist();
 
-                if(leftProviders.ValueManager != leftProviders.HistoryManager)
+                if (leftProviders.ValueManager != leftProviders.HistoryManager)
                     leftProviders.HistoryManager.Persist();
 
-                if(rightProviders.ValueManager != rightProviders.HistoryManager)
+                if (rightProviders.ValueManager != rightProviders.HistoryManager)
                     rightProviders.HistoryManager.Persist();
             }
 
