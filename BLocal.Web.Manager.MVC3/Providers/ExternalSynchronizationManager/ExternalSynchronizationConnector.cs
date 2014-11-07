@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using BLocal.Core;
+using BLocal.Web.Manager.Providers.ExternalSynchronizationManager.Communication;
 using Newtonsoft.Json;
 
 namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
@@ -82,6 +83,20 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
         public IEnumerable<QualifiedHistory> AdjustHistory(IEnumerable<QualifiedValue> currentValues, String author)
         {
             var request = new AdjustHistoryRequest { CurrentValues = currentValues.ToArray(), Author = author };
+            var response = MakeRequest(request);
+            return response.History;
+        }
+
+        public IEnumerable<QualifiedHistory> OverrideHistory(QualifiedHistory qualifiedHistory)
+        {
+            var request = new OverrideHistoryRequest { History = qualifiedHistory };
+            var response = MakeRequest(request);
+            return response.History;
+        }
+
+        public IEnumerable<QualifiedHistory> ProgressHistory(QualifiedValue value, String author)
+        {
+            var request = new ProgressHistoryRequest { Value = value, Author = author };
             var response = MakeRequest(request);
             return response.History;
         }

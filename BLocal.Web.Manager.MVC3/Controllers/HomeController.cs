@@ -19,7 +19,6 @@ namespace BLocal.Web.Manager.Controllers
     public class HomeController : Controller
     {
         private const string TranslationProviderGroupName = "translationProviderGroup";
-        private const String SynchronizationProviderGroupNameBase = "synchronization{0}ProviderGroup";
 
         public ProviderGroupFactory ProviderGroupFactory { get; set; }
 
@@ -47,44 +46,11 @@ namespace BLocal.Web.Manager.Controllers
             return RedirectToAction("Overview");
         }
 
-        [HttpPost, ValidateInput(false)]
-        public ActionResult Synchronize(String leftConfigName, String rightConfigName)
-        {
-            Session.Set(String.Format(SynchronizationProviderGroupNameBase, "Left"), ProviderGroupFactory.CreateProviderGroup(leftConfigName));
-            Session.Set(String.Format(SynchronizationProviderGroupNameBase, "Right"), ProviderGroupFactory.CreateProviderGroup(rightConfigName));
-            return RedirectToAction("ShowSynchronization");
-        }
-
         [HttpPost]
         public ActionResult LoadTranslations(String providerConfigName)
         {
             Session.Set(TranslationProviderGroupName, ProviderGroupFactory.CreateProviderGroup(providerConfigName));
             return RedirectToAction("VerifyTranslation");
-        }
-
-        public ActionResult ShowSynchronization(bool hardReload = false)
-        {
-            var leftPair = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, "Left"));
-            var rightPair = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, "Right"));
-
-            if (hardReload)
-            {
-                leftPair.ValueManager.Reload();
-                rightPair.ValueManager.Reload();
-            }
-
-            var leftValues = leftPair.ValueManager.GetAllValuesQualified().ToArray();
-            var rightValues = rightPair.ValueManager.GetAllValuesQualified().ToArray();
-
-            var leftNotRight = leftValues.Where(lv => !rightValues.Select(rv => rv.Qualifier).Contains(lv.Qualifier)).ToArray();
-            var rightNotLeft = rightValues.Where(rv => !leftValues.Select(lv => lv.Qualifier).Contains(rv.Qualifier)).ToArray();
-
-            var valueDifferences = leftValues
-                .Join(rightValues, v => v.Qualifier, v => v.Qualifier, (lv, rv) => new SynchronizationData.DoubleQualifiedValue(lv, rv))
-                .Where(dv => !Equals(dv.Left.Value, dv.Right.Value))
-                .ToArray();
-
-            return View(new SynchronizationData(leftPair.Name, rightPair.Name, leftNotRight, rightNotLeft, valueDifferences));
         }
 
         public ActionResult VerifyTranslation()
@@ -255,54 +221,6 @@ namespace BLocal.Web.Manager.Controllers
 
             providerGroup.ValueManager.Persist();
             return View(new ImportReportData(providerConfigName, postedFile.FileName, selectedLocale, inserts, updates, deletes));
-        }
-
-        [ValidateInput(false)]
-        public JsonResult SyncRemove(SynchronizationItem[] items)
-        {
-            var changedLocalizationSides = new HashSet<ILocalizedValueManager>();
-            foreach (var item in items)
-            {
-                var localization = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, item.Side));
-                if (localization == null)
-                    throw new Exception("Localization not loaded!");
-
-                var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
-                localization.ValueManager.DeleteValue(qualifier);
-
-                if (!changedLocalizationSides.Contains(localization.ValueManager))
-                    changedLocalizationSides.Add(localization.ValueManager);
-            }
-
-            foreach (var localization in changedLocalizationSides)
-                localization.Persist();
-
-            return Json(new { ok = true });
-        }
-
-        [ValidateInput(false)]
-        public JsonResult SyncDuplicate(SynchronizationItem[] items)
-        {
-            var changedLocalizationSides = new HashSet<ILocalizedValueManager>();
-            foreach (var item in items)
-            {
-                var localizationFrom = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, item.Side));
-                var localizationTo = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, (item.Side == "Right" ? "Left" : "Right")));
-
-                if (localizationFrom == null || localizationTo == null)
-                    throw new Exception("Localization not loaded!");
-
-                var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
-                localizationTo.ValueManager.UpdateCreateValue(localizationFrom.ValueManager.GetQualifiedValue(qualifier));
-
-                if (!changedLocalizationSides.Contains(localizationTo.ValueManager))
-                    changedLocalizationSides.Add(localizationTo.ValueManager);
-            }
-
-            foreach (var localization in changedLocalizationSides)
-                localization.Persist();
-
-            return Json(new { ok = true });
         }
 
         [ValidateInput(false)]

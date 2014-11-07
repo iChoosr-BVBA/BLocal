@@ -1,11 +1,11 @@
 ﻿pages.register('DirectEditing.Index', { ready: function() {
-    this.pages = this.pages || {};
+    window.urls = window.urls || {};
     var $valueSection = $("section.values");
 
     $valueSection.hide();
 
     function getPageUrl(page) {
-        var requestedPage = pages[page];
+        var requestedPage = window.urls[page];
         if (requestedPage)
             return requestedPage;
 

@@ -1,6 +1,6 @@
 ﻿using BLocal.Core;
 
-namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
+namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager.Communication
 {
     public class DeleteLocalizationsRequest : IRequest<FullContentResponse>
     {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BLocal.Core;
+using BLocal.Web.Manager.Providers.ExternalSynchronizationManager.Communication;
 
 namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
 {
@@ -56,6 +57,21 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             _connector.Authenticate(_targetPassword);
             Reload(_connector.GetAllQualifiedValues());
             Reload(_connector.ProvideHistory());
+        }
+
+        public void ProgressHistory(QualifiedValue value, String author)
+        {
+            Reload(_connector.ProgressHistory(value, author));
+        }
+
+        public QualifiedHistory GetHistory(Qualifier.Unique qualifier)
+        {
+            return _history.ContainsKey(qualifier) ? _history[qualifier] : null;
+        }
+
+        public void OverrideHistory(QualifiedHistory qualifiedHistory)
+        {
+            Reload(_connector.OverrideHistory(qualifiedHistory));
         }
 
         private void Reload(IEnumerable<QualifiedValue> allValues)

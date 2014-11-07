@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Models.ExternalSynchronization;
 using BLocal.Web.Manager.Providers.ExternalSynchronizationManager;
+using BLocal.Web.Manager.Providers.ExternalSynchronizationManager.Communication;
 using Newtonsoft.Json;
 
 namespace BLocal.Web.Manager.Controllers
@@ -135,12 +136,32 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
+        public ContentResult OverrideHistory(ExternalSynchronizationRequest request)
+        {
+            var providerGroup = GetProviderGroup(request);
+            var overrideHistoryRequest = JsonConvert.DeserializeObject<OverrideHistoryRequest>(request.RequestData, _partConverter);
+            providerGroup.HistoryManager.OverrideHistory(overrideHistoryRequest.History);
+            var json = JsonConvert.SerializeObject(new OverrideHistoryResponse { History = providerGroup.HistoryManager.ProvideHistory().ToArray() }, _partConverter);
+            return Content(json, "application/json", Encoding.Unicode);
+        }
+
+        [HttpPost, ValidateInput(false)]
         public ContentResult RewriteHistory(ExternalSynchronizationRequest request)
         {
             var providerGroup = GetProviderGroup(request);
             var rewriteHistoryRequest = JsonConvert.DeserializeObject<RewriteHistoryRequest>(request.RequestData, _partConverter);
             providerGroup.HistoryManager.RewriteHistory(rewriteHistoryRequest.History);
             var json = JsonConvert.SerializeObject(new RewriteHistoryResponse { AllValues = providerGroup.HistoryManager.ProvideHistory() }, _partConverter);
+            return Content(json, "application/json", Encoding.Unicode);
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ContentResult ProgressHistory(ExternalSynchronizationRequest request)
+        {
+            var providerGroup = GetProviderGroup(request);
+            var progressHistoryRequest = JsonConvert.DeserializeObject<ProgressHistoryRequest>(request.RequestData, _partConverter);
+            providerGroup.HistoryManager.ProgressHistory(progressHistoryRequest.Value, progressHistoryRequest.Author);
+            var json = JsonConvert.SerializeObject(new ProgressHistoryResponse { History = providerGroup.HistoryManager.ProvideHistory() }, _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
 

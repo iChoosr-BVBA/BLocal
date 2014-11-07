@@ -7,13 +7,11 @@
 }
 @section Head {
     <script type="text/javascript">
-        this.pages = this.pages || {};
+        window.urls = window.urls || {};
         
-        $(document).ready(function () {
-            pages.current = '@Url.Action("ReloadLocalization", "DirectEditing")';
-            pages.updateCreateValue = '@Url.Action("UpdateCreateValue", "DirectEditing")';
-            pages.deleteValue = '@Url.Action("DeleteValue", "DirectEditing")';
-        });
+        window.urls.current = '@Url.Action("ReloadLocalization", "DirectEditing")';
+        window.urls.updateCreateValue = '@Url.Action("UpdateCreateValue", "DirectEditing")';
+        window.urls.deleteValue = '@Url.Action("DeleteValue", "DirectEditing")';
     </script>
 }
 

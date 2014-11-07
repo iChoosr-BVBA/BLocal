@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
+namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager.Communication
 {
     public class KeyLocaleValueContainer
     {

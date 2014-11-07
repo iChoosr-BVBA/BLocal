@@ -17,13 +17,15 @@ namespace BLocal.Web.Manager.Extensions
         /// <summary>
         /// Sets the value in session, clearing any previous values
         /// </summary>
-        public static void Set(this HttpSessionStateBase session, String valueName , Object value)
+        public static T Set<T>(this HttpSessionStateBase session, String valueName , T value)
         {
             if(null == session)
-                return;
+                return default(T);
 
             session.Clear(valueName);
             session[valueName] = value;
+
+            return value;
         }
 
         public static T Get<T>(this HttpSessionStateBase session, String valueName) where T : class 

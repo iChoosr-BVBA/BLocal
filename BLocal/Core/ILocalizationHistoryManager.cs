@@ -14,9 +14,9 @@ namespace BLocal.Core
         /// <summary>
         /// Adjusts history based on new values, adds all found changes as done by author parameter
         /// </summary>
-        /// <param name="currentValues"></param>
+        /// <param name="changedValues"></param>
         /// <param name="author"></param>
-        void AdjustHistory(IEnumerable<QualifiedValue> currentValues, String author);
+        void AdjustHistory(IEnumerable<QualifiedValue> changedValues, String author);
 
         /// <summary>
         /// When implemented, rewrites history from scratch
@@ -33,5 +33,25 @@ namespace BLocal.Core
         /// When implemented, removes history from memory
         /// </summary>
         void Reload();
+
+        /// <summary>
+        /// When implemented, adjusts the history to take the changed value into account.
+        /// </summary>
+        /// <param name="value">Value that has changed</param>
+        /// <param name="author">Author for the change</param>
+        void ProgressHistory(QualifiedValue value, String author);
+
+        /// <summary>
+        /// When implemented, returns the history for a single qualifier
+        /// </summary>
+        /// <param name="qualifier">The qualifier for which to find history</param>
+        /// <returns></returns>
+        QualifiedHistory GetHistory(Qualifier.Unique qualifier);
+
+        /// <summary>
+        /// When implemented, sets the history for a single qualifier
+        /// </summary>
+        /// <param name="qualifiedHistory">The qualified history to override with</param>
+        void OverrideHistory(QualifiedHistory qualifiedHistory);
     }
 }

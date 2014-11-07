@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BLocal.Core;
 
@@ -11,7 +12,7 @@ namespace BLocal.Providers
             return Enumerable.Empty<QualifiedHistory>();
         }
 
-        public void AdjustHistory(IEnumerable<QualifiedValue> currentValues, string author)
+        public void AdjustHistory(IEnumerable<QualifiedValue> currentValues, String author)
         {
         }
 
@@ -24,6 +25,20 @@ namespace BLocal.Providers
         }
 
         public void Reload()
+        {
+        }
+
+        public void ProgressHistory(QualifiedValue value, String author)
+        {
+            
+        }
+
+        public QualifiedHistory GetHistory(Qualifier.Unique qualifier)
+        {
+            return new QualifiedHistory { Qualifier = qualifier };
+        }
+
+        public void OverrideHistory(QualifiedHistory qualifiedHistory)
         {
         }
     }
