@@ -1,5 +1,6 @@
 ﻿@using BLocal.Web.Manager.Business
 @using BLocal.Web.Manager.Extensions
+@using BLocal.Web.Manager.Models.DirectEditing
 @model IEnumerable<LocalizedPart>
 @{
     ViewBag.Title = "Manual Editing";
@@ -8,8 +9,8 @@
 @section Head {
     <script type="text/javascript">
         window.urls = window.urls || {};
-        
-        window.urls.current = '@Url.Action("ReloadLocalization", "DirectEditing")';
+
+        window.urls.current = '@Url.Action("ReloadLocalization", "DirectEditing", new { providerConfigName = Session.Get<ProviderGroup>("manualProviderGroup").Name })';
         window.urls.updateCreateValue = '@Url.Action("UpdateCreateValue", "DirectEditing")';
         window.urls.deleteValue = '@Url.Action("DeleteValue", "DirectEditing")';
     </script>
@@ -38,10 +39,10 @@
         <h2><span class="title">@part.Part.ToString()</span> [<span class="count">@part.Localizations.Count</span>]</h2>
         <section class="values">
             @foreach (var value in part.Localizations.OrderBy(value => value.Qualifier.Key).ThenBy(value => value.Qualifier.Locale.Name)) {
-                <p class="value" data-locale="@value.Qualifier.Locale" data-key="@value.Qualifier.Key">
+                <p class="value" data-locale="@value.Qualifier.Locale" data-key="@value.Qualifier.Key" title="Last edit by @value.History.LatestEntry().Author on @value.History.LatestEntry().DateTime">
                     <span class="key">@value.Qualifier.Key</span>
                     <span class="locale"><nobr>@value.Qualifier.Locale</nobr></span>
-                    <span class="content" title="@value.Value.Replace(@"""", @"'")">@value.Value</span>
+                    <span class="content">@value.Value</span>
                     <span class="clear"></span>
                 </p>
             }

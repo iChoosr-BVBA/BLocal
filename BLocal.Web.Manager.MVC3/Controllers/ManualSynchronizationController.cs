@@ -5,7 +5,7 @@ using System.Web.Mvc;
 using BLocal.Core;
 using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Extensions;
-using BLocal.Web.Manager.Models.Home;
+using BLocal.Web.Manager.Models.ManualSynchronization;
 
 namespace BLocal.Web.Manager.Controllers
 {
@@ -22,30 +22,38 @@ namespace BLocal.Web.Manager.Controllers
         
         public ActionResult Index(String leftConfigName, String rightConfigName, Boolean hardReload = false)
         {
-            var leftPair = Session.Get<ProviderGroup>(SynchronizationProviderGroupNameBase + leftConfigName)
+            var leftProviders = Session.Get<ProviderGroup>(SynchronizationProviderGroupNameBase + leftConfigName)
                 ?? Session.Set(String.Format(SynchronizationProviderGroupNameBase, "Left"), ProviderGroupFactory.CreateProviderGroup(leftConfigName));
 
-            var rightPair = Session.Get<ProviderGroup>(SynchronizationProviderGroupNameBase + rightConfigName)
+            var rightProviders = Session.Get<ProviderGroup>(SynchronizationProviderGroupNameBase + rightConfigName)
                 ?? Session.Set(String.Format(SynchronizationProviderGroupNameBase, "Right"), ProviderGroupFactory.CreateProviderGroup(rightConfigName));
 
             if (hardReload)
             {
-                leftPair.ValueManager.Reload();
-                rightPair.ValueManager.Reload();
+                leftProviders.ValueManager.Reload();
+                rightProviders.ValueManager.Reload();
             }
 
-            var leftValues = leftPair.ValueManager.GetAllValuesQualified().ToArray();
-            var rightValues = rightPair.ValueManager.GetAllValuesQualified().ToArray();
+            var leftValues = leftProviders.ValueManager.GetAllValuesQualified().ToArray();
+            var rightValues = rightProviders.ValueManager.GetAllValuesQualified().ToArray();
 
-            var leftNotRight = leftValues.Where(lv => !rightValues.Select(rv => rv.Qualifier).Contains(lv.Qualifier)).ToArray();
-            var rightNotLeft = rightValues.Where(rv => !leftValues.Select(lv => lv.Qualifier).Contains(rv.Qualifier)).ToArray();
+            leftProviders.HistoryManager.AdjustHistory(leftValues, Session.Get<String>("author"));
+            rightProviders.HistoryManager.AdjustHistory(leftValues, Session.Get<String>("author"));
+
+            var leftNotRight = leftValues.Where(lv => !rightValues.Select(rv => rv.Qualifier).Contains(lv.Qualifier))
+                .Select(lv => new SynchronizationData.QualifiedHistoricalValue(lv, leftProviders.HistoryManager.GetHistory(lv.Qualifier))).ToArray();
+            var rightNotLeft = rightValues.Where(rv => !leftValues.Select(lv => lv.Qualifier).Contains(rv.Qualifier))
+                .Select(rv => new SynchronizationData.QualifiedHistoricalValue(rv, rightProviders.HistoryManager.GetHistory(rv.Qualifier))).ToArray();
 
             var valueDifferences = leftValues
-                .Join(rightValues, v => v.Qualifier, v => v.Qualifier, (lv, rv) => new SynchronizationData.DoubleQualifiedValue(lv, rv))
+                .Join(rightValues, v => v.Qualifier, v => v.Qualifier, (lv, rv) => new SynchronizationData.QualifiedHistoricalValuePair(
+                    new SynchronizationData.QualifiedHistoricalValue(lv, leftProviders.HistoryManager.GetHistory(lv.Qualifier)),
+                    new SynchronizationData.QualifiedHistoricalValue(rv, rightProviders.HistoryManager.GetHistory(rv.Qualifier))
+                ))
                 .Where(dv => !Equals(dv.Left.Value, dv.Right.Value))
                 .ToArray();
 
-            return View(new SynchronizationData(leftPair.Name, rightPair.Name, leftNotRight, rightNotLeft, valueDifferences));
+            return View(new SynchronizationData(leftProviders.Name, rightProviders.Name, leftNotRight, rightNotLeft, valueDifferences));
         }
 
         [ValidateInput(false)]

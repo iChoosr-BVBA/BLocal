@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BLocal.Web.Manager.Models.Home
+namespace BLocal.Web.Manager.Models.ManualSynchronization
 {
     public class SynchronizationItem
     {

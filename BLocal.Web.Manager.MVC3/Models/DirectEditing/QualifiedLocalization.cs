@@ -1,19 +1,19 @@
 ﻿using System;
 using BLocal.Core;
 
-namespace BLocal.Web.Manager.Models.Home
+namespace BLocal.Web.Manager.Models.DirectEditing
 {
     public class QualifiedLocalization
     {
         public Qualifier.Unique Qualifier { get; set; }
         public String Value { get; set; }
-        public DateTime LastAcces { get; set; }
+        public QualifiedHistory History { get; set; }
 
-        public QualifiedLocalization(Qualifier.Unique qualifier, String value, DateTime lastAccess)
+        public QualifiedLocalization(Qualifier.Unique qualifier, String value, QualifiedHistory history)
         {
             Qualifier = qualifier;
             Value = value;
-            LastAcces = lastAccess;
+            History = history;
         }
     }
 }

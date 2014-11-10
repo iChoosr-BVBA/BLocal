@@ -1,4 +1,4 @@
-﻿@model BLocal.Web.Manager.Models.Home.SynchronizationData
+﻿@model BLocal.Web.Manager.Models.ManualSynchronization.SynchronizationData
 @{
     ViewBag.Title = "Synchronization";
     ViewBag.PageName = "ManualSynchronization.Index";
@@ -27,13 +27,14 @@
         @foreach (var value in Model.LeftValuesNotRight) {
             <tr class="lrvalue">
                 <td style="white-space: nowrap">
-                    <input type="checkbox" name="values" data-side="Left" data-part="@value.Qualifier.Part" data-locale="@value.Qualifier.Locale" data-key="@value.Qualifier.Key"/>
+                    <input type="checkbox" name="values" data-side="Left" data-part="@value.Value.Qualifier.Part" data-locale="@value.Value.Qualifier.Locale" data-key="@value.Value.Qualifier.Key"/>
                 </td>
                 <td style="white-space: nowrap;">
-                    @value.Qualifier.Key <br />
-                    <span class="localepart">@value.Qualifier.Locale | @value.Qualifier.Part</span>
+                    @value.Value.Qualifier.Key <br />
+                    <span class="localepart">@value.Value.Qualifier.Locale | @value.Value.Qualifier.Part</span><br />
+                    <span class="localepart">@value.History.LatestEntry().DateTime - @value.History.LatestEntry().Author</span>
                 </td>
-                <td style="width: 99%;">@value.Value</td>
+                <td style="width: 99%;">@value.Value.Value</td>
             </tr>
         }
     </tbody></table>
@@ -50,13 +51,13 @@
         @foreach (var value in Model.RightValuesNotLeft) {
             <tr class="lrvalue">
                 <td style="white-space: nowrap">
-                    <input type="checkbox" name="values" data-side="Right" data-part="@value.Qualifier.Part" data-locale="@value.Qualifier.Locale" data-key="@value.Qualifier.Key"/>
+                    <input type="checkbox" name="values" data-side="Right" data-part="@value.Value.Qualifier.Part" data-locale="@value.Value.Qualifier.Locale" data-key="@value.Value.Qualifier.Key"/>
                 </td>
                 <td style="white-space: nowrap;">
-                    @value.Qualifier.Key <br />
-                    <span class="localepart">@value.Qualifier.Locale | @value.Qualifier.Part</span>
+                    @value.Value.Qualifier.Key <br />
+                    <span class="localepart">@value.Value.Qualifier.Locale | @value.Value.Qualifier.Part</span>
                 </td>
-                <td style="width: 99%;">@value.Value</td>
+                <td style="width: 99%;">@value.Value.Value</td>
             </tr>
         }
     </tbody></table>
@@ -68,23 +69,25 @@
     </p>
     @foreach (var value in Model.ValueDifferences) {
         <section class="difference">
-            <h2>@value.Left.Qualifier.Key</h2>
-            <p class="localepart">@value.Left.Qualifier.Locale | @value.Left.Qualifier.Part</p>
+            <h2>@value.Left.Value.Qualifier.Key</h2>
+            <p class="localepart">@value.Left.Value.Qualifier.Locale | @value.Left.Value.Qualifier.Part</p>
             <section class="comparison">
                 <div class="left">
-                    <p>@value.Left.Value</p>
+                    <p>@value.Left.Value.Value</p>
                     <p>
-                        <button data-side="Left" data-part="@value.Left.Qualifier.Part" data-locale="@value.Left.Qualifier.Locale" data-key="@value.Left.Qualifier.Key" disabled="disabled">
+                        <button data-side="Left" data-part="@value.Left.Value.Qualifier.Part" data-locale="@value.Left.Value.Qualifier.Locale" data-key="@value.Left.Value.Qualifier.Key" disabled="disabled">
                             Change on <span class="accent">@Model.RightName</span> using this value
-                        </button>
+                        </button><br />
+                        @value.Left.History.LatestEntry().DateTime - @value.Left.History.LatestEntry().Author
                     </p>
                 </div>
                 <div class="right">
-                    <p>@value.Right.Value</p>
+                    <p>@value.Right.Value.Value</p>
                     <p>
-                        <button data-side="Right" data-part="@value.Right.Qualifier.Part" data-locale="@value.Right.Qualifier.Locale" data-key="@value.Right.Qualifier.Key" disabled="disabled">
+                        <button data-side="Right" data-part="@value.Right.Value.Qualifier.Part" data-locale="@value.Right.Value.Qualifier.Locale" data-key="@value.Right.Value.Qualifier.Key" disabled="disabled">
                             Change on <span class="accent">@Model.LeftName</span> using this value
-                        </button>
+                        </button><br />
+                        @value.Left.History.LatestEntry().DateTime - @value.Left.History.LatestEntry().Author
                     </p>
                 </div>
                 <div class="clear"></div>

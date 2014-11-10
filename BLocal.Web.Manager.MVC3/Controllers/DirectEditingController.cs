@@ -6,7 +6,7 @@ using BLocal.Core;
 using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Context;
 using BLocal.Web.Manager.Extensions;
-using BLocal.Web.Manager.Models.Home;
+using BLocal.Web.Manager.Models.DirectEditing;
 
 namespace BLocal.Web.Manager.Controllers
 {
@@ -32,18 +32,16 @@ namespace BLocal.Web.Manager.Controllers
             var localization = Session.Get<ProviderGroup>(ManualProviderGroupName);
             if (localization == null || localization.Name != providerConfigName)
                 Session.Set(ManualProviderGroupName, localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName));
-
-            var logs = localization.Logger.GetLatestLogsBetween(DateTime.Now.Subtract(TimeSpan.FromDays(50)), DateTime.Now);
+            
             var localizations = localization.ValueManager.GetAllValuesQualified().ToList();
+            localization.HistoryManager.AdjustHistory(localizations, Session.Get<String>("author"));
+            var history = localization.HistoryManager.ProvideHistory().ToDictionary(h => h.Qualifier);
 
             var groupedParts = localizations
-                .GroupJoin(logs, loc => loc.Qualifier, log => log.Key, (loc, loclogs) =>
-                    new QualifiedLocalization(loc.Qualifier, loc.Value, loclogs.Select(l => l.Value.Date).FirstOrDefault())
-                )
+                .Select(l => new QualifiedLocalization(l.Qualifier, l.Value, history[l.Qualifier]))
                 .GroupBy(ql => ql.Qualifier.Part)
                 .ToDictionary(@group => @group.Key, @group => new LocalizedPart(@group.Key, @group.ToList()));
-
-
+            
             // make sure all branches are in the list
             foreach (var kvp in groupedParts.ToList())
                 FixTree(groupedParts, kvp.Key);
@@ -63,14 +61,14 @@ namespace BLocal.Web.Manager.Controllers
             return View(groupedParts.Values);
         }
 
-        public ActionResult ReloadLocalization()
+        public ActionResult ReloadLocalization(String providerConfigName)
         {
             var localization = Session.Get<ProviderGroup>(ManualProviderGroupName);
             if (localization == null)
                 return RedirectToAction("Index", "Home");
 
             localization.ValueManager.Reload();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { providerConfigName });
         }
 
         [ValidateInput(false)]

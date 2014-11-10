@@ -6,7 +6,6 @@ using System.Web.Mvc;
 using BLocal.Core;
 using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Models.AutomaticSynchronization;
-using BLocal.Web.Manager.Models.Home;
 using Newtonsoft.Json;
 
 namespace BLocal.Web.Manager.Controllers
@@ -32,7 +31,7 @@ namespace BLocal.Web.Manager.Controllers
             var rightNotLeft = rightValues.Where(rv => !leftValues.ContainsKey(rv.Key)).Select(rv => rv.Value).ToArray();
 
             var valueDifferences = leftValues.Values
-                .Join(rightValues.Values, v => v.Qualifier, v => v.Qualifier, (lv, rv) => new SynchronizationData.DoubleQualifiedValue(lv, rv))
+                .Join(rightValues.Values, v => v.Qualifier, v => v.Qualifier, (lv, rv) => new QualifiedValuePair(lv, rv))
                 .Where(dv => !Equals(dv.Left.Value, dv.Right.Value))
                 .ToArray();
 
@@ -220,6 +219,18 @@ namespace BLocal.Web.Manager.Controllers
                 targetProviderGroup.ValueManager.DeleteValue(targetQualifiedValue.Qualifier);
             }
             result.Removed.Add(new Removal(targetProviderGroup.Name, targetQualifiedValue.Qualifier.ToString(), targetQualifiedValue.Value));
+        }
+    }
+
+    public class QualifiedValuePair
+    {
+        public QualifiedValue Left { get; set; }
+        public QualifiedValue Right { get; set; }
+
+        public QualifiedValuePair(QualifiedValue left, QualifiedValue right)
+        {
+            Left = left;
+            Right = right;
         }
     }
 }
