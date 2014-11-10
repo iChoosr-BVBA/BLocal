@@ -137,7 +137,7 @@
                 });
             };
 
-            elements.find(".updatecopy").click(function () {
+            elements.find(".save, .updatecopy").click(function () {
                 var newPart = partEl.val(), newKey = keyEl.val(), newLocale = localeEl.val(), newContent = contentEl.val();
                 update(newPart, newKey, newLocale, newContent);
             });
@@ -145,12 +145,11 @@
             elements.find(".updaterecreate").click(function () {
                 var newPart = partEl.val(), newKey = keyEl.val(), newLocale = localeEl.val(), newContent = contentEl.val();
 
-                if (part == newPart && key == newKey && locale == newKey) {
+                if (part == newPart && key == newKey && locale == newLocale) {
                     update(newPart, newKey, newLocale, newContent);
                 } else {
                     deleteValue(part, key, locale, function () {
-                        if (newPart != part || newKey != key || newLocale != locale)
-                            remove(p);
+                        remove(p);
                         update(newPart, newKey, newLocale, newContent);
                     });
                 }
@@ -161,6 +160,13 @@
                     remove(p);
                     details.close();
                 });
+            });
+
+            elements.find(".part, .key, .locale").keyup(function() {
+                var newPart = partEl.val(), newKey = keyEl.val(), newLocale = localeEl.val(), newContent = contentEl.val();
+                var qualifierChanged = part != newPart || key != newKey || locale != newLocale;
+                elements.find(".save").toggle(!qualifierChanged);
+                elements.find(".updaterecreate, .updatecopy").toggle(qualifierChanged);
             });
         };
         details.open();

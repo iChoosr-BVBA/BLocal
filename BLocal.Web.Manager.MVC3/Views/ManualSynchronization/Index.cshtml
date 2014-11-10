@@ -16,7 +16,7 @@
 <h1>@Html.ActionLink("Home", "Overview", "Home") - Synchronization between <span class="accent">@Model.LeftName</span> and <span class="accent">@Model.RightName</span> as <span class="accent">@Session["author"]</span></h1>
 
 <section class="general" data-from="left">
-    <h2>Values from <span class="accent">@Model.LeftName</span> which are missing on <span class="accent">@Model.RightName</span> (@Model.LeftValuesNotRight.Length)</h2>
+    <h2>Values existing on <span class="accent">@Model.LeftName</span> but not on <span class="accent">@Model.RightName</span> (@Model.LeftValuesNotRight.Length)</h2>
     <p>
         <button class="select">Select All</button>
         <button class="deselect">Deselect All</button>
@@ -40,7 +40,7 @@
     </tbody></table>
 </section>
 <section class="general" data-from="right">
-    <h2>Values from <span class="accent">@Model.RightName</span> which are missing on <span class="accent">@Model.LeftName</span> (@Model.RightValuesNotLeft.Length)</h2>
+    <h2>Values that exist on <span class="accent">@Model.RightName</span> but not on <span class="accent">@Model.LeftName</span> (@Model.RightValuesNotLeft.Length)</h2>
     <p>
         <button class="select">Select All</button>
         <button class="deselect">Deselect All</button>
@@ -63,7 +63,7 @@
     </tbody></table>
 </section>
 <section class="general">
-    <h2>Qualifiers whose values differ between the two (@Model.ValueDifferences.Length)</h2>
+    <h2>Values that differ between the two (@Model.ValueDifferences.Length)</h2>
     <p>
         <input class="locktoggle" type="button" value="Unlock change buttons below" data-alt="Lock change buttons below"/>
     </p>
