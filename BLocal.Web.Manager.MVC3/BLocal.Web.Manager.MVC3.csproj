@@ -72,6 +72,7 @@
     <Compile Include="Configuration\ValueProviderConfigurationSection.cs" />
     <Compile Include="Context\AuthorizedAttribute.cs" />
     <Compile Include="Controllers\AutomaticSynchronizationController.cs" />
+    <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\TranslationVerificationController.cs" />
     <Compile Include="Controllers\ImportExportController.cs" />
     <Compile Include="Controllers\ManualSynchronizationController.cs" />
@@ -168,7 +169,9 @@
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Views\History\Index.cshtml" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BLocal\BLocal.csproj">
       <Project>{446DA010-F56F-4084-B961-A116D5AAC872}</Project>

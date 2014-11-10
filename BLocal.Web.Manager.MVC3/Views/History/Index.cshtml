@@ -1,0 +1,34 @@
+﻿@using BLocal.Web.Manager.Business
+@using BLocal.Web.Manager.Extensions
+@model IEnumerable<BLocal.Core.QualifiedHistory>
+@{
+    ViewBag.Title = "History";
+}
+@section Head {
+    <script type="text/javascript">
+        window.urls = window.urls || {};
+
+        window.urls.current = '@Url.Action("ReloadLocalization", "DirectEditing", new { providerConfigName = Session.Get<ProviderGroup>("historyProviderGroup").Name })';
+        window.urls.updateCreateValue = '@Url.Action("UpdateCreateValue", "DirectEditing")';
+        window.urls.deleteValue = '@Url.Action("DeleteValue", "DirectEditing")';
+    </script>
+}
+<h1>@Html.ActionLink("Home", "Overview", "Home") - History of <span class="accent">@(Session.Get<ProviderGroup>("historyProviderGroup").Name)</span></h1>
+<section class="general">
+    <table cellpadding="0" cellspacing="0" class="updates" style="width: 100%"><tbody>
+        @foreach (var history in @Model)
+        {
+            var latest = history.LatestEntry();
+            var previous = history.PreviousEntry();
+            <tr class="lrvalue">
+                <td class="">@history.Qualifier</td>
+                <td class="">@latest.DateTime</td>
+                <td class="">@latest.Author</td>
+                <td style="">
+                    <p class="oldvalue">@(previous == null ? "" : previous.Content)</p>
+                    <p class="value">@latest.Content</p>
+                </td>
+            </tr>
+        }
+    </tbody></table>
+</section>

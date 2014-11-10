@@ -25,6 +25,22 @@
         </p>
     }
 </section>
+
+<section class="general">
+    <h2>View history</h2>
+    @using (Html.BeginForm("Index", "History", FormMethod.Get))
+    {
+        <p>
+            <select name="providerConfigName">
+                @foreach (var config in ProviderConfig.ProviderGroups)
+                {
+                    <option>@config.Name</option>
+                }
+            </select>
+            <button type="submit">View</button>
+        </p>
+    }
+</section>
     
 <section class="general left">
     <h2>Manual Synchronization</h2>
@@ -47,6 +63,32 @@
             </select>
             <button type="submit">Start</button>
         </p>
+    }
+</section>
+<section class="general">
+    <h2>Import / Export</h2>
+    @using (Html.BeginForm("Index", "ImportExport", FormMethod.Get))
+    {
+        <select name="providerConfigName">
+            @foreach (var config in ProviderConfig.ProviderGroups)
+            {
+                <option>@config.Name</option>
+            }
+        </select>
+        <button type="submit">Start</button>
+    }
+</section>
+<section class="general">
+    <h2>Verify translations across locales</h2>
+    @using (Html.BeginForm("Index", "TranslationVerification", FormMethod.Get))
+    {
+        <select name="providerConfigName">
+            @foreach (var config in ProviderConfig.ProviderGroups)
+            {
+                <option>@config.Name</option>
+            }
+        </select>
+        <button type="submit">Start</button>
     }
 </section>
 <section class="general left">
@@ -103,32 +145,5 @@
             </select>
             <button type="submit">Start</button>
         </p>
-    }
-</section>
-    
-<section class="general">
-    <h2>Verify translations across locales</h2>
-    @using (Html.BeginForm("Index", "TranslationVerification", FormMethod.Get))
-    {
-        <select name="providerConfigName">
-            @foreach (var config in ProviderConfig.ProviderGroups)
-            {
-                <option>@config.Name</option>
-            }
-        </select>
-        <button type="submit">Start</button>
-    }
-</section>
-<section class="general">
-    <h2>Import / Export</h2>
-    @using (Html.BeginForm("Index", "ImportExport", FormMethod.Get))
-    {
-        <select name="providerConfigName">
-            @foreach (var config in ProviderConfig.ProviderGroups)
-            {
-                <option>@config.Name</option>
-            }
-        </select>
-        <button type="submit">Start</button>
     }
 </section>
