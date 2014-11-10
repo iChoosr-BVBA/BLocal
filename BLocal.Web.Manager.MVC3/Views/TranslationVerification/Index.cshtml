@@ -1,5 +1,5 @@
 ﻿@using BLocal.Web.Manager.Business
-@model BLocal.Web.Manager.Models.Home.TranslationVerificationData
+@model BLocal.Web.Manager.Models.TranslationVerification.TranslationVerificationData
 @{
     ViewBag.Title = "Verify Translations";
 }
@@ -34,7 +34,7 @@
                             return true;
 
                         $.ajax({
-                            url: '@Url.Action("TransUpdate", "Home")',
+                            url: '@Url.Action("Update", "TranslationVerification")',
                             data: { part: part, key: key, locale: locale, value: newValue },
                             type: 'POST',
                             success: function() {
@@ -52,7 +52,7 @@
                             return true;
 
                         $.ajax({
-                            url: '@Url.Action("TransDelete", "Home")',
+                            url: '@Url.Action("Delete", "TranslationVerification")',
                             data: { part: part, key: key },
                             type: 'POST',
                             success: function() {

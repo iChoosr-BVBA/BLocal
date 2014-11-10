@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -10,8 +9,8 @@ using BLocal.Core;
 using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Context;
 using BLocal.Web.Manager.Extensions;
-using BLocal.Web.Manager.Models.Home;
 using BLocal.Web.Manager.Models.ImportExport;
+using BLocal.Web.Manager.Models.TranslationVerification;
 using CsvHelper;
 
 namespace BLocal.Web.Manager.Controllers

@@ -38,7 +38,7 @@ namespace BLocal.Web.Manager.Controllers
             var rightValues = rightProviders.ValueManager.GetAllValuesQualified().ToArray();
 
             leftProviders.HistoryManager.AdjustHistory(leftValues, Session.Get<String>("author"));
-            rightProviders.HistoryManager.AdjustHistory(leftValues, Session.Get<String>("author"));
+            rightProviders.HistoryManager.AdjustHistory(rightValues, Session.Get<String>("author"));
 
             var leftNotRight = leftValues.Where(lv => !rightValues.Select(rv => rv.Qualifier).Contains(lv.Qualifier))
                 .Select(lv => new SynchronizationData.QualifiedHistoricalValue(lv, leftProviders.HistoryManager.GetHistory(lv.Qualifier))).ToArray();
@@ -78,7 +78,7 @@ namespace BLocal.Web.Manager.Controllers
                 localizationTo.ValueManager.DeleteValue(qualifier);
 
                 // make sure that the "from" is also on the latest history
-                localizationFrom.HistoryManager.ProgressHistory(localizationFrom.ValueManager.GetQualifiedValue(qualifier), Session.Get<String>("author"));
+                localizationFrom.HistoryManager.ProgressHistory(new QualifiedValue(qualifier, null), Session.Get<String>("author"));
                 localizationTo.HistoryManager.OverrideHistory(localizationFrom.HistoryManager.GetHistory(qualifier));
             }
 

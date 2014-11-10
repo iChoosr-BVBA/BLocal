@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using BLocal.Core;
 
-namespace BLocal.Web.Manager.Models.Home
+namespace BLocal.Web.Manager.Models.TranslationVerification
 {
     public class TranslationVerificationData
     {

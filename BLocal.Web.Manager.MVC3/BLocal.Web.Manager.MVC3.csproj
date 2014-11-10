@@ -72,6 +72,7 @@
     <Compile Include="Configuration\ValueProviderConfigurationSection.cs" />
     <Compile Include="Context\AuthorizedAttribute.cs" />
     <Compile Include="Controllers\AutomaticSynchronizationController.cs" />
+    <Compile Include="Controllers\TranslationVerificationController.cs" />
     <Compile Include="Controllers\ImportExportController.cs" />
     <Compile Include="Controllers\ManualSynchronizationController.cs" />
     <Compile Include="Controllers\DirectEditingController.cs" />
@@ -97,13 +98,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AutomaticSynchronization\SynchronizationSettings.cs" />
-    <Compile Include="Models\Home\ConnectionData.cs" />
     <Compile Include="Models\ImportExport\ImportExportData.cs" />
     <Compile Include="Models\ImportExport\ImportReportData.cs" />
     <Compile Include="Models\DirectEditing\QualifiedLocalization.cs" />
     <Compile Include="Models\ManualSynchronization\SynchronizationData.cs" />
     <Compile Include="Models\ManualSynchronization\SynchronizationItem.cs" />
-    <Compile Include="Models\Home\TranslationVerificationData.cs" />
+    <Compile Include="Models\TranslationVerification\TranslationVerificationData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\Communication\AuthenticationRequest.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\Communication\AuthenticationResponse.cs" />
@@ -161,7 +161,7 @@
     <Content Include="Views\Home\Overview.cshtml" />
     <Content Include="Views\ImportExport\Index.cshtml" />
     <Content Include="Views\ManualSynchronization\Index.cshtml" />
-    <Content Include="Views\Home\VerifyTranslation.cshtml" />
+    <Content Include="Views\TranslationVerification\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

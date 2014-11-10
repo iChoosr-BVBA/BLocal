@@ -1,6 +1,5 @@
 ﻿@using BLocal.Web.Manager.Configuration
 @using BLocal.Web.Manager.Models.AutomaticSynchronization
-@model BLocal.Web.Manager.Models.Home.ConnectionData
 @{
     ViewBag.Title = "Localization Manager";
 }
@@ -109,7 +108,7 @@
     
 <section class="general">
     <h2>Verify translations across locales</h2>
-    @using (Html.BeginForm("LoadTranslations", "Home", FormMethod.Get))
+    @using (Html.BeginForm("Index", "TranslationVerification", FormMethod.Get))
     {
         <select name="providerConfigName">
             @foreach (var config in ProviderConfig.ProviderGroups)
