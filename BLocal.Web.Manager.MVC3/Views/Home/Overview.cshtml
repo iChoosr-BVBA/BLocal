@@ -122,7 +122,7 @@
 </section>
 <section class="general">
     <h2>Import / Export</h2>
-    @using (Html.BeginForm("ShowImportExport", "Home", FormMethod.Get))
+    @using (Html.BeginForm("Index", "ImportExport", FormMethod.Get))
     {
         <select name="providerConfigName">
             @foreach (var config in ProviderConfig.ProviderGroups)

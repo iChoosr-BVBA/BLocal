@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using BLocal.Core;
 using BLocal.Web.Manager.Business;
 
-namespace BLocal.Web.Manager.Models.Home
+namespace BLocal.Web.Manager.Models.ImportExport
 {
     public class ImportReportData
     {

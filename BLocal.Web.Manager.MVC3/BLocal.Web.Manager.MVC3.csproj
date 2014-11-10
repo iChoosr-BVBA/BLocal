@@ -72,6 +72,7 @@
     <Compile Include="Configuration\ValueProviderConfigurationSection.cs" />
     <Compile Include="Context\AuthorizedAttribute.cs" />
     <Compile Include="Controllers\AutomaticSynchronizationController.cs" />
+    <Compile Include="Controllers\ImportExportController.cs" />
     <Compile Include="Controllers\ManualSynchronizationController.cs" />
     <Compile Include="Controllers\DirectEditingController.cs" />
     <Compile Include="Models\AutomaticSynchronization\Conflict.cs" />
@@ -97,8 +98,8 @@
     </Compile>
     <Compile Include="Models\AutomaticSynchronization\SynchronizationSettings.cs" />
     <Compile Include="Models\Home\ConnectionData.cs" />
-    <Compile Include="Models\Home\ImportExportData.cs" />
-    <Compile Include="Models\Home\ImportReportData.cs" />
+    <Compile Include="Models\ImportExport\ImportExportData.cs" />
+    <Compile Include="Models\ImportExport\ImportReportData.cs" />
     <Compile Include="Models\DirectEditing\QualifiedLocalization.cs" />
     <Compile Include="Models\ManualSynchronization\SynchronizationData.cs" />
     <Compile Include="Models\ManualSynchronization\SynchronizationItem.cs" />
@@ -155,10 +156,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\DirectEditing\Index.cshtml" />
-    <Content Include="Views\Home\Import.cshtml" />
+    <Content Include="Views\ImportExport\Import.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Overview.cshtml" />
-    <Content Include="Views\Home\ShowImportExport.cshtml" />
+    <Content Include="Views\ImportExport\Index.cshtml" />
     <Content Include="Views\ManualSynchronization\Index.cshtml" />
     <Content Include="Views\Home\VerifyTranslation.cshtml" />
   </ItemGroup>

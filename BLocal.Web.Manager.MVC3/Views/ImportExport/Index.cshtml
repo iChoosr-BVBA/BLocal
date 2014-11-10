@@ -1,5 +1,5 @@
 ﻿@using BLocal.Web.Manager.Business
-@model BLocal.Web.Manager.Models.Home.ImportExportData
+@model BLocal.Web.Manager.Models.ImportExport.ImportExportData
 @{
     ViewBag.Title = "Import / Export";
 }
@@ -35,7 +35,7 @@
     </script>
 }
 
-<h1>@Html.ActionLink("Home", "Overview") - Import or Export on <span class="accent">@Model.ProviderConfigName</span></h1>
+<h1>@Html.ActionLink("Home", "Overview", "Home") - Import or Export on <span class="accent">@Model.ProviderConfigName</span></h1>
     
 <section class="general">
     <h2>Import | Step 1</h2>
@@ -56,7 +56,7 @@
 <section class="general">
     <a id="export"></a>
     <h2>Export</h2>
-    @using (Html.BeginForm("Export", "Home", FormMethod.Post))
+    @using (Html.BeginForm("Export", "ImportExport", FormMethod.Post))
     {
         <input type="hidden" name="providerConfigName" value="@Model.ProviderConfigName"/>
         <h3>File Format</h3>

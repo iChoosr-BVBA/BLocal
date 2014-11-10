@@ -22,11 +22,6 @@ namespace BLocal.Web.Manager.Controllers
             ProviderGroupFactory = new ProviderGroupFactory();
         }
 
-        public ActionResult Overview()
-        {
-            return View();
-        }
-
         public ActionResult Index(String providerConfigName)
         {
             var localization = Session.Get<ProviderGroup>(ManualProviderGroupName);

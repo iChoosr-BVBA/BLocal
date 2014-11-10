@@ -1,4 +1,4 @@
-﻿@model BLocal.Web.Manager.Models.Home.ImportReportData
+﻿@model BLocal.Web.Manager.Models.ImportExport.ImportReportData
 
 @{
     ViewBag.Title = "Import";
@@ -67,15 +67,15 @@
                 if (!confirm("Finalize import? You will be notified once it's finished."))
                     return;
 
-                updateList($(".inserts tr"), '@Url.Action("ImportFinalizeInsert")', syncFinish);
-                updateList($(".updates tr"), '@Url.Action("ImportFinalizeUpdate")', syncFinish);
-                updateList($(".deletes tr"), '@Url.Action("ImportFinalizeDelete")', syncFinish);
+                updateList($(".inserts tr"), '@Url.Action("FinalizeInsert")', syncFinish);
+                updateList($(".updates tr"), '@Url.Action("FinalizeUpdate")', syncFinish);
+                updateList($(".deletes tr"), '@Url.Action("FinalizeDelete")', syncFinish);
             });
         });
     </script>
 }
 
-<h1>@Html.ActionLink("Home", "Overview") - Import / Export - [@Model.ProviderGroupName]</h1>
+<h1>@Html.ActionLink("Home", "Overview", "Home") - Import / Export - [@Model.ProviderGroupName]</h1>
     
 <section class="general">
     <h2>Import | Step 2</h2>
