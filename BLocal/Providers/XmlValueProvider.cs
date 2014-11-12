@@ -52,7 +52,6 @@ namespace BLocal.Providers
                         }
                     }
                     var mappingElement = doc.DocumentElement;
-                    Debug.Assert(mappingElement != null, "mappingElement != null");
                     if (mappingElement.Name != "mapping")
                         throw new Exception("Expected root element named 'mapping'");
 
@@ -63,7 +62,6 @@ namespace BLocal.Providers
         }
         private void ProcessPartnode(XmlElement partElement, GroupNode parent)
         {
-            Debug.Assert(partElement.Attributes != null, "partNode.Attributes != null");
             var group = new GroupNode(partElement.Attributes["id"].Value, parent);
             _groups.Add(group.ToString(), group);
             foreach (var elem in partElement.ChildNodes.OfType<XmlElement>())
@@ -168,7 +166,6 @@ namespace BLocal.Providers
                 {
                     var doc = new XmlDocument();
                     doc.Load(importStream);
-                    Debug.Assert(doc.DocumentElement != null, "doc.DocumentElement != null");
                     foreach (var group in doc.DocumentElement.ChildNodes.OfType<XmlElement>())
                     {
                         var groupPath = group.Attributes["path"].InnerText;

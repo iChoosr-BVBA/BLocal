@@ -14,7 +14,6 @@ namespace BLocal.Web.Manager.Context
             if (new[]{"index", "authenticate"}.Contains(route["action"].ToString().ToLowerInvariant()) && route["controller"].ToString().ToLowerInvariant() == "home")
                 return;
 
-            Debug.Assert(filterContext.HttpContext.Session != null, "filterContext.HttpContext.Session != null");
             var lastAuth = filterContext.HttpContext.Session["auth"] as DateTime?;
 
             if (lastAuth == null || (DateTime.Now - lastAuth) > TimeSpan.FromMinutes(15))

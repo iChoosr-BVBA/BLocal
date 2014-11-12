@@ -22,11 +22,8 @@ namespace BLocal.Web.Manager.Controllers
         
         public ActionResult Index(String leftConfigName, String rightConfigName, Boolean hardReload = false)
         {
-            var leftProviders = Session.Get<ProviderGroup>(SynchronizationProviderGroupNameBase + leftConfigName)
-                ?? Session.Set(String.Format(SynchronizationProviderGroupNameBase, "Left"), ProviderGroupFactory.CreateProviderGroup(leftConfigName));
-
-            var rightProviders = Session.Get<ProviderGroup>(SynchronizationProviderGroupNameBase + rightConfigName)
-                ?? Session.Set(String.Format(SynchronizationProviderGroupNameBase, "Right"), ProviderGroupFactory.CreateProviderGroup(rightConfigName));
+            var leftProviders = Session.GetOrSetDefault(String.Format(SynchronizationProviderGroupNameBase, "Left"), ProviderGroupFactory.CreateProviderGroup(leftConfigName));
+            var rightProviders = Session.GetOrSetDefault(String.Format(SynchronizationProviderGroupNameBase, "Right"), ProviderGroupFactory.CreateProviderGroup(rightConfigName));
 
             if (hardReload)
             {

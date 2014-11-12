@@ -26,6 +26,7 @@ namespace BLocal.Web.Manager.Controllers
             if (localization == null || localization.Name != providerConfigName)
                 Session.Set(HistoryProviderGroupName, localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName));
 
+            localization.HistoryManager.Reload();
             var allValues = localization.ValueManager.GetAllValuesQualified();
             localization.HistoryManager.AdjustHistory(allValues, Session.Get<String>("author"));
             var history = localization.HistoryManager.ProvideHistory()
