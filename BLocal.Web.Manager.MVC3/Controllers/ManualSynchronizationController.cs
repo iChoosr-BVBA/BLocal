@@ -25,11 +25,8 @@ namespace BLocal.Web.Manager.Controllers
             var leftProviders = Session.GetOrSetDefault(String.Format(SynchronizationProviderGroupNameBase, "Left"), ProviderGroupFactory.CreateProviderGroup(leftConfigName));
             var rightProviders = Session.GetOrSetDefault(String.Format(SynchronizationProviderGroupNameBase, "Right"), ProviderGroupFactory.CreateProviderGroup(rightConfigName));
 
-            if (hardReload)
-            {
-                leftProviders.ValueManager.Reload();
-                rightProviders.ValueManager.Reload();
-            }
+            leftProviders.ValueManager.Reload();
+            rightProviders.ValueManager.Reload();
 
             var leftValues = leftProviders.ValueManager.GetAllValuesQualified().ToArray();
             var rightValues = rightProviders.ValueManager.GetAllValuesQualified().ToArray();
