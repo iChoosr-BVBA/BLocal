@@ -45,9 +45,6 @@
             data: { part: part, key: key, locale: locale, content: content },
             type: 'POST',
             success: callback,
-            error: function() {
-                alert("Something went wrong. Check your internet connection and try again. If the problem persists, contact IT.");
-            }
         });
     }
 
@@ -56,10 +53,7 @@
             url: getPageUrl('deleteValue'),
             data: { part: part, key: key, locale: locale },
             type: 'POST',
-            success: callback,
-            error: function() {
-                alert("Something went wrong. Check your internet connection and try again. If the problem persists, contact IT.");
-            }
+            success: callback
         });
     };
 

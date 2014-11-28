@@ -40,9 +40,6 @@
                             success: function() {
                                 current.remove();
                                 fix.close();
-                            },
-                            error: function() {
-                                alert("Something went wrong. Check your internet connection and try again. If the problem persists, contact IT.");
                             }
                         });
                         return true;
@@ -58,9 +55,6 @@
                             success: function() {
                                 $(".missingValue[data-part='" + part + "'][data-key='" + key + "']").remove();
                                 fix.close();
-                            },
-                            error: function() {
-                                alert("Something went wrong. Check your internet connection and try again. If the problem persists, contact IT.");
                             }
                         });
                         return true;

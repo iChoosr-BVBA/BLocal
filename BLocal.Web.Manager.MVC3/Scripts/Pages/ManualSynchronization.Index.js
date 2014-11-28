@@ -32,9 +32,6 @@
             type: 'POST',
             success: function () {
                 window.location.reload();
-            },
-            error: function () {
-                alert("Something went wrong. Check your internet connection and try again. If the problem persists, contact IT.");
             }
         });
 
@@ -78,9 +75,6 @@
             type: 'POST',
             success: function () {
                 element.remove();
-            },
-            error: function () {
-                alert("Something went wrong. Check your internet connection and try again. If the problem persists, contact IT.");
             }
         });
     });
