@@ -185,8 +185,6 @@
                 if ($(this).html().toLowerCase().indexOf(filterval) == -1)
                     $(this).parent("p").hide().attr("data-hidden", "");
             });
-
-            return false;
         });
 
         $("section.part").each(function() {
