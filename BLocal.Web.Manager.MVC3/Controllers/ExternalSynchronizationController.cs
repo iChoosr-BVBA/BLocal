@@ -32,7 +32,7 @@ namespace BLocal.Web.Manager.Controllers
 
             var thisVersion = System.Reflection.Assembly.GetAssembly(typeof (HomeController)).GetName().Version.ToString();
             if(!String.Equals(authenticationRequest.Version, thisVersion))
-                throw new Exception(String.Format("Trying to connect from version {0} to version {1}", authenticationRequest.Version, thisVersion));
+                return Content(String.Format("Trying to connect from version {0} to version {1}", authenticationRequest.Version ?? "N/A", thisVersion), "application/text", Encoding.Unicode);
 
             var dictionary = (Dictionary<Guid, SynchronizationSession>)(Request.RequestContext.HttpContext.Application["sessions"]
                 ?? (Request.RequestContext.HttpContext.Application["sessions"] = new Dictionary<Guid, SynchronizationSession>()));

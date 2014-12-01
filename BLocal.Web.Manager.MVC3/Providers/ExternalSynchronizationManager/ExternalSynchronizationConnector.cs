@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -121,9 +122,16 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
                     {"RequestData", JsonConvert.SerializeObject(request, _partConverter)}
                 };
 
-                var response = client.UploadValues(BaseUrl + request.Path, values);
-                var responseString = Encoding.Unicode.GetString(response);
-                return JsonConvert.DeserializeObject<TResponse>(responseString, _partConverter);
+                    var response = client.UploadValues(BaseUrl + request.Path, values);
+                    var responseString = Encoding.Unicode.GetString(response);
+                try
+                {
+                    return JsonConvert.DeserializeObject<TResponse>(responseString, _partConverter);
+                }
+                catch (JsonReaderException)
+                {
+                    throw new Exception("Unexpected response: " + responseString);
+                }
             }
         }
     }
