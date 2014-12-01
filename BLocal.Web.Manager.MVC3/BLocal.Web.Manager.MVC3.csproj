@@ -84,6 +84,7 @@
     <Compile Include="Models\AutomaticSynchronization\Removal.cs" />
     <Compile Include="Models\AutomaticSynchronization\SynchronizationResult.cs" />
     <Compile Include="Models\AutomaticSynchronization\Update.cs" />
+    <Compile Include="Models\History\HistoryData.cs" />
     <Compile Include="Models\ExternalSynchronization\ExternalSynchronizationRequest.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Business\ImportConfiguration.cs" />

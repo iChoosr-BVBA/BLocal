@@ -141,7 +141,7 @@ namespace BLocal.Web.Manager.Controllers
             var providerGroup = GetProviderGroup(request);
             var overrideHistoryRequest = JsonConvert.DeserializeObject<OverrideHistoryRequest>(request.RequestData, _partConverter);
             providerGroup.HistoryManager.OverrideHistory(overrideHistoryRequest.History);
-            var json = JsonConvert.SerializeObject(new OverrideHistoryResponse { History = providerGroup.HistoryManager.ProvideHistory().ToArray() }, _partConverter);
+            var json = JsonConvert.SerializeObject(new OverrideHistoryResponse(), _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
 
@@ -161,7 +161,7 @@ namespace BLocal.Web.Manager.Controllers
             var providerGroup = GetProviderGroup(request);
             var progressHistoryRequest = JsonConvert.DeserializeObject<ProgressHistoryRequest>(request.RequestData, _partConverter);
             providerGroup.HistoryManager.ProgressHistory(progressHistoryRequest.Value, progressHistoryRequest.Author);
-            var json = JsonConvert.SerializeObject(new ProgressHistoryResponse { History = providerGroup.HistoryManager.ProvideHistory() }, _partConverter);
+            var json = JsonConvert.SerializeObject(new ProgressHistoryResponse(), _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
 

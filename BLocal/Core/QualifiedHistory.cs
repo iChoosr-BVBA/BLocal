@@ -25,17 +25,17 @@ namespace BLocal.Core
             if (othersPrevious == null)
                 return false;
 
-            if (thisCurrent.ContentHash == othersPrevious.ContentHash && thisCurrent.DateTime == othersPrevious.DateTime)
+            if (thisCurrent.ContentHash == othersPrevious.ContentHash && thisCurrent.DateTimeUtc == othersPrevious.DateTimeUtc)
                 return true;
 
             // all entries except the latest one, which we already compared, from new to old
             for(var i = Entries.Count - 2; i >= 0; i--) 
             {
                 var entry = Entries[i];
-                if (entry.ContentHash == thisCurrent.ContentHash && entry.DateTime == thisCurrent.DateTime)
+                if (entry.ContentHash == thisCurrent.ContentHash && entry.DateTimeUtc == thisCurrent.DateTimeUtc)
                     return true;
 
-                if (entry.DateTime < thisCurrent.DateTime)
+                if (entry.DateTimeUtc < thisCurrent.DateTimeUtc)
                     return false;
             }
 

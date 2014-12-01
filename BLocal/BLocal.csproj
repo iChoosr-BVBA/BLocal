@@ -72,6 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\ContentHasher.cs" />
     <Compile Include="Core\QualifiedHistoryEntry.cs" />
     <Compile Include="Core\ILocalizationHistoryManager.cs" />
     <Compile Include="Core\QualifiedHistory.cs" />

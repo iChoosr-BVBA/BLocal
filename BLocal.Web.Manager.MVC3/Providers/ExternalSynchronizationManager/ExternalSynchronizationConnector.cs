@@ -87,18 +87,16 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             return response.History;
         }
 
-        public IEnumerable<QualifiedHistory> OverrideHistory(QualifiedHistory qualifiedHistory)
+        public void OverrideHistory(QualifiedHistory qualifiedHistory)
         {
             var request = new OverrideHistoryRequest { History = qualifiedHistory };
             var response = MakeRequest(request);
-            return response.History;
         }
 
-        public IEnumerable<QualifiedHistory> ProgressHistory(QualifiedValue value, String author)
+        public void ProgressHistory(QualifiedValue value, String author)
         {
             var request = new ProgressHistoryRequest { Value = value, Author = author };
             var response = MakeRequest(request);
-            return response.History;
         }
 
         public void Persist()

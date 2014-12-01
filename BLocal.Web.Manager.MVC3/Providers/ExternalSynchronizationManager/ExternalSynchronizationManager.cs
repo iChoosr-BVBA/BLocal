@@ -61,7 +61,17 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
 
         public void ProgressHistory(QualifiedValue value, String author)
         {
-            Reload(_connector.ProgressHistory(value, author));
+            _connector.ProgressHistory(value, author);
+
+            if(!_history.ContainsKey(value.Qualifier))
+                _history.Add(value.Qualifier, new QualifiedHistory { Qualifier = value.Qualifier });
+
+            _history[value.Qualifier].Entries.Add(new QualifiedHistoryEntry {
+                Author = author,
+                Content = value.Value,
+                ContentHash = new ContentHasher().CalculateHash(value.Value),
+                DateTimeUtc = DateTime.UtcNow
+            });
         }
 
         public QualifiedHistory GetHistory(Qualifier.Unique qualifier)
@@ -71,7 +81,8 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
 
         public void OverrideHistory(QualifiedHistory qualifiedHistory)
         {
-            Reload(_connector.OverrideHistory(qualifiedHistory));
+            _connector.OverrideHistory(qualifiedHistory);
+            _history[qualifiedHistory.Qualifier] = qualifiedHistory;
         }
 
         private void Reload(IEnumerable<QualifiedValue> allValues)

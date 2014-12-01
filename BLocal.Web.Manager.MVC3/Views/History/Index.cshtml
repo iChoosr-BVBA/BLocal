@@ -1,6 +1,4 @@
-﻿@using BLocal.Web.Manager.Business
-@using BLocal.Web.Manager.Extensions
-@model IEnumerable<BLocal.Core.QualifiedHistory>
+﻿@model BLocal.Web.Manager.Models.History.HistoryData
 @{
     ViewBag.Title = "History";
 }
@@ -8,21 +6,21 @@
     <script type="text/javascript">
         window.urls = window.urls || {};
 
-        window.urls.current = '@Url.Action("ReloadLocalization", "DirectEditing", new { providerConfigName = Session.Get<ProviderGroup>("historyProviderGroup").Name })';
+        window.urls.current = '@Url.Action("ReloadLocalization", "DirectEditing", new { providerConfigName = Model.ProviderName })';
         window.urls.updateCreateValue = '@Url.Action("UpdateCreateValue", "DirectEditing")';
         window.urls.deleteValue = '@Url.Action("DeleteValue", "DirectEditing")';
     </script>
 }
-<h1>@Html.ActionLink("Home", "Overview", "Home") - History of <span class="accent">@(Session.Get<ProviderGroup>("historyProviderGroup").Name)</span></h1>
+<h1>@Html.ActionLink("Home", "Overview", "Home") - History of <span class="accent">@(Model.ProviderName)</span></h1>
 <section class="general">
     <table cellpadding="0" cellspacing="0" class="updates" style="width: 100%"><tbody>
-        @foreach (var history in @Model)
+        @foreach (var history in @Model.History)
         {
             var latest = history.LatestEntry();
             var previous = history.PreviousEntry();
             <tr class="lrvalue">
                 <td class="">@history.Qualifier</td>
-                <td class="">@latest.DateTime</td>
+                <td class="">@latest.DateTimeUtc</td>
                 <td class="">@latest.Author</td>
                 <td style="">
                     <p class="oldvalue">@(previous == null ? "" : previous.Content)</p>

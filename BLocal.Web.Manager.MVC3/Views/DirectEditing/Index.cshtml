@@ -39,7 +39,7 @@
         <h2><span class="title">@part.Part.ToString()</span> [<span class="count">@part.Localizations.Count</span>]</h2>
         <section class="values">
             @foreach (var value in part.Localizations.OrderBy(value => value.Qualifier.Key).ThenBy(value => value.Qualifier.Locale.Name)) {
-                <p class="value" data-locale="@value.Qualifier.Locale" data-key="@value.Qualifier.Key" title="Last edit by @value.History.LatestEntry().Author on @value.History.LatestEntry().DateTime">
+                <p class="value" data-locale="@value.Qualifier.Locale" data-key="@value.Qualifier.Key" title="Last edit by @value.History.LatestEntry().Author on @value.History.LatestEntry().DateTimeUtc">
                     <span class="key">@value.Qualifier.Key</span>
                     <span class="locale"><nobr>@value.Qualifier.Locale</nobr></span>
                     <span class="content">@value.Value</span>

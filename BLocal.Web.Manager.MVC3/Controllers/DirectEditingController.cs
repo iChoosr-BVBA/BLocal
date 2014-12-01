@@ -79,10 +79,14 @@ namespace BLocal.Web.Manager.Controllers
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
             var value = content;
             var qualifiedValue = new QualifiedValue(qualifier, value);
+
             localization.ValueManager.UpdateCreateValue(qualifiedValue);
-            localization.HistoryManager.AdjustHistory(localization.ValueManager.GetAllValuesQualified(), Session.Get<String>("author"));
+            localization.HistoryManager.ProgressHistory(qualifiedValue, Session.Get<String>("author"));
 
             localization.ValueManager.Persist();
+            if (localization.ValueManager != localization.HistoryManager)
+                localization.HistoryManager.Persist();
+
             return Json(new {ok = true});
         }
 
@@ -97,6 +101,9 @@ namespace BLocal.Web.Manager.Controllers
             localization.ValueManager.DeleteValue(qualifier);
 
             localization.ValueManager.Persist();
+            if (localization.ValueManager != localization.HistoryManager)
+                localization.HistoryManager.Persist();
+
             return Json(new { ok = true });
         }
 

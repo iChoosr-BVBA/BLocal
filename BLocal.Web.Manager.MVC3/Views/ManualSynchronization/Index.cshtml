@@ -32,7 +32,7 @@
                 <td style="white-space: nowrap;">
                     @value.Value.Qualifier.Key <br />
                     <span class="localepart">@value.Value.Qualifier.Locale | @value.Value.Qualifier.Part</span><br />
-                    <span class="localepart">@value.History.LatestEntry().DateTime - @value.History.LatestEntry().Author</span>
+                    <span class="localepart">@value.History.LatestEntry().DateTimeUtc - @value.History.LatestEntry().Author</span>
                 </td>
                 <td style="width: 99%;">@value.Value.Value</td>
             </tr>
@@ -78,7 +78,7 @@
                         <button data-side="Left" data-part="@value.Left.Value.Qualifier.Part" data-locale="@value.Left.Value.Qualifier.Locale" data-key="@value.Left.Value.Qualifier.Key" disabled="disabled">
                             Change on <span class="accent">@Model.RightName</span> using this value
                         </button><br />
-                        @value.Left.History.LatestEntry().DateTime - @value.Left.History.LatestEntry().Author
+                        @value.Left.History.LatestEntry().DateTimeUtc - @value.Left.History.LatestEntry().Author
                     </p>
                 </div>
                 <div class="right">
@@ -87,7 +87,7 @@
                         <button data-side="Right" data-part="@value.Right.Value.Qualifier.Part" data-locale="@value.Right.Value.Qualifier.Locale" data-key="@value.Right.Value.Qualifier.Key" disabled="disabled">
                             Change on <span class="accent">@Model.LeftName</span> using this value
                         </button><br />
-                        @value.Left.History.LatestEntry().DateTime - @value.Left.History.LatestEntry().Author
+                        @value.Left.History.LatestEntry().DateTimeUtc - @value.Left.History.LatestEntry().Author
                     </p>
                 </div>
                 <div class="clear"></div>
