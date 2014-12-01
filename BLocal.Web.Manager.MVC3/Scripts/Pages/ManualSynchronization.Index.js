@@ -10,6 +10,7 @@
     });
 
     $("button.delete, button.duplicate").click(function () {
+        blockUI();
         var remove = $(this).hasClass("delete");
         var checkboxes = $(this).parents(".general").find("input[type=checkbox]:checked");
         if (!confirm((remove ? "Delete" : "Duplicate") + " " + checkboxes.length + " items?"))
@@ -63,6 +64,7 @@
     });
 
     $("section.comparison button").click(function () {
+        blockUI();
         var element = $(this).parents(".difference");
         $.ajax({
             url: urls.update,
@@ -75,6 +77,7 @@
             type: 'POST',
             success: function () {
                 element.remove();
+                unblockUI();
             }
         });
     });

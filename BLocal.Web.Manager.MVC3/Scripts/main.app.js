@@ -25,3 +25,10 @@ $(document).ajaxError(function (event, jqXhr, settings, thrownError) {
     else
         alert("Something went wrong. Please go \"home\" and try again from there. If the problem persists, contact IT.");
 });
+
+var blockUI = function() {
+    $("body").addClass("busy");
+}
+var unblockUI = function() {
+    $("body").removeClass("busy");
+}

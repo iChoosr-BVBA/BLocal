@@ -45,6 +45,7 @@
             data: { part: part, key: key, locale: locale, content: content },
             type: 'POST',
             success: callback,
+            error: unblockUI
         });
     }
 
@@ -53,7 +54,8 @@
             url: getPageUrl('deleteValue'),
             data: { part: part, key: key, locale: locale },
             type: 'POST',
-            success: callback
+            success: callback,
+            error: unblockUI
         });
     };
 
@@ -124,35 +126,41 @@
             var localeEl = elements.find("input.locale").val(locale);
             var contentEl = elements.find("textarea.content").val(content);
 
-            var update = function (newPart, newKey, newLocale, newContent) {
+            var update = function (newPart, newKey, newLocale, newContent, callback) {
                 updateCreateValue(newPart, newKey, newLocale, newContent, function () {
                     showValue(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val());
                     details.close();
+                    if (callback)
+                        callback();
                 });
             };
 
             elements.find(".save, .updatecopy").click(function () {
+                blockUI();
                 var newPart = partEl.val(), newKey = keyEl.val(), newLocale = localeEl.val(), newContent = contentEl.val();
-                update(newPart, newKey, newLocale, newContent);
+                update(newPart, newKey, newLocale, newContent, unblockUI);
             });
 
             elements.find(".updaterecreate").click(function () {
+                blockUI();
                 var newPart = partEl.val(), newKey = keyEl.val(), newLocale = localeEl.val(), newContent = contentEl.val();
 
                 if (part == newPart && key == newKey && locale == newLocale) {
-                    update(newPart, newKey, newLocale, newContent);
+                    update(newPart, newKey, newLocale, newContent, unblockUI);
                 } else {
                     deleteValue(part, key, locale, function () {
                         remove(p);
-                        update(newPart, newKey, newLocale, newContent);
+                        update(newPart, newKey, newLocale, newContent, unblockUI);
                     });
                 }
             });
 
-            elements.find(".updatedelete").click(function() {
+            elements.find(".updatedelete").click(function () {
+                blockUI();
                 deleteValue(part, key, locale, function() {
                     remove(p);
                     details.close();
+                    unblockUI();
                 });
             });
 
