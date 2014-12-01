@@ -1,4 +1,6 @@
-﻿@using BLocal.Web.Manager.Configuration
+﻿@using BLocal.Core
+@using BLocal.Web.Manager.Configuration
+@using BLocal.Web.Manager.Controllers
 @using BLocal.Web.Manager.Models.AutomaticSynchronization
 @{
     ViewBag.Title = "Localization Manager";
@@ -146,4 +148,7 @@
             <button type="submit">Start</button>
         </p>
     }
+</section>
+<section class="general left">
+    Localization Manager Version: @System.Reflection.Assembly.GetAssembly(typeof(HomeController)).GetName().Version
 </section>
