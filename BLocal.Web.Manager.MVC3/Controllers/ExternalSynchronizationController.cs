@@ -30,6 +30,10 @@ namespace BLocal.Web.Manager.Controllers
             if (authenticationRequest.Password != ConfigurationManager.AppSettings["password"])
                 return Content("", "application/json", Encoding.Unicode);
 
+            var thisVersion = System.Reflection.Assembly.GetAssembly(typeof (HomeController)).GetName().Version.ToString();
+            if(!String.Equals(authenticationRequest.Version, thisVersion))
+                throw new Exception(String.Format("Trying to connect from version {0} to version {1}", authenticationRequest.Version, thisVersion));
+
             var dictionary = (Dictionary<Guid, SynchronizationSession>)(Request.RequestContext.HttpContext.Application["sessions"]
                 ?? (Request.RequestContext.HttpContext.Application["sessions"] = new Dictionary<Guid, SynchronizationSession>()));
 

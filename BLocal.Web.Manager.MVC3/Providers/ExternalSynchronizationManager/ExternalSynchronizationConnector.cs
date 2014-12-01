@@ -26,7 +26,12 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
 
         public void Authenticate(String password)
         {
-            var request = new AuthenticationRequest {Password = password};
+            var request = new AuthenticationRequest
+            {
+                Password = password,
+                Version = System.Reflection.Assembly.GetAssembly(typeof(ExternalSynchronizationConnector)).GetName().Version.ToString()
+            };
+
             var response = MakeRequest(request);
             ApiKey = response.ApiKey;
         }

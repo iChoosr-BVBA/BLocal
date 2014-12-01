@@ -7,5 +7,6 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager.Communicat
         public String Path { get { return "Authenticate"; } }
 
         public String Password { get; set; }
+        public String Version { get; set; }
     }
 }
