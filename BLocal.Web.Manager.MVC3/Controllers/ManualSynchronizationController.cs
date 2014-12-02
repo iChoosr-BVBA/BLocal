@@ -11,8 +11,6 @@ namespace BLocal.Web.Manager.Controllers
 {
     public class ManualSynchronizationController : Controller
     {
-        private const String SynchronizationProviderGroupNameBase = "synchronization-{0}";
-
         public ProviderGroupFactory ProviderGroupFactory { get; set; }
 
         public ManualSynchronizationController()
@@ -23,13 +21,11 @@ namespace BLocal.Web.Manager.Controllers
         public ActionResult Index(String leftConfigName, String rightConfigName, Boolean hardReload = false)
         {
             var leftProviders = ProviderGroupFactory.CreateProviderGroup(leftConfigName);
-            Session.Set(String.Format(SynchronizationProviderGroupNameBase, "Left"), leftProviders);
             leftProviders.ValueManager.Reload();
             var leftValues = leftProviders.ValueManager.GetAllValuesQualified().ToArray();
             leftProviders.HistoryManager.AdjustHistory(leftValues, Session.Get<String>("author"));
 
             var rightProviders = ProviderGroupFactory.CreateProviderGroup(rightConfigName);
-            Session.Set(String.Format(SynchronizationProviderGroupNameBase, "Right"), rightProviders);
             rightProviders.ValueManager.Reload();
             var rightValues = rightProviders.ValueManager.GetAllValuesQualified().ToArray();
             rightProviders.HistoryManager.AdjustHistory(rightValues, Session.Get<String>("author"));
@@ -51,17 +47,19 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [ValidateInput(false)]
-        public JsonResult Remove(SynchronizationItem[] items)
+        public JsonResult Remove(SynchronizationItem[] items, String leftProviderConfigName, String rightProviderConfigName)
         {
             var changedLocalizationSides = new HashSet<ProviderGroup>();
             var sourcedLocalizationSides = new HashSet<ProviderGroup>();
+            var sideProviders = new Dictionary<Side, ProviderGroup> {
+                { Side.Left, ProviderGroupFactory.CreateProviderGroup(leftProviderConfigName) },
+                { Side.Right, ProviderGroupFactory.CreateProviderGroup(rightProviderConfigName) }
+            };
 
             foreach (var item in items)
             {
-                var localizationFrom = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, item.Side));
-                var localizationTo = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, item.Side));
-                if (localizationTo == null)
-                    throw new Exception("Localization not loaded!");
+                var localizationFrom = sideProviders[item.Side];
+                var localizationTo = sideProviders[item.Side == Side.Left ? Side.Right : Side.Left];
 
                 if (!changedLocalizationSides.Contains(localizationTo))
                     changedLocalizationSides.Add(localizationTo);
@@ -73,8 +71,8 @@ namespace BLocal.Web.Manager.Controllers
 
                 // progress and merge history
                 localizationFrom.HistoryManager.ProgressHistory(new QualifiedValue(qualifier, null), Session.Get<String>("author"));
-                var historyFrom = localizationFrom.HistoryManager.GetHistory(qualifier);
-                var historyTo = localizationTo.HistoryManager.GetHistory(qualifier);
+                var historyFrom = localizationFrom.HistoryManager.GetHistory(qualifier) ?? new QualifiedHistory();
+                var historyTo = localizationTo.HistoryManager.GetHistory(qualifier) ?? new QualifiedHistory();
                 var mergedHistory = historyFrom.Entries.Union(historyTo.Entries).Distinct().OrderBy(h => h.DateTimeUtc);
                 var qualifiedMergedHistory = new QualifiedHistory { Qualifier = qualifier, Entries = mergedHistory.ToList() };
 
@@ -101,15 +99,19 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [ValidateInput(false)]
-        public JsonResult Duplicate(SynchronizationItem[] items)
+        public JsonResult Duplicate(SynchronizationItem[] items, String leftProviderConfigName, String rightProviderConfigName)
         {
             var changedLocalizationSides = new HashSet<ProviderGroup>();
             var sourcedLocalizationSides = new HashSet<ProviderGroup>();
+            var sideProviders = new Dictionary<Side, ProviderGroup> {
+                { Side.Left, ProviderGroupFactory.CreateProviderGroup(leftProviderConfigName) },
+                { Side.Right, ProviderGroupFactory.CreateProviderGroup(rightProviderConfigName) }
+            };
 
             foreach (var item in items)
             {
-                var localizationFrom = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, item.Side));
-                var localizationTo = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, (item.Side == "Right" ? "Left" : "Right")));
+                var localizationFrom = sideProviders[item.Side];
+                var localizationTo = sideProviders[item.Side == Side.Left ? Side.Right : Side.Left];
 
                 if (localizationFrom == null || localizationTo == null)
                     throw new Exception("Localization not loaded!");
@@ -152,15 +154,19 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [ValidateInput(false)]
-        public JsonResult Update(SynchronizationItem[] items)
+        public JsonResult Update(SynchronizationItem[] items, String leftProviderConfigName, String rightProviderConfigName)
         {
             var changedLocalizationSides = new HashSet<ProviderGroup>();
             var sourcedLocalizationSides = new HashSet<ProviderGroup>();
+            var sideProviders = new Dictionary<Side, ProviderGroup> {
+                { Side.Left, ProviderGroupFactory.CreateProviderGroup(leftProviderConfigName) },
+                { Side.Right, ProviderGroupFactory.CreateProviderGroup(rightProviderConfigName) }
+            };
 
             foreach (var item in items)
             {
-                var localizationFrom = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, item.Side));
-                var localizationTo = Session.Get<ProviderGroup>(String.Format(SynchronizationProviderGroupNameBase, (item.Side == "Right" ? "Left" : "Right")));
+                var localizationFrom = sideProviders[item.Side];
+                var localizationTo = sideProviders[item.Side == Side.Left ? Side.Right : Side.Left];
 
                 if (localizationFrom == null || localizationTo == null)
                     throw new Exception("Localization not loaded!");

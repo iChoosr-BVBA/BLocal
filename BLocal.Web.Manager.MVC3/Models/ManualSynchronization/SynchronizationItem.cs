@@ -4,9 +4,15 @@ namespace BLocal.Web.Manager.Models.ManualSynchronization
 {
     public class SynchronizationItem
     {
-        public String Side { get; set; }
+        public Side Side { get; set; }
         public String Part { get; set; }
         public String Locale  { get; set; }
         public String Key { get; set; }
+    }
+
+    public enum Side
+    {
+        Right,
+        Left
     }
 }

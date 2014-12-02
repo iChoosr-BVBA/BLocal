@@ -1,7 +1,5 @@
-﻿@using BLocal.Web.Manager.Business
-@using BLocal.Web.Manager.Extensions
-@using BLocal.Web.Manager.Models.DirectEditing
-@model IEnumerable<LocalizedPart>
+﻿@using BLocal.Web.Manager.Models.DirectEditing
+@model IndexModel
 @{
     ViewBag.Title = "Manual Editing";
     ViewBag.PageName = "DirectEditing.Index";
@@ -9,14 +7,13 @@
 @section Head {
     <script type="text/javascript">
         window.urls = window.urls || {};
-
-        window.urls.current = '@Url.Action("ReloadLocalization", "DirectEditing", new { providerConfigName = Session.Get<ProviderGroup>("manualProviderGroup").Name })';
-        window.urls.updateCreateValue = '@Url.Action("UpdateCreateValue", "DirectEditing")';
-        window.urls.deleteValue = '@Url.Action("DeleteValue", "DirectEditing")';
+        window.urls.current = '@Html.Raw(Url.Action("Index", "DirectEditing", new { providerConfigName = Model.ProviderConfigName }))';
+        window.urls.updateCreateValue = '@Html.Raw(Url.Action("UpdateCreateValue", "DirectEditing", new { providerConfigName = Model.ProviderConfigName }))';
+        window.urls.deleteValue = '@Html.Raw(Url.Action("DeleteValue", "DirectEditing", new { providerConfigName = Model.ProviderConfigName }))';
     </script>
 }
 
-<h1>@Html.ActionLink("Home", "Overview", "Home") - Manual Editing of <span class="accent">@(Session.Get<ProviderGroup>("manualProviderGroup").Name)</span></h1>
+<h1>@Html.ActionLink("Home", "Overview", "Home") - Manual Editing of <span class="accent">@Model.ProviderConfigName</span></h1>
 <p><span class="open">open</span> | <span class="collapse">collapse</span> | <span class="reload">reload</span> | <span class="hardreload" title="dump localization cache, reload from scratch">hard reload</span></p>
     
 <section class="general">
@@ -30,7 +27,7 @@
     <div><p class="result"></p></div>
 </section>
 
-@foreach(var localizedPart in Model) {
+@foreach(var localizedPart in Model.Parts) {
     @RenderPart(localizedPart)
 }
 

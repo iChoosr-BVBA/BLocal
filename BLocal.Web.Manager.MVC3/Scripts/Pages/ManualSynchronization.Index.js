@@ -19,7 +19,8 @@
         var data = {};
         var counter = 0;
         checkboxes.each(function () {
-            data["items[" + counter + "].side"] = $(this).attr("data-side");
+            var affectedSide = (($(this).attr("data-side") === "Left") === remove) ? "Right" : "Left";
+            data["items[" + counter + "].side"] = affectedSide;
             data["items[" + counter + "].part"] = $(this).attr("data-part");
             data["items[" + counter + "].key"] = $(this).attr("data-key");
             data["items[" + counter + "].locale"] = $(this).attr("data-locale");

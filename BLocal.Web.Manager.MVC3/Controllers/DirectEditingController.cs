@@ -13,8 +13,6 @@ namespace BLocal.Web.Manager.Controllers
     [Authenticate]
     public class DirectEditingController : Controller
     {
-        private const string ManualProviderGroupName = "manualProviderGroup";
-
         public ProviderGroupFactory ProviderGroupFactory { get; set; }
 
         public DirectEditingController()
@@ -24,9 +22,7 @@ namespace BLocal.Web.Manager.Controllers
 
         public ActionResult Index(String providerConfigName)
         {
-            var localization = Session.Get<ProviderGroup>(ManualProviderGroupName);
-            if (localization == null || localization.Name != providerConfigName)
-                Session.Set(ManualProviderGroupName, localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName));
+            var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
             localization.ValueManager.Reload();
             localization.HistoryManager.Reload();
@@ -56,25 +52,14 @@ namespace BLocal.Web.Manager.Controllers
                 groupedParts.Remove(kvp.Key);
 
             localization.ValueManager.Persist();
-            return View(groupedParts.Values);
-        }
-
-        public ActionResult ReloadLocalization(String providerConfigName)
-        {
-            var localization = Session.Get<ProviderGroup>(ManualProviderGroupName);
-            if (localization == null)
-                return RedirectToAction("Index", "Home");
-
-            localization.ValueManager.Reload();
-            return RedirectToAction("Index", new { providerConfigName });
+            var model = new IndexModel {Parts = groupedParts.Values, ProviderConfigName = providerConfigName};
+            return View(model);
         }
 
         [ValidateInput(false)]
-        public JsonResult UpdateCreateValue(String part, String locale, String key, String content)
+        public JsonResult UpdateCreateValue(String part, String locale, String key, String content, String providerConfigName)
         {
-            var localization = Session.Get<ProviderGroup>(ManualProviderGroupName);
-            if (localization == null)
-                throw new Exception("Localization not loaded!");
+            var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
             var value = content;
@@ -91,11 +76,9 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [ValidateInput(false)]
-        public JsonResult DeleteValue(String part, String locale, String key)
+        public JsonResult DeleteValue(String part, String locale, String key, String providerConfigName)
         {
-            var localization = Session.Get<ProviderGroup>(ManualProviderGroupName);
-            if (localization == null)
-                throw new Exception("Localization not loaded!");
+            var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
             localization.ValueManager.DeleteValue(qualifier);

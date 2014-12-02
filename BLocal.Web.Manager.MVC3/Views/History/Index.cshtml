@@ -2,15 +2,6 @@
 @{
     ViewBag.Title = "History";
 }
-@section Head {
-    <script type="text/javascript">
-        window.urls = window.urls || {};
-
-        window.urls.current = '@Url.Action("ReloadLocalization", "DirectEditing", new { providerConfigName = Model.ProviderName })';
-        window.urls.updateCreateValue = '@Url.Action("UpdateCreateValue", "DirectEditing")';
-        window.urls.deleteValue = '@Url.Action("DeleteValue", "DirectEditing")';
-    </script>
-}
 <h1>@Html.ActionLink("Home", "Overview", "Home") - History of <span class="accent">@(Model.ProviderName)</span></h1>
 <section class="general">
     <table cellpadding="0" cellspacing="0" class="updates" style="width: 100%"><tbody>
