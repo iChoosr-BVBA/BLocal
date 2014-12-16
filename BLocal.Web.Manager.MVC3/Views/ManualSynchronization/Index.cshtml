@@ -14,7 +14,10 @@
 }
 
 <h1>@Html.ActionLink("Home", "Overview", "Home") - Synchronization between <span class="accent">@Model.LeftName</span> and <span class="accent">@Model.RightName</span> as <span class="accent">@Session["author"]</span></h1>
-
+<section class="general">
+        <input type="checkbox" id="authorcheck" data-author="@Session["author"]" checked="checked"/>
+        <label for="authorcheck">Show only my changes</label>
+</section>
 <section class="general" data-from="left">
     <h2>Values existing on <span class="accent">@Model.LeftName</span> but not on <span class="accent">@Model.RightName</span> (@Model.LeftValuesNotRight.Length)</h2>
     <p>
@@ -25,7 +28,7 @@
     </p>
     <table cellpadding="0" cellspacing="0"><tbody>
         @foreach (var value in Model.LeftValuesNotRight) {
-            <tr class="lrvalue">
+            <tr class="lrvalue" data-author="@value.History.LatestEntry().Author">
                 <td style="white-space: nowrap">
                     <input type="checkbox" name="values" data-side="Left" data-part="@value.Value.Qualifier.Part" data-locale="@value.Value.Qualifier.Locale" data-key="@value.Value.Qualifier.Key"/>
                 </td>
@@ -48,14 +51,16 @@
         <button class="duplicate">Create on <span class="accent">@Model.LeftName</span></button>
     </p>
     <table cellpadding="0" cellspacing="0"><tbody>
-        @foreach (var value in Model.RightValuesNotLeft) {
-            <tr class="lrvalue">
+        @foreach (var value in Model.RightValuesNotLeft)
+        {
+            <tr class="lrvalue" data-author="@value.History.LatestEntry().Author">
                 <td style="white-space: nowrap">
                     <input type="checkbox" name="values" data-side="Right" data-part="@value.Value.Qualifier.Part" data-locale="@value.Value.Qualifier.Locale" data-key="@value.Value.Qualifier.Key"/>
                 </td>
                 <td style="white-space: nowrap;">
                     @value.Value.Qualifier.Key <br />
-                    <span class="localepart">@value.Value.Qualifier.Locale | @value.Value.Qualifier.Part</span>
+                    <span class="localepart">@value.Value.Qualifier.Locale | @value.Value.Qualifier.Part</span><br />
+                    <span class="localepart">@value.History.LatestEntry().DateTimeUtc - @value.History.LatestEntry().Author</span>
                 </td>
                 <td style="width: 99%;">@value.Value.Value</td>
             </tr>
@@ -67,8 +72,9 @@
     <p>
         <input class="locktoggle" type="button" value="Unlock change buttons below" data-alt="Lock change buttons below"/>
     </p>
-    @foreach (var value in Model.ValueDifferences) {
-        <section class="difference">
+    @foreach (var value in Model.ValueDifferences)
+    {
+        <section class="difference" data-author="@value.Left.History.LatestEntry().Author|@value.Right.History.LatestEntry().Author">
             <h2>@value.Left.Value.Qualifier.Key</h2>
             <p class="localepart">@value.Left.Value.Qualifier.Locale | @value.Left.Value.Qualifier.Part</p>
             <section class="comparison">

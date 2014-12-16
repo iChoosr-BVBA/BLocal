@@ -15,7 +15,7 @@ h1, h2 {
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 section.general label {
-    width: 100px;
+    min-width: 100px;
     display: inline-block;
     margin: 5px;
 }
@@ -216,4 +216,7 @@ button[disabled]:after {
 body.busy .block-ui {
     display: block;
     z-index: 1;
+}
+.hidden {
+    display: none;
 }

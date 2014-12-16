@@ -9,6 +9,25 @@
         $(this).parents(".general").find("input[type=checkbox]").prop("checked", false);
     });
 
+    $("#authorcheck").change(function () {
+        if ($(this).is(":checked")) {
+            var searchAuthor = $(this).data("author");
+
+            $("[data-author]").addClass("hidden").each(function() {
+                var authors = $(this).data("author").split('|');
+                for (var i = 0; i < authors.length; i++) {
+                    if (authors[i] === searchAuthor) {
+                        $(this).removeClass("hidden");
+                        break;
+                    }
+                }
+
+            });
+        } else {
+            $("[data-author]").removeClass("hidden");
+        }
+    }).change();
+
     $("button.delete, button.duplicate").click(function () {
         blockUI();
         var remove = $(this).hasClass("delete");
