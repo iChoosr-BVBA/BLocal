@@ -7,13 +7,13 @@
 @section Head {
     <script type="text/javascript">
         window.urls = window.urls || {};
-        window.urls.current = '@Html.Raw(Url.Action("Index", "DirectEditing", new { providerConfigName = Model.ProviderConfigName }))';
-        window.urls.updateCreateValue = '@Html.Raw(Url.Action("UpdateCreateValue", "DirectEditing", new { providerConfigName = Model.ProviderConfigName }))';
-        window.urls.deleteValue = '@Html.Raw(Url.Action("DeleteValue", "DirectEditing", new { providerConfigName = Model.ProviderConfigName }))';
+        window.urls.current = '@Html.Raw(Url.Action("Index", "DirectEditing", new { providerConfigName = Model.Provider.Name }))';
+        window.urls.updateCreateValue = '@Html.Raw(Url.Action("UpdateCreateValue", "DirectEditing", new { providerConfigName = Model.Provider.Name }))';
+        window.urls.deleteValue = '@Html.Raw(Url.Action("DeleteValue", "DirectEditing", new { providerConfigName = Model.Provider.Name }))';
     </script>
 }
 
-<h1>@Html.ActionLink("Home", "Overview", "Home") - Manual Editing of <span class="accent">@Model.ProviderConfigName</span></h1>
+<h1>@Html.ActionLink("Home", "Overview", "Home") - Manual Editing of <span style="color: @Model.Provider.Color">@Model.Provider.Name</span></h1>
 <p><span class="open">open</span> | <span class="collapse">collapse</span> | <span class="reload">reload</span> | <span class="hardreload" title="dump localization cache, reload from scratch">hard reload</span></p>
     
 <section class="general">

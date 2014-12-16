@@ -56,7 +56,7 @@ namespace BLocal.Web.Manager.Business
             if (logProvider == null)
                 throw new Exception("Could not initialize log provider, incorrect constructor arguments!");
 
-            var group = new ProviderGroup(providerConfigName, valueProvider as ILocalizedValueManager, historyProvider, logProvider);
+            var group = new ProviderGroup(providerConfig.Name, providerConfig.Color, valueProvider as ILocalizedValueManager, historyProvider, logProvider);
             group.ValueManager.Reload();
             group.HistoryManager.Reload();
             return group;

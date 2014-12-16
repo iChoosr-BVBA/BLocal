@@ -1,20 +1,20 @@
-﻿using System;
-using BLocal.Core;
+﻿using BLocal.Core;
+using BLocal.Web.Manager.Business;
 
 namespace BLocal.Web.Manager.Models.ManualSynchronization
 {
     public class SynchronizationData
     {
-        public readonly String LeftName;
-        public readonly String RightName;
+        public readonly ProviderGroup Left;
+        public readonly ProviderGroup Right;
         public readonly QualifiedHistoricalValue[] LeftValuesNotRight;
         public readonly QualifiedHistoricalValue[] RightValuesNotLeft;
         public readonly QualifiedHistoricalValuePair[] ValueDifferences;
 
-        public SynchronizationData(String leftName, String rightName, QualifiedHistoricalValue[] leftValuesNotRight, QualifiedHistoricalValue[] rightValuesNotLeft, QualifiedHistoricalValuePair[] valueDifferences)
+        public SynchronizationData(ProviderGroup left, ProviderGroup right, QualifiedHistoricalValue[] leftValuesNotRight, QualifiedHistoricalValue[] rightValuesNotLeft, QualifiedHistoricalValuePair[] valueDifferences)
         {
-            LeftName = leftName;
-            RightName = rightName;
+            Left = left;
+            Right = right;
             LeftValuesNotRight = leftValuesNotRight;
             RightValuesNotLeft = rightValuesNotLeft;
             ValueDifferences = valueDifferences;

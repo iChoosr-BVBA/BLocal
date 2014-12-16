@@ -32,7 +32,7 @@ namespace BLocal.Web.Manager.Controllers
                 .ToList();
 
             var model = new HistoryData {
-                ProviderName = localization.Name,
+                Provider = localization,
                 History = history
             };
             return View(model);

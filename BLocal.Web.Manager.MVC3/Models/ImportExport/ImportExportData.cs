@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BLocal.Core;
 using BLocal.Web.Manager.Business;
 
@@ -9,13 +8,13 @@ namespace BLocal.Web.Manager.Models.ImportExport
     {
         public readonly IEnumerable<PartNode> PartNodes;
         public readonly Locale[] Locales;
-        public readonly String ProviderConfigName;
+        public readonly ProviderGroup Provider;
 
-        public ImportExportData(IEnumerable<PartNode> partNodes, Locale[] locales, String providerConfigName)
+        public ImportExportData(IEnumerable<PartNode> partNodes, Locale[] locales, ProviderGroup provider)
         {
             PartNodes = partNodes;
             Locales = locales;
-            ProviderConfigName = providerConfigName;
+            Provider = provider;
         }
     }
 }

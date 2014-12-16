@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+using BLocal.Web.Manager.Business;
 
 namespace BLocal.Web.Manager.Models.DirectEditing
 {
     public class IndexModel
     {
-        public String ProviderConfigName { get; set; }
-        public IEnumerable<LocalizedPart> Parts { get; set; } 
+        public IEnumerable<LocalizedPart> Parts { get; set; }
+        public ProviderGroup Provider { get; set; }
     }
 }

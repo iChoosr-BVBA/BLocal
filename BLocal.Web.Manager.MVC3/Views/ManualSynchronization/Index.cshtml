@@ -6,25 +6,36 @@
 @section Head {
     <script type="text/javascript">
         window.urls = window.urls || {};
-        window.urls.current = '@Html.Raw(Url.Action("Index", "ManualSynchronization", new { leftProviderConfigName = Model.LeftName, rightProviderConfigName = Model.RightName }))';
-        window.urls.remove = '@Html.Raw(Url.Action("Remove", "ManualSynchronization", new { leftProviderConfigName = Model.LeftName, rightProviderConfigName = Model.RightName }))';
-        window.urls.duplicate = '@Html.Raw(Url.Action("Duplicate", "ManualSynchronization", new { leftProviderConfigName = Model.LeftName, rightProviderConfigName = Model.RightName }))';
-        window.urls.update = '@Html.Raw(Url.Action("Update", "ManualSynchronization", new { leftProviderConfigName = Model.LeftName, rightProviderConfigName = Model.RightName }))';
+        window.urls.current = '@Html.Raw(Url.Action("Index", "ManualSynchronization", new { leftProviderConfigName = Model.Left.Name, rightProviderConfigName = Model.Right.Name }))';
+        window.urls.remove = '@Html.Raw(Url.Action("Remove", "ManualSynchronization", new { leftProviderConfigName = Model.Left.Name, rightProviderConfigName = Model.Right.Name }))';
+        window.urls.duplicate = '@Html.Raw(Url.Action("Duplicate", "ManualSynchronization", new { leftProviderConfigName = Model.Left.Name, rightProviderConfigName = Model.Right.Name }))';
+        window.urls.update = '@Html.Raw(Url.Action("Update", "ManualSynchronization", new { leftProviderConfigName = Model.Left.Name, rightProviderConfigName = Model.Right.Name }))';
     </script>
 }
 
-<h1>@Html.ActionLink("Home", "Overview", "Home") - Synchronization between <span class="accent">@Model.LeftName</span> and <span class="accent">@Model.RightName</span> as <span class="accent">@Session["author"]</span></h1>
+<h1>
+    @Html.ActionLink("Home", "Overview", "Home") -
+    Synchronization between <span style="color: @Model.Left.Color">@Model.Left.Name</span>
+    and <span style="color: @Model.Right.Color">@Model.Right.Name</span>
+    as <span class="accent">@Session["author"]</span>
+</h1>
 <section class="general">
         <input type="checkbox" id="authorcheck" data-author="@Session["author"]" checked="checked"/>
-        <label for="authorcheck">Show only my changes</label>
+        <label for="authorcheck">Show only my changes (<span class="accent">@Session["author"]</span>)</label>
 </section>
 <section class="general" data-from="left">
-    <h2>Values existing on <span class="accent">@Model.LeftName</span> but not on <span class="accent">@Model.RightName</span> (@Model.LeftValuesNotRight.Length)</h2>
+    <h2>
+        Values existing on
+        <span style="color: @Model.Left.Color">@Model.Left.Name</span>
+        but not on
+        <span style="color: @Model.Right.Color">@Model.Right.Name</span>
+        (@Model.LeftValuesNotRight.Length)
+    </h2>
     <p>
         <button class="select">Select All</button>
         <button class="deselect">Deselect All</button>
-        <button class="delete">Delete from <span class="accent">@Model.LeftName</span></button>
-        <button class="duplicate">Create on <span class="accent">@Model.RightName</span></button>
+        <button class="delete">Delete from <span style="color: @Model.Left.Color">@Model.Left.Name</span></button>
+        <button class="duplicate">Create on <span style="color: @Model.Right.Color">@Model.Right.Name</span></button>
     </p>
     <table cellpadding="0" cellspacing="0"><tbody>
         @foreach (var value in Model.LeftValuesNotRight) {
@@ -43,12 +54,18 @@
     </tbody></table>
 </section>
 <section class="general" data-from="right">
-    <h2>Values that exist on <span class="accent">@Model.RightName</span> but not on <span class="accent">@Model.LeftName</span> (@Model.RightValuesNotLeft.Length)</h2>
+    <h2>
+        Values that exist on
+        <span style="color: @Model.Right.Color">@Model.Right.Name</span>
+        but not on
+        <span style="color: @Model.Left.Color">@Model.Left.Name</span>
+        (@Model.RightValuesNotLeft.Length)
+    </h2>
     <p>
         <button class="select">Select All</button>
         <button class="deselect">Deselect All</button>
-        <button class="delete">Delete from <span class="accent">@Model.RightName</span></button>
-        <button class="duplicate">Create on <span class="accent">@Model.LeftName</span></button>
+        <button class="delete">Delete from <span style="color: @Model.Right.Color">@Model.Right.Name</span></button>
+        <button class="duplicate">Create on <span style="color: @Model.Left.Color">@Model.Left.Name</span></button>
     </p>
     <table cellpadding="0" cellspacing="0"><tbody>
         @foreach (var value in Model.RightValuesNotLeft)
@@ -82,7 +99,7 @@
                     <p>@value.Left.Value.Value</p>
                     <p>
                         <button data-side="Left" data-part="@value.Left.Value.Qualifier.Part" data-locale="@value.Left.Value.Qualifier.Locale" data-key="@value.Left.Value.Qualifier.Key" disabled="disabled">
-                            Change on <span class="accent">@Model.RightName</span> using this value
+                            Change on <span style="color: @Model.Right.Color">@Model.Right.Name</span> using this value
                         </button><br />
                         @value.Left.History.LatestEntry().DateTimeUtc - @value.Left.History.LatestEntry().Author
                     </p>
@@ -91,7 +108,7 @@
                     <p>@value.Right.Value.Value</p>
                     <p>
                         <button data-side="Right" data-part="@value.Right.Value.Qualifier.Part" data-locale="@value.Right.Value.Qualifier.Locale" data-key="@value.Right.Value.Qualifier.Key" disabled="disabled">
-                            Change on <span class="accent">@Model.LeftName</span> using this value
+                            Change on <span style="color: @Model.Left.Color">@Model.Left.Name</span> using this value
                         </button><br />
                         @value.Left.History.LatestEntry().DateTimeUtc - @value.Left.History.LatestEntry().Author
                     </p>

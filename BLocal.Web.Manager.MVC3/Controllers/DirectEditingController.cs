@@ -52,7 +52,7 @@ namespace BLocal.Web.Manager.Controllers
                 groupedParts.Remove(kvp.Key);
 
             localization.ValueManager.Persist();
-            var model = new IndexModel {Parts = groupedParts.Values, ProviderConfigName = providerConfigName};
+            var model = new IndexModel {Parts = groupedParts.Values, Provider = localization};
             return View(model);
         }
 

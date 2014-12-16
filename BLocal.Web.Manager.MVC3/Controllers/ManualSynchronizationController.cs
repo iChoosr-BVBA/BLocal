@@ -43,7 +43,7 @@ namespace BLocal.Web.Manager.Controllers
                 .Where(dv => !Equals(dv.Left.Value, dv.Right.Value))
                 .ToArray();
 
-            return View(new SynchronizationData(leftProviders.Name, rightProviders.Name, leftNotRight, rightNotLeft, valueDifferences));
+            return View(new SynchronizationData(leftProviders, rightProviders, leftNotRight, rightNotLeft, valueDifferences));
         }
 
         [ValidateInput(false)]

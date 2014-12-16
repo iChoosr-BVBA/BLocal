@@ -37,6 +37,13 @@ namespace BLocal.Web.Manager.Configuration
             set { base["name"] = value; }
         }
 
+        [ConfigurationProperty("color", IsKey = false, IsRequired = false)]
+        public String Color
+        {
+            get { return (String)base["color"]; }
+            set { base["color"] = value; }
+        }
+
         [ConfigurationProperty("valueProvider", IsKey = true, IsRequired = true)]
         public ValueProviderElement ValueProvider
         {

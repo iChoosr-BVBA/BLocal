@@ -32,7 +32,7 @@ namespace BLocal.Web.Manager.Controllers
                 .Distinct()
                 .ToArray();
 
-            return View(new TranslationVerificationData(groupedTranslations, allLocales, providerConfigName));
+            return View(new TranslationVerificationData(groupedTranslations, allLocales, localization));
         }
 
         [ValidateInput(false)]

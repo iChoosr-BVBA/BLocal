@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using BLocal.Core;
+using BLocal.Web.Manager.Business;
 
 namespace BLocal.Web.Manager.Models.TranslationVerification
 {
@@ -10,11 +11,11 @@ namespace BLocal.Web.Manager.Models.TranslationVerification
 
         public readonly ILookup<Qualifier, QualifiedValue> LocaleIndepandantValueLookup;
         public readonly Locale[] LocalesAvailable;
-        public readonly String ProviderConfigName;
+        public readonly ProviderGroup Provider;
 
-        public TranslationVerificationData(ILookup<Qualifier, QualifiedValue> localeIndepandantValueLookup, Locale[] localesAvailable, String providerConfigName)
+        public TranslationVerificationData(ILookup<Qualifier, QualifiedValue> localeIndepandantValueLookup, Locale[] localesAvailable, ProviderGroup provider)
         {
-            ProviderConfigName = providerConfigName;
+            Provider = provider;
             LocaleIndepandantValueLookup = localeIndepandantValueLookup;
             LocalesAvailable = localesAvailable;
         }

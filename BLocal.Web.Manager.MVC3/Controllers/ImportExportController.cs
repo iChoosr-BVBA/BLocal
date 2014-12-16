@@ -60,7 +60,7 @@ namespace BLocal.Web.Manager.Controllers
             foreach (var part in allParts.Where(part => part.Parent != null))
                 partNodes.Remove(part);
 
-            return View(new ImportExportData(partNodes.Values, allLocales, providerConfigName));
+            return View(new ImportExportData(partNodes.Values, allLocales, providerGroup));
         }
 
         [HttpPost, ValidateInput(false)]
