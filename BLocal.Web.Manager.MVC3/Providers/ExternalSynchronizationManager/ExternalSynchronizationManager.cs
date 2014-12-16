@@ -24,11 +24,6 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             return GetQualifiedValue(qualifier, defaultValue).Value;
         }
 
-        public void SetValue(Qualifier.Unique qualifier, String value)
-        {
-            _connector.UpdateCreateValue(new QualifiedValue(qualifier, value));
-        }
-
         public QualifiedValue GetQualifiedValue(Qualifier.Unique qualifier, String defaultValue = null)
         {
             var part = qualifier.Part;
@@ -49,7 +44,6 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
         public void Persist()
         {
             _connector.Persist();
-            Reload();
         }
 
         public void Reload()
