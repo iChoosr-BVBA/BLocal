@@ -29,11 +29,11 @@
     }).change();
 
     $("button.delete, button.duplicate").click(function () {
-        blockUI();
         var remove = $(this).hasClass("delete");
         var checkboxes = $(this).parents(".general").find("input[type=checkbox]:checked");
         if (!confirm((remove ? "Delete" : "Duplicate") + " " + checkboxes.length + " items?"))
             return true;
+        blockUI();
 
         var data = {};
         var counter = 0;
@@ -69,37 +69,58 @@
         return true;
     });
 
-    $(".locktoggle").click(function () {
-        var toggler = $(this);
-        var isOn = toggler.is(".on");
-        if (isOn) {
-            toggler.removeClass("on");
-            $("section.comparison button").prop("disabled", true);
-        } else {
-            toggler.addClass("on");
-            $("section.comparison button").prop("disabled", false);
-        }
-        var swap = toggler.attr("value");
-        toggler.attr("value", toggler.attr("data-alt")).attr("data-alt", swap);
-    });
+    $("button.accept").click(function () {
+        var resolvedDifferences = $(".difference input:checked");
+        var leftResolvedDifferences = resolvedDifferences.filter("[data-affected-side='left']");
+        var rightResolvedDifferences = resolvedDifferences.filter("[data-affected-side='right']");
 
-    $("section.comparison button").click(function () {
-        blockUI();
-        var element = $(this).parents(".difference");
+        var confirmation = "";
+        if (leftResolvedDifferences.length > 0) {
+            confirmation += leftResolvedDifferences.length + " changes on " + leftResolvedDifferences.first().attr("data-provider");
+        }
+        if (rightResolvedDifferences.length > 0) {
+            if (confirmation !== "")
+                confirmation += " and ";
+            confirmation += rightResolvedDifferences.length + " changes on " + rightResolvedDifferences.first().attr("data-provider");
+        }
+        if (confirmation.length == 0) {
+            alert("no changes detected");
+            return true;
+        }
+        if (!confirm("execute " + confirmation + "?"))
+            return true;
+
+        var data = {};
+        var counter = 0;
+        resolvedDifferences.each(function () {
+            var affectedSide = $(this).attr("data-affected-side");
+            data["items[" + counter + "].side"] = affectedSide;
+            data["items[" + counter + "].part"] = $(this).attr("data-part");
+            data["items[" + counter + "].key"] = $(this).attr("data-key");
+            data["items[" + counter + "].locale"] = $(this).attr("data-locale");
+            counter++;
+        });
         $.ajax({
             url: urls.update,
-            data: {
-                'items[0].side': $(this).attr("data-side"),
-                'items[0].part': $(this).attr("data-part"),
-                'items[0].key': $(this).attr("data-key"),
-                'items[0].locale': $(this).attr("data-locale")
-            },
+            data: data,
             type: 'POST',
             success: function () {
-                element.remove();
+                resolvedDifferences.parents(".difference").remove();
                 unblockUI();
             }
         });
+        return true;
     });
-    
+
+    $(".comparison input[type=checkbox]").change(function () {
+        var newAffectedSide = "";
+        if ($(this).is(":checked")) {
+            newAffectedSide = $(this).attr("data-affected-side");
+        }
+        var checkboxes = $(this).parents(".difference").find("[type=checkbox]");
+        checkboxes.prop("checked", false);
+        checkboxes.filter("[data-affected-side='" + newAffectedSide + "']").prop("checked", true);
+        $(this).parents(".difference").removeClass("left").removeClass("right").addClass(newAffectedSide);
+    });
+
 }});

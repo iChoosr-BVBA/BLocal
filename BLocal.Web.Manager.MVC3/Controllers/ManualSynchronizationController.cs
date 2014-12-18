@@ -4,11 +4,13 @@ using System.Linq;
 using System.Web.Mvc;
 using BLocal.Core;
 using BLocal.Web.Manager.Business;
+using BLocal.Web.Manager.Context;
 using BLocal.Web.Manager.Extensions;
 using BLocal.Web.Manager.Models.ManualSynchronization;
 
 namespace BLocal.Web.Manager.Controllers
 {
+    [Authenticate]
     public class ManualSynchronizationController : Controller
     {
         public ProviderGroupFactory ProviderGroupFactory { get; set; }

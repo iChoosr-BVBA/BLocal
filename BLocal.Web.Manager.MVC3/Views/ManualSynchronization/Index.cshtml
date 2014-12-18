@@ -41,7 +41,7 @@
         @foreach (var value in Model.LeftValuesNotRight) {
             <tr class="lrvalue" data-author="@value.History.LatestEntry().Author">
                 <td style="white-space: nowrap">
-                    <input type="checkbox" name="values" data-side="Left" data-part="@value.Value.Qualifier.Part" data-locale="@value.Value.Qualifier.Locale" data-key="@value.Value.Qualifier.Key"/>
+                    <input type="checkbox" name="values" data-side="left" data-part="@value.Value.Qualifier.Part" data-locale="@value.Value.Qualifier.Locale" data-key="@value.Value.Qualifier.Key"/>
                 </td>
                 <td style="white-space: nowrap;">
                     @value.Value.Qualifier.Key <br />
@@ -72,7 +72,7 @@
         {
             <tr class="lrvalue" data-author="@value.History.LatestEntry().Author">
                 <td style="white-space: nowrap">
-                    <input type="checkbox" name="values" data-side="Right" data-part="@value.Value.Qualifier.Part" data-locale="@value.Value.Qualifier.Locale" data-key="@value.Value.Qualifier.Key"/>
+                    <input type="checkbox" name="values" data-side="right" data-part="@value.Value.Qualifier.Part" data-locale="@value.Value.Qualifier.Locale" data-key="@value.Value.Qualifier.Key"/>
                 </td>
                 <td style="white-space: nowrap;">
                     @value.Value.Qualifier.Key <br />
@@ -87,7 +87,7 @@
 <section class="general">
     <h2>Values that differ between the two (@Model.ValueDifferences.Length)</h2>
     <p>
-        <input class="locktoggle" type="button" value="Unlock change buttons below" data-alt="Lock change buttons below"/>
+        <button class="accept">Execute changes made below</button>
     </p>
     @foreach (var value in Model.ValueDifferences)
     {
@@ -95,24 +95,24 @@
             <h2>@value.Left.Value.Qualifier.Key</h2>
             <p class="localepart">@value.Left.Value.Qualifier.Locale | @value.Left.Value.Qualifier.Part</p>
             <section class="comparison">
-                <div class="left">
-                    <p>@value.Left.Value.Value</p>
-                    <p>
-                        <button data-side="Left" data-part="@value.Left.Value.Qualifier.Part" data-locale="@value.Left.Value.Qualifier.Locale" data-key="@value.Left.Value.Qualifier.Key" disabled="disabled">
-                            Change on <span style="color: @Model.Right.Color">@Model.Right.Name</span> using this value
-                        </button><br />
-                        @value.Left.History.LatestEntry().DateTimeUtc - @value.Left.History.LatestEntry().Author
-                    </p>
-                </div>
-                <div class="right">
+                <label class="left">
                     <p>@value.Right.Value.Value</p>
                     <p>
-                        <button data-side="Right" data-part="@value.Right.Value.Qualifier.Part" data-locale="@value.Right.Value.Qualifier.Locale" data-key="@value.Right.Value.Qualifier.Key" disabled="disabled">
-                            Change on <span style="color: @Model.Left.Color">@Model.Left.Name</span> using this value
-                        </button><br />
+                        <input type="checkbox" data-provider="@Model.Left.Name" data-affected-side="right" data-part="@value.Left.Value.Qualifier.Part" data-locale="@value.Left.Value.Qualifier.Locale" data-key="@value.Left.Value.Qualifier.Key" />
+                        Change on <span style="color: @Model.Left.Color">@Model.Left.Name</span> using this value
+                        <br />
+                        @value.Right.History.LatestEntry().DateTimeUtc - @value.Right.History.LatestEntry().Author
+                    </p>
+                </label>
+                <label class="right">
+                    <p>@value.Left.Value.Value</p>
+                    <p>
+                        <input type="checkbox" data-provider="@Model.Right.Name" data-affected-side="left" data-part="@value.Right.Value.Qualifier.Part" data-locale="@value.Right.Value.Qualifier.Locale" data-key="@value.Right.Value.Qualifier.Key" />
+                        Change on <span style="color: @Model.Right.Color">@Model.Right.Name</span> using this value
+                        <br />
                         @value.Left.History.LatestEntry().DateTimeUtc - @value.Left.History.LatestEntry().Author
                     </p>
-                </div>
+                </label>
                 <div class="clear"></div>
             </section>
         </section>
