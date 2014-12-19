@@ -93,6 +93,8 @@
         if (!confirm("execute " + confirmation + "?"))
             return true;
 
+        blockUI();
+
         var data = {};
         var counter = 0;
         resolvedDifferences.each(function () {
