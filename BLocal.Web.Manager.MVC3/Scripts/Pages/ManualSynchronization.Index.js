@@ -2,7 +2,7 @@
     window.urls = window.urls || {};
 
     $("button.select").click(function () {
-        $(this).parents(".general").find("input[type=checkbox]").prop("checked", true);
+        $(this).parents(".general").find(".lrvalue:not(.hidden) input[type=checkbox]").prop("checked", true);
     });
 
     $("button.deselect").click(function () {
@@ -13,12 +13,15 @@
         if ($(this).is(":checked")) {
             var searchAuthor = $(this).data("author");
 
-            $("[data-author]").addClass("hidden").each(function() {
+            $("[data-author]").each(function() {
                 var authors = $(this).data("author").split('|');
                 for (var i = 0; i < authors.length; i++) {
                     if (authors[i] === searchAuthor) {
                         $(this).removeClass("hidden");
                         break;
+                    } else {
+                        $(this).addClass("hidden");
+                        $(this).find("input[type=checkbox]").prop("checked", false);
                     }
                 }
 
