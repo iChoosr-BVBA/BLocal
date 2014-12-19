@@ -38,7 +38,7 @@
         var data = {};
         var counter = 0;
         checkboxes.each(function () {
-            var affectedSide = (($(this).attr("data-side") === "Left") === remove) ? "Right" : "Left";
+            var affectedSide = (($(this).attr("data-side") === "left") === remove) ? "Right" : "Left";
             data["items[" + counter + "].side"] = affectedSide;
             data["items[" + counter + "].part"] = $(this).attr("data-part");
             data["items[" + counter + "].key"] = $(this).attr("data-key");
