@@ -73,13 +73,7 @@ namespace BLocal.Web.Manager.Controllers
 
                 // progress and merge history
                 localizationFrom.HistoryManager.ProgressHistory(new QualifiedValue(qualifier, null), Session.Get<String>("author"));
-                var historyFrom = localizationFrom.HistoryManager.GetHistory(qualifier) ?? new QualifiedHistory();
-                var historyTo = localizationTo.HistoryManager.GetHistory(qualifier) ?? new QualifiedHistory();
-                var mergedHistory = historyFrom.Entries.Union(historyTo.Entries).Distinct().OrderBy(h => h.DateTimeUtc);
-                var qualifiedMergedHistory = new QualifiedHistory { Qualifier = qualifier, Entries = mergedHistory.ToList() };
-
-                localizationTo.HistoryManager.OverrideHistory(qualifiedMergedHistory);
-                localizationFrom.HistoryManager.OverrideHistory(qualifiedMergedHistory);
+                HistoryMerger.MergeHistory(qualifier, localizationFrom.HistoryManager, localizationTo.HistoryManager);
             }
 
             // persist any changes
@@ -128,13 +122,7 @@ namespace BLocal.Web.Manager.Controllers
 
                 // make sure that the "from" is also on the latest history
                 localizationFrom.HistoryManager.ProgressHistory(localizationFrom.ValueManager.GetQualifiedValue(qualifier), Session.Get<String>("author"));
-                var historyFrom = localizationFrom.HistoryManager.GetHistory(qualifier) ?? new QualifiedHistory();
-                var historyTo = localizationTo.HistoryManager.GetHistory(qualifier) ?? new QualifiedHistory();
-                var mergedHistory = historyFrom.Entries.Union(historyTo.Entries).Distinct().OrderBy(h => h.DateTimeUtc);
-                var qualifiedMergedHistory = new QualifiedHistory { Qualifier = qualifier, Entries = mergedHistory.ToList() };
-
-                localizationTo.HistoryManager.OverrideHistory(qualifiedMergedHistory);
-                localizationFrom.HistoryManager.OverrideHistory(qualifiedMergedHistory);
+                HistoryMerger.MergeHistory(qualifier, localizationFrom.HistoryManager, localizationTo.HistoryManager);
             }
 
             // persist any changes
@@ -183,13 +171,7 @@ namespace BLocal.Web.Manager.Controllers
 
                 // make sure that the "from" is also on the latest history
                 localizationFrom.HistoryManager.ProgressHistory(localizationFrom.ValueManager.GetQualifiedValue(qualifier), Session.Get<String>("author"));
-                var historyFrom = localizationFrom.HistoryManager.GetHistory(qualifier) ?? new QualifiedHistory();
-                var historyTo = localizationTo.HistoryManager.GetHistory(qualifier) ?? new QualifiedHistory();
-                var mergedHistory = historyFrom.Entries.Union(historyTo.Entries).Distinct().OrderBy(h => h.DateTimeUtc);
-                var qualifiedMergedHistory = new QualifiedHistory { Qualifier = qualifier, Entries = mergedHistory.ToList() };
-
-                localizationTo.HistoryManager.OverrideHistory(qualifiedMergedHistory);
-                localizationFrom.HistoryManager.OverrideHistory(qualifiedMergedHistory);
+                HistoryMerger.MergeHistory(qualifier, localizationFrom.HistoryManager, localizationTo.HistoryManager);
             }
 
             // persist any changes
