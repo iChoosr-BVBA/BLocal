@@ -82,6 +82,7 @@ namespace BLocal.Web.Manager.Controllers
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
             localization.ValueManager.DeleteValue(qualifier);
+            localization.HistoryManager.ProgressHistory(new QualifiedValue(qualifier, null), Session.Get<String>("author"));
 
             localization.ValueManager.Persist();
             if (localization.ValueManager != localization.HistoryManager)
