@@ -7,32 +7,32 @@ using System.Security.Authentication;
 using System.Text;
 using System.Web.Mvc;
 using BLocal.Web.Manager.Business;
-using BLocal.Web.Manager.Models.ExternalSynchronization;
-using BLocal.Web.Manager.Providers.ExternalSynchronizationManager;
-using BLocal.Web.Manager.Providers.ExternalSynchronizationManager.Communication;
+using BLocal.Web.Manager.Models.RemoteAccess;
+using BLocal.Web.Manager.Providers.RemoteAccess;
+using BLocal.Web.Manager.Providers.RemoteAccess.Communication;
 using Newtonsoft.Json;
 
 namespace BLocal.Web.Manager.Controllers
 {
-    public class ExternalSynchronizationController : Controller
+    public class RemoteAccessController : Controller
     {
         public ProviderGroupFactory ProviderGroupFactory { get; set; }
         private readonly PartJsonConverter _partConverter = new PartJsonConverter();
 
-        public ExternalSynchronizationController()
+        public RemoteAccessController()
         {
             ProviderGroupFactory = new ProviderGroupFactory();
         }
 
-        private static Dictionary<string, MethodInfo> _requestMethods = typeof(ExternalSynchronizationController)
+        private static Dictionary<string, MethodInfo> _requestMethods = typeof(RemoteAccessController)
             .GetMethods()
             .Where(m => m.ReturnType == typeof(ContentResult))
-            .Where(m => m.GetParameters().First().ParameterType == typeof(ExternalSynchronizationRequest))
+            .Where(m => m.GetParameters().First().ParameterType == typeof(RemoteAccessRequest))
             .Where(m => m.GetParameters().Length == 1)
             .ToDictionary(m => m.Name);
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult Authenticate(ExternalSynchronizationRequest request)
+        public ContentResult Authenticate(RemoteAccessRequest request)
         {
             var authenticationRequest = JsonConvert.DeserializeObject<AuthenticationRequest>(request.RequestData, _partConverter);
             if (authenticationRequest.Password != ConfigurationManager.AppSettings["password"])
@@ -60,7 +60,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult CreateValue(ExternalSynchronizationRequest request)
+        public ContentResult CreateValue(RemoteAccessRequest request)
         {
             var providerGroup = GetProviderGroup(request);
             var createValueRequest = JsonConvert.DeserializeObject<CreateValueRequest>(request.RequestData, _partConverter);
@@ -70,7 +70,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult DeleteValue(ExternalSynchronizationRequest request)
+        public ContentResult DeleteValue(RemoteAccessRequest request)
         {
             var providerGroup = GetProviderGroup(request);
             var deleteValueRequest = JsonConvert.DeserializeObject<DeleteValueRequest>(request.RequestData, _partConverter);
@@ -80,7 +80,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult DeleteLocalizations(ExternalSynchronizationRequest request)
+        public ContentResult DeleteLocalizations(RemoteAccessRequest request)
         {
             var providerGroup = GetProviderGroup(request);
             var deleteLocalizationsRequest = JsonConvert.DeserializeObject<DeleteLocalizationsRequest>(request.RequestData, _partConverter);
@@ -90,7 +90,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult UpdateCreateValue(ExternalSynchronizationRequest request)
+        public ContentResult UpdateCreateValue(RemoteAccessRequest request)
         {
             var providerGroup = GetProviderGroup(request);
             var updateCreateValueRequest = JsonConvert.DeserializeObject<UpdateCreateValueRequest>(request.RequestData, _partConverter);
@@ -100,7 +100,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult Reload(ExternalSynchronizationRequest request)
+        public ContentResult Reload(RemoteAccessRequest request)
         {
             var providerGroup = GetProviderGroup(request);
             var reloadRequest = JsonConvert.DeserializeObject<ReloadRequest>(request.RequestData, _partConverter);
@@ -114,7 +114,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult Persist(ExternalSynchronizationRequest request)
+        public ContentResult Persist(RemoteAccessRequest request)
         {
             var providerGroup = GetProviderGroup(request);
             var persistRequest = JsonConvert.DeserializeObject<PersistRequest>(request.RequestData, _partConverter);
@@ -128,7 +128,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult ProvideHistory(ExternalSynchronizationRequest request)
+        public ContentResult ProvideHistory(RemoteAccessRequest request)
         {
             var providerGroup = GetProviderGroup(request);
             var provideHistoryRequest = JsonConvert.DeserializeObject<ProvideHistoryRequest>(request.RequestData, _partConverter);
@@ -138,7 +138,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult AdjustHistory(ExternalSynchronizationRequest request)
+        public ContentResult AdjustHistory(RemoteAccessRequest request)
         {
             var providerGroup = GetProviderGroup(request);
             var adjustHistoryRequest = JsonConvert.DeserializeObject<AdjustHistoryRequest>(request.RequestData, _partConverter);
@@ -148,7 +148,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult OverrideHistory(ExternalSynchronizationRequest request)
+        public ContentResult OverrideHistory(RemoteAccessRequest request)
         {
             var providerGroup = GetProviderGroup(request);
             var overrideHistoryRequest = JsonConvert.DeserializeObject<OverrideHistoryRequest>(request.RequestData, _partConverter);
@@ -158,7 +158,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult RewriteHistory(ExternalSynchronizationRequest request)
+        public ContentResult RewriteHistory(RemoteAccessRequest request)
         {
             var providerGroup = GetProviderGroup(request);
             var rewriteHistoryRequest = JsonConvert.DeserializeObject<RewriteHistoryRequest>(request.RequestData, _partConverter);
@@ -168,7 +168,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult ProgressHistory(ExternalSynchronizationRequest request)
+        public ContentResult ProgressHistory(RemoteAccessRequest request)
         {
             var providerGroup = GetProviderGroup(request);
             var progressHistoryRequest = JsonConvert.DeserializeObject<ProgressHistoryRequest>(request.RequestData, _partConverter);
@@ -178,7 +178,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult ProcessBatch(ExternalSynchronizationRequest request)
+        public ContentResult ProcessBatch(RemoteAccessRequest request)
         {
             var processBatchRequest = JsonConvert.DeserializeObject<ProcessBatchRequest>(request.RequestData);
             foreach (var batchRequest in processBatchRequest.Requests)
@@ -187,7 +187,7 @@ namespace BLocal.Web.Manager.Controllers
             return Content(json, "application/json", Encoding.Unicode);
         }
 
-        private ProviderGroup GetProviderGroup(ExternalSynchronizationRequest synchronizationRequest)
+        private ProviderGroup GetProviderGroup(RemoteAccessRequest synchronizationRequest)
         {
             var dictionary = (Dictionary<Guid, SynchronizationSession>)(Request.RequestContext.HttpContext.Application["sessions"]
                 ?? (Request.RequestContext.HttpContext.Application["sessions"] = new Dictionary<Guid, SynchronizationSession>()));

@@ -7,7 +7,7 @@ using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Context;
 using BLocal.Web.Manager.Extensions;
 using BLocal.Web.Manager.Models.ManualSynchronization;
-using BLocal.Web.Manager.Providers.ExternalSynchronizationManager;
+using BLocal.Web.Manager.Providers.RemoteAccess;
 
 namespace BLocal.Web.Manager.Controllers
 {
@@ -60,7 +60,7 @@ namespace BLocal.Web.Manager.Controllers
             };
 
             if (items.Length > 5)
-                foreach(var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<ExternalSynchronizationManager>())
+                foreach(var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<RemoteAccessManager>())
                     manager.StartBatch();
 
             foreach (var item in items)
@@ -91,7 +91,7 @@ namespace BLocal.Web.Manager.Controllers
             }
 
             if (items.Length > 5)
-                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<ExternalSynchronizationManager>())
+                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<RemoteAccessManager>())
                     manager.EndBatch();
 
             return Json(new { ok = true });
@@ -108,7 +108,7 @@ namespace BLocal.Web.Manager.Controllers
             };
 
             if (items.Length > 5)
-                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<ExternalSynchronizationManager>())
+                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<RemoteAccessManager>())
                     manager.StartBatch();
 
             foreach (var item in items)
@@ -142,7 +142,7 @@ namespace BLocal.Web.Manager.Controllers
             }
 
             if (items.Length > 5)
-                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<ExternalSynchronizationManager>())
+                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<RemoteAccessManager>())
                     manager.EndBatch();
 
             return Json(new { ok = true });
@@ -159,7 +159,7 @@ namespace BLocal.Web.Manager.Controllers
             };
 
             if (items.Length > 5)
-                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<ExternalSynchronizationManager>())
+                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<RemoteAccessManager>())
                     manager.StartBatch();
 
             foreach (var item in items)
@@ -193,7 +193,7 @@ namespace BLocal.Web.Manager.Controllers
             }
 
             if (items.Length > 5)
-                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<ExternalSynchronizationManager>())
+                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<RemoteAccessManager>())
                     manager.EndBatch();
 
             return Json(new { ok = true });

@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using BLocal.Core;
 using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Models.AutomaticSynchronization;
-using BLocal.Web.Manager.Providers.ExternalSynchronizationManager;
+using BLocal.Web.Manager.Providers.RemoteAccess;
 using Newtonsoft.Json;
 
 namespace BLocal.Web.Manager.Controllers
@@ -43,7 +43,7 @@ namespace BLocal.Web.Manager.Controllers
             var rightHistoryCollection = rightProviders.HistoryManager.ProvideHistory().ToDictionary(a => a.Qualifier);
 
             if(settings.Execute)
-                foreach (var manager in new[]{ leftProviders.ValueManager, rightProviders.ValueManager }.OfType<ExternalSynchronizationManager>())
+                foreach (var manager in new[]{ leftProviders.ValueManager, rightProviders.ValueManager }.OfType<RemoteAccessManager>())
                     manager.StartBatch();
 
             var synchronizationResult = new SynchronizationResult();
@@ -185,7 +185,7 @@ namespace BLocal.Web.Manager.Controllers
                 if (rightProviders.ValueManager != rightProviders.HistoryManager)
                     rightProviders.HistoryManager.Persist();
 
-                foreach (var manager in new[] { leftProviders.ValueManager, rightProviders.ValueManager }.OfType<ExternalSynchronizationManager>())
+                foreach (var manager in new[] { leftProviders.ValueManager, rightProviders.ValueManager }.OfType<RemoteAccessManager>())
                     manager.EndBatch();
             }
 
