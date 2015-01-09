@@ -7,6 +7,7 @@ using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Context;
 using BLocal.Web.Manager.Extensions;
 using BLocal.Web.Manager.Models.ManualSynchronization;
+using BLocal.Web.Manager.Providers.ExternalSynchronizationManager;
 
 namespace BLocal.Web.Manager.Controllers
 {
@@ -58,6 +59,10 @@ namespace BLocal.Web.Manager.Controllers
                 { Side.Right, ProviderGroupFactory.CreateProviderGroup(rightProviderConfigName) }
             };
 
+            if (items.Length > 5)
+                foreach(var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<ExternalSynchronizationManager>())
+                    manager.StartBatch();
+
             foreach (var item in items)
             {
                 var localizationFrom = sideProviders[item.Side];
@@ -85,6 +90,10 @@ namespace BLocal.Web.Manager.Controllers
                 localization.HistoryManager.Persist();
             }
 
+            if (items.Length > 5)
+                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<ExternalSynchronizationManager>())
+                    manager.EndBatch();
+
             return Json(new { ok = true });
         }
 
@@ -97,6 +106,10 @@ namespace BLocal.Web.Manager.Controllers
                 { Side.Left, ProviderGroupFactory.CreateProviderGroup(leftProviderConfigName) },
                 { Side.Right, ProviderGroupFactory.CreateProviderGroup(rightProviderConfigName) }
             };
+
+            if (items.Length > 5)
+                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<ExternalSynchronizationManager>())
+                    manager.StartBatch();
 
             foreach (var item in items)
             {
@@ -128,6 +141,10 @@ namespace BLocal.Web.Manager.Controllers
                 localization.HistoryManager.Persist();
             }
 
+            if (items.Length > 5)
+                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<ExternalSynchronizationManager>())
+                    manager.EndBatch();
+
             return Json(new { ok = true });
         }
 
@@ -140,6 +157,10 @@ namespace BLocal.Web.Manager.Controllers
                 { Side.Left, ProviderGroupFactory.CreateProviderGroup(leftProviderConfigName) },
                 { Side.Right, ProviderGroupFactory.CreateProviderGroup(rightProviderConfigName) }
             };
+
+            if (items.Length > 5)
+                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<ExternalSynchronizationManager>())
+                    manager.StartBatch();
 
             foreach (var item in items)
             {
@@ -170,6 +191,10 @@ namespace BLocal.Web.Manager.Controllers
             {
                 localization.HistoryManager.Persist();
             }
+
+            if (items.Length > 5)
+                foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<ExternalSynchronizationManager>())
+                    manager.EndBatch();
 
             return Json(new { ok = true });
         }

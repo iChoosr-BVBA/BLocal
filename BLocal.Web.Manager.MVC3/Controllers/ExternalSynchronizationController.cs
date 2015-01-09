@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using System.Security.Authentication;
 using System.Text;
 using System.Web.Mvc;
@@ -23,6 +24,13 @@ namespace BLocal.Web.Manager.Controllers
             ProviderGroupFactory = new ProviderGroupFactory();
         }
 
+        private static Dictionary<string, MethodInfo> _requestMethods = typeof(ExternalSynchronizationController)
+            .GetMethods()
+            .Where(m => m.ReturnType == typeof(ContentResult))
+            .Where(m => m.GetParameters().First().ParameterType == typeof(ExternalSynchronizationRequest))
+            .Where(m => m.GetParameters().Length == 1)
+            .ToDictionary(m => m.Name);
+
         [HttpPost, ValidateInput(false)]
         public ContentResult Authenticate(ExternalSynchronizationRequest request)
         {
@@ -30,8 +38,8 @@ namespace BLocal.Web.Manager.Controllers
             if (authenticationRequest.Password != ConfigurationManager.AppSettings["password"])
                 return Content("", "application/json", Encoding.Unicode);
 
-            var thisVersion = System.Reflection.Assembly.GetAssembly(typeof (HomeController)).GetName().Version.ToString();
-            if(!String.Equals(authenticationRequest.Version, thisVersion))
+            var thisVersion = System.Reflection.Assembly.GetAssembly(typeof(HomeController)).GetName().Version.ToString();
+            if (!String.Equals(authenticationRequest.Version, thisVersion))
                 return Content(String.Format("Trying to connect from version {0} to version {1}", authenticationRequest.Version ?? "N/A", thisVersion), "application/text", Encoding.Unicode);
 
             var dictionary = (Dictionary<Guid, SynchronizationSession>)(Request.RequestContext.HttpContext.Application["sessions"]
@@ -166,6 +174,16 @@ namespace BLocal.Web.Manager.Controllers
             var progressHistoryRequest = JsonConvert.DeserializeObject<ProgressHistoryRequest>(request.RequestData, _partConverter);
             providerGroup.HistoryManager.ProgressHistory(progressHistoryRequest.Value, progressHistoryRequest.Author);
             var json = JsonConvert.SerializeObject(new ProgressHistoryResponse(), _partConverter);
+            return Content(json, "application/json", Encoding.Unicode);
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ContentResult ProcessBatch(ExternalSynchronizationRequest request)
+        {
+            var processBatchRequest = JsonConvert.DeserializeObject<ProcessBatchRequest>(request.RequestData);
+            foreach (var batchRequest in processBatchRequest.Requests)
+                _requestMethods[JsonConvert.DeserializeObject<BasicRequest>(batchRequest.RequestData).Path].Invoke(this, new object[] { batchRequest });
+            var json = JsonConvert.SerializeObject(new ProcessBatchResponse(), _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
 

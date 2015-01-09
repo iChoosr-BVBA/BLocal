@@ -87,7 +87,7 @@
     <Compile Include="Models\AutomaticSynchronization\Update.cs" />
     <Compile Include="Models\DirectEditing\IndexModel.cs" />
     <Compile Include="Models\History\HistoryData.cs" />
-    <Compile Include="Models\ExternalSynchronization\ExternalSynchronizationRequest.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\Communication\ExternalSynchronizationRequest.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Business\ImportConfiguration.cs" />
     <Compile Include="Business\ImportData.cs" />
@@ -113,10 +113,13 @@
     <Compile Include="Providers\ExternalSynchronizationManager\Communication\AuthenticationResponse.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\Communication\AdjustHistoryRequest.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\Communication\AdjustHistoryResponse.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\Communication\BasicRequest.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\Communication\OverrideHistoryRequest.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\Communication\OverrideHistoryResponse.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\Communication\PersistResponse.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\Communication\PersistRequest.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\Communication\ProcessBatchRequest.cs" />
+    <Compile Include="Providers\ExternalSynchronizationManager\Communication\ProcessBatchResponse.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\Communication\RewriteHistoryResponse.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\Communication\RewriteHistoryRequest.cs" />
     <Compile Include="Providers\ExternalSynchronizationManager\Communication\ProvideHistoryResponse.cs" />
@@ -198,7 +201,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>26022</DevelopmentServerPort>
+          <DevelopmentServerPort>8479</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

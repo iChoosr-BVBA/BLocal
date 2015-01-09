@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -16,6 +15,9 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
         private Guid ApiKey { get; set; }
         private String BaseUrl { get; set; }
         private String ProviderGroupName { get; set; }
+
+        private bool _send = true;
+        private List<ExternalSynchronizationRequest> _pendingRequests = new List<ExternalSynchronizationRequest>();
 
         private readonly PartJsonConverter _partConverter = new PartJsonConverter();
 
@@ -41,56 +43,56 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
         {
             var request = new UpdateCreateValueRequest { QualifiedValue = value };
             var response = MakeRequest(request);
-            return response.AllValues;
+            return response == null ? null : response.AllValues;
         }
 
         public IEnumerable<QualifiedValue> GetAllQualifiedValues()
         {
             var request = new ReloadRequest();
             var response = MakeRequest(request);
-            return response.AllValues;
+            return response == null ? null : response.AllValues;
         }
 
         public IEnumerable<QualifiedValue> CreateValue(Qualifier.Unique qualifier, String value)
         {
             var request = new CreateValueRequest { Qualifier = qualifier, Value = value };
             var response = MakeRequest(request);
-            return response.AllValues;
+            return response == null ? null : response.AllValues;
         }
 
         public IEnumerable<QualifiedValue> DeleteValue(Qualifier.Unique qualifier)
         {
             var request = new DeleteValueRequest { Qualifier = qualifier };
             var response = MakeRequest(request);
-            return response.AllValues;
+            return response == null ? null : response.AllValues;
         }
 
         public IEnumerable<QualifiedValue> DeleteLocalizationsFor(Part part, String key)
         {
             var request = new DeleteLocalizationsRequest { Part = part, Key = key };
             var response = MakeRequest(request);
-            return response.AllValues;
+            return response == null ? null : response.AllValues;
         }
 
         public IEnumerable<QualifiedHistory> RewriteHistory(IEnumerable<QualifiedHistory> history)
         {
             var request = new RewriteHistoryRequest { History = history.ToArray() };
             var response = MakeRequest(request);
-            return response.AllValues;
+            return response == null ? null : response.AllValues;
         }
 
         public IEnumerable<QualifiedHistory> ProvideHistory()
         {
             var request = new ProvideHistoryRequest();
             var response = MakeRequest(request);
-            return response.History;
+            return response == null ? null : response.History;
         }
 
         public IEnumerable<QualifiedHistory> AdjustHistory(IEnumerable<QualifiedValue> currentValues, String author)
         {
             var request = new AdjustHistoryRequest { CurrentValues = currentValues.ToArray(), Author = author };
             var response = MakeRequest(request);
-            return response.History;
+            return response == null ? null : response.History;
         }
 
         public void OverrideHistory(QualifiedHistory qualifiedHistory)
@@ -111,15 +113,42 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
             var response = MakeRequest(request);
         }
 
-        private TResponse MakeRequest<TResponse>(IRequest<TResponse> request)
+        public void StartBatch()
         {
+            _send = false;
+        }
+
+        public void EndBatch()
+        {
+            _send = true;
+            var requests = _pendingRequests.ToList();
+            _pendingRequests = new List<ExternalSynchronizationRequest>();
+            var batchRequest = new ProcessBatchRequest {Requests = requests};
+            MakeRequest(batchRequest);
+        }
+
+        private TResponse MakeRequest<TResponse>(IRequest<TResponse> request) where TResponse : class
+        {
+            var serializedRequest = new ExternalSynchronizationRequest
+            {
+                ApiKey = ApiKey,
+                ProviderGroupName = ProviderGroupName,
+                RequestData = JsonConvert.SerializeObject(request, _partConverter)
+            };
+
+            if (!_send)
+            {
+                _pendingRequests.Add(serializedRequest);
+                return null;
+            }
+
             using (var client = new WebClient())
             {
                 var values = new NameValueCollection
                 {
-                    {"ApiKey", ApiKey.ToString()},
-                    {"ProviderGroupName", ProviderGroupName},
-                    {"RequestData", JsonConvert.SerializeObject(request, _partConverter)}
+                    {"ApiKey", serializedRequest.ApiKey.ToString()},
+                    {"ProviderGroupName", serializedRequest.ProviderGroupName},
+                    {"RequestData", serializedRequest.RequestData}
                 };
 
                     var response = client.UploadValues(BaseUrl + request.Path, values);

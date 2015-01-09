@@ -1,6 +1,6 @@
 using System;
 
-namespace BLocal.Web.Manager.Models.ExternalSynchronization
+namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager.Communication
 {
     public class ExternalSynchronizationRequest
     {

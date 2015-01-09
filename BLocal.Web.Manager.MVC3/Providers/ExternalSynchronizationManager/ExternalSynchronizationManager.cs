@@ -81,6 +81,9 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
 
         private void Reload(IEnumerable<QualifiedValue> allValues)
         {
+            if (allValues == null)
+                return;
+
             _localizedValues = new Dictionary<Part, KeyLocaleValueContainer>();
             foreach (var qv in allValues)
             {
@@ -94,6 +97,9 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
 
         private void Reload(IEnumerable<QualifiedHistory> history)
         {
+            if (history == null)
+                return;
+
             _history = history.ToDictionary(h => h.Qualifier);
         }
 
@@ -145,6 +151,18 @@ namespace BLocal.Web.Manager.Providers.ExternalSynchronizationManager
         public void RewriteHistory(IEnumerable<QualifiedHistory> newHistory)
         {
             Reload(_connector.RewriteHistory(newHistory));
+        }
+
+        public void StartBatch()
+        {
+            _connector.StartBatch();
+        }
+
+        public void EndBatch()
+        {
+            _connector.EndBatch();
+            Reload(_connector.GetAllQualifiedValues());
+            Reload(_connector.ProvideHistory());
         }
     }
 }
