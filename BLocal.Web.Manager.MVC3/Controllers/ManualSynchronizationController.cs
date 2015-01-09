@@ -70,9 +70,6 @@ namespace BLocal.Web.Manager.Controllers
 
                 var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
                 localizationTo.ValueManager.DeleteValue(qualifier);
-
-                // progress and merge history
-                localizationFrom.HistoryManager.ProgressHistory(new QualifiedValue(qualifier, null), Session.Get<String>("author"));
                 HistoryMerger.MergeHistory(qualifier, localizationFrom.HistoryManager, localizationTo.HistoryManager);
             }
 
@@ -83,12 +80,9 @@ namespace BLocal.Web.Manager.Controllers
                 if (localization.ValueManager != localization.HistoryManager)
                     localization.HistoryManager.Persist();
             }
-
-            // persist any changed history on the sources that has already been persisted
-            foreach (var localization in sourcedLocalizationSides)
+            foreach (var localization in sourcedLocalizationSides.Except(changedLocalizationSides))
             {
-                if (!changedLocalizationSides.Contains(localization))
-                    localization.HistoryManager.Persist();
+                localization.HistoryManager.Persist();
             }
 
             return Json(new { ok = true });
@@ -119,9 +113,6 @@ namespace BLocal.Web.Manager.Controllers
 
                 var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
                 localizationTo.ValueManager.UpdateCreateValue(localizationFrom.ValueManager.GetQualifiedValue(qualifier));
-
-                // make sure that the "from" is also on the latest history
-                localizationFrom.HistoryManager.ProgressHistory(localizationFrom.ValueManager.GetQualifiedValue(qualifier), Session.Get<String>("author"));
                 HistoryMerger.MergeHistory(qualifier, localizationFrom.HistoryManager, localizationTo.HistoryManager);
             }
 
@@ -132,12 +123,9 @@ namespace BLocal.Web.Manager.Controllers
                 if(localization.ValueManager != localization.HistoryManager)
                     localization.HistoryManager.Persist();
             }
-
-            // persist any changed history on the sources that has already been persisted
-            foreach (var localization in sourcedLocalizationSides)
+            foreach (var localization in sourcedLocalizationSides.Except(changedLocalizationSides))
             {
-                if(!changedLocalizationSides.Contains(localization))
-                    localization.HistoryManager.Persist();
+                localization.HistoryManager.Persist();
             }
 
             return Json(new { ok = true });
@@ -168,9 +156,6 @@ namespace BLocal.Web.Manager.Controllers
 
                 var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
                 localizationTo.ValueManager.UpdateCreateValue(localizationFrom.ValueManager.GetQualifiedValue(qualifier));
-
-                // make sure that the "from" is also on the latest history
-                localizationFrom.HistoryManager.ProgressHistory(localizationFrom.ValueManager.GetQualifiedValue(qualifier), Session.Get<String>("author"));
                 HistoryMerger.MergeHistory(qualifier, localizationFrom.HistoryManager, localizationTo.HistoryManager);
             }
 
@@ -181,12 +166,9 @@ namespace BLocal.Web.Manager.Controllers
                 if (localization.ValueManager != localization.HistoryManager)
                     localization.HistoryManager.Persist();
             }
-
-            // persist any changed history on the sources that has already been persisted
-            foreach (var localization in sourcedLocalizationSides)
+            foreach (var localization in sourcedLocalizationSides.Except(changedLocalizationSides))
             {
-                if (!changedLocalizationSides.Contains(localization))
-                    localization.HistoryManager.Persist();
+                localization.HistoryManager.Persist();
             }
 
             return Json(new { ok = true });
