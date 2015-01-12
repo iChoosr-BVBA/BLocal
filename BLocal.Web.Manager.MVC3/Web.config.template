@@ -2,35 +2,36 @@
 <configuration>
   <configSections>
     <!-- do not remove -->
-    <section name="providerPairsConfiguration" type="BLocal.Web.Manager.Configuration.ProviderPairsConfigurationSection" requirePermission="false" allowDefinition="MachineToApplication"/>
+    <section name="providerGroupsConfiguration" type="BLocal.Web.Manager.Configuration.ProviderGroupsConfigurationSection" requirePermission="false" allowDefinition="MachineToApplication"/>
   </configSections>
   <appSettings>
     <add key="ClientValidationEnabled" value="true"/>
     <add key="UnobtrusiveJavaScriptEnabled" value="true"/>
     <add key="password" value="left-out-for-safety"/>
+    <add key="automaticAuthorName" value="Sam - Autosync"/>
   </appSettings>
   <!-- do not rename -->
-  <providerPairsConfiguration>
-    <add name="iChoosr - Local">
+  <providerGroupsConfiguration>
+    <add name="iChoosr - Local" color="#090">
       <valueProvider type="iChoosr.Localization.PackageLocalizedValueManager, iChoosr.Localization, Version=1.0.0.0, Culture=neutral">
         <!-- Add constructor parameters -->
         <add name="localizationRoot" value="C:\Workspaces\iChoosr\Content\VersionContainer" />
       </valueProvider>
       <logProvider type="BLocal.Providers.VoidLogger, BLocal, Version=1.0.0.0, Culture=neutral" />
-      <logProvider type="BLocal.Providers.VoidHistoryProvider, BLocal, Version=1.0.0.0, Culture=neutral" />
+      <historyProvider type="BLocal.Providers.VoidHistoryProvider, BLocal, Version=1.0.0.0, Culture=neutral" />
     </add>
     <add name="iChoosr - Test">
-      <valueProvider type="BLocal.Web.Manager.Providers.ExternalSynchronizationManager.ExternalSynchronizationManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral">
+      <valueProvider type="BLocal.Web.Manager.Providers.RemoteAccessManager.RemoteAccessManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral" color="#f90">
         <!-- Add constructor parameters -->
         <add name="targetUrl" value="http://10.120.3.199:7000/ExternalSynchronization/" />
         <add name="targetPassword" value="left-out-for-safety"/>
         <add name="targetProviderPair" value="iChoosr - Test"/>
       </valueProvider>
       <logProvider type="BLocal.Providers.VoidLogger, BLocal, Version=1.0.0.0, Culture=neutral" />
-      <historyProvider type="BLocal.Web.Manager.Providers.ExternalSynchronizationManager.ExternalSynchronizationManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral" isValueProvider="True" />    
+      <historyProvider type="BLocal.Web.Manager.Providers.RemoteAccessManager.RemoteAccessManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral" isValueProvider="True" />    
     </add>
     <!-- add (or remove) any providers -->
-  </providerPairsConfiguration>
+  </providerGroupsConfiguration>
   <system.web>
     <compilation debug="true" targetFramework="4.0">
       <assemblies>
