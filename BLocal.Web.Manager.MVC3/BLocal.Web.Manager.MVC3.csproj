@@ -130,8 +130,8 @@
     <Compile Include="Providers\RemoteAccess\Communication\GetAllQualifiedValuesRequest.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\FullContentResponse.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\LocaleValueContainer.cs" />
-    <Compile Include="Providers\RemoteAccess\ExternalSynchronizationManager.cs" />
-    <Compile Include="Providers\RemoteAccess\ExternalSynchronizationConnector.cs" />
+    <Compile Include="Providers\RemoteAccess\RemoteAccessManager.cs" />
+    <Compile Include="Providers\RemoteAccess\RemoteAccessConnector.cs" />
     <Compile Include="Providers\RemoteAccess\IRequest.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\KeyLocaleValueContainer.cs" />
     <Compile Include="Providers\RemoteAccess\PartJsonConverter.cs" />
