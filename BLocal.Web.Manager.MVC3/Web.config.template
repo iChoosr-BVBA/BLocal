@@ -21,14 +21,14 @@
       <historyProvider type="BLocal.Providers.VoidHistoryProvider, BLocal, Version=1.0.0.0, Culture=neutral" />
     </add>
     <add name="iChoosr - Test">
-      <valueProvider type="BLocal.Web.Manager.Providers.RemoteAccessManager.RemoteAccessManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral" color="#f90">
+      <valueProvider type="BLocal.Web.Manager.Providers.RemoteAccess.RemoteAccessManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral" color="#f90">
         <!-- Add constructor parameters -->
         <add name="targetUrl" value="http://10.120.3.199:7000/ExternalSynchronization/" />
         <add name="targetPassword" value="left-out-for-safety"/>
         <add name="targetProviderPair" value="iChoosr - Test"/>
       </valueProvider>
       <logProvider type="BLocal.Providers.VoidLogger, BLocal, Version=1.0.0.0, Culture=neutral" />
-      <historyProvider type="BLocal.Web.Manager.Providers.RemoteAccessManager.RemoteAccessManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral" isValueProvider="True" />    
+      <historyProvider type="BLocal.Web.Manager.Providers.RemoteAccess.RemoteAccessManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral" isValueProvider="True" />    
     </add>
     <!-- add (or remove) any providers -->
   </providerGroupsConfiguration>
