@@ -60,7 +60,7 @@ namespace BLocal.Web.Manager.Providers.RemoteAccess
         {
             var request = new ReloadRequest();
             var response = MakeRequest(request);
-            return response == null ? null : response.AllValues;
+            return response.AllValues;
         }
 
         public IEnumerable<QualifiedValue> CreateValue(Qualifier.Unique qualifier, String value)
@@ -88,21 +88,21 @@ namespace BLocal.Web.Manager.Providers.RemoteAccess
         {
             var request = new RewriteHistoryRequest { History = history.ToArray() };
             var response = MakeRequest(request);
-            return response == null ? null : response.AllValues;
+            return response.AllValues;
         }
 
         public IEnumerable<QualifiedHistory> ProvideHistory()
         {
             var request = new ProvideHistoryRequest();
             var response = MakeRequest(request);
-            return response == null ? null : response.History;
+            return response.History;
         }
 
         public IEnumerable<QualifiedHistory> AdjustHistory(IEnumerable<QualifiedValue> currentValues, String author)
         {
             var request = new AdjustHistoryRequest { CurrentValues = currentValues.ToArray(), Author = author };
             var response = MakeRequest(request);
-            return response == null ? null : response.History;
+            return response.History;
         }
 
         public void OverrideHistory(QualifiedHistory qualifiedHistory)
