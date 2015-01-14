@@ -12,7 +12,8 @@ namespace BLocal.Web.Manager.Business
 
             var mergedHistory = winningQualifiedHistory.Entries
                 .Union(losingQualifiedHistory.Entries).Distinct().OrderBy(h => h.DateTimeUtc)
-                .Except(new[] { winningQualifiedHistory.LatestEntry() }).Union(new [] {winningQualifiedHistory.LatestEntry() });
+                .Except(new[] { winningQualifiedHistory.LatestEntry() }).Union(new [] {winningQualifiedHistory.LatestEntry() })
+                .Where(e => e != null);
 
             var qualifiedMergedHistory = new QualifiedHistory {Qualifier = qualifier, Entries = mergedHistory.ToList()};
 

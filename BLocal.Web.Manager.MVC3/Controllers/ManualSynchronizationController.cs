@@ -74,6 +74,7 @@ namespace BLocal.Web.Manager.Controllers
                     sourcedLocalizationSides.Add(localizationFrom);
 
                 var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
+                EnsureHistoryLoaded(localizationFrom, qualifier);
                 localizationTo.ValueManager.DeleteValue(qualifier);
                 HistoryMerger.MergeHistory(qualifier, localizationFrom.HistoryManager, localizationTo.HistoryManager);
             }
@@ -125,6 +126,7 @@ namespace BLocal.Web.Manager.Controllers
                     sourcedLocalizationSides.Add(localizationFrom);
 
                 var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
+                EnsureHistoryLoaded(localizationFrom, qualifier);
                 localizationTo.ValueManager.UpdateCreateValue(localizationFrom.ValueManager.GetQualifiedValue(qualifier));
                 HistoryMerger.MergeHistory(qualifier, localizationFrom.HistoryManager, localizationTo.HistoryManager);
             }
@@ -177,6 +179,7 @@ namespace BLocal.Web.Manager.Controllers
 
                 var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
                 localizationTo.ValueManager.UpdateCreateValue(localizationFrom.ValueManager.GetQualifiedValue(qualifier));
+                EnsureHistoryLoaded(localizationFrom, qualifier);
                 HistoryMerger.MergeHistory(qualifier, localizationFrom.HistoryManager, localizationTo.HistoryManager);
             }
 
@@ -197,6 +200,13 @@ namespace BLocal.Web.Manager.Controllers
                     manager.EndBatch();
 
             return Json(new { ok = true });
+        }
+
+        private void EnsureHistoryLoaded(ProviderGroup localizationFrom, Qualifier.Unique qualifier)
+        {
+            var historyFrom = localizationFrom.HistoryManager.GetHistory(qualifier);
+            if (historyFrom == null || historyFrom.LatestEntry() == null)
+                localizationFrom.HistoryManager.AdjustHistory(localizationFrom.ValueManager.GetAllValuesQualified(), Session.Get<String>("author"));
         }
     }
 }
