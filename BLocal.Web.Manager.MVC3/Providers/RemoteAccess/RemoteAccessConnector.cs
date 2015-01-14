@@ -16,8 +16,18 @@ namespace BLocal.Web.Manager.Providers.RemoteAccess
         private String BaseUrl { get; set; }
         private String ProviderGroupName { get; set; }
 
-        private bool _send = true;
+        private bool _batchMode = false;
         private List<RemoteAccessRequest> _pendingRequests = new List<RemoteAccessRequest>();
+        private readonly HashSet<Type> _batchAllowedRequestTypes = new HashSet<Type>
+        {
+            typeof(CreateValueRequest),
+            typeof(DeleteLocalizationsRequest),
+            typeof(DeleteValueRequest),
+            typeof(OverrideHistoryRequest),
+            typeof(PersistRequest),
+            typeof(ProgressHistoryRequest),
+            typeof(UpdateCreateValueRequest)
+        };  
 
         private readonly PartJsonConverter _partConverter = new PartJsonConverter();
 
@@ -115,12 +125,12 @@ namespace BLocal.Web.Manager.Providers.RemoteAccess
 
         public void StartBatch()
         {
-            _send = false;
+            _batchMode = true;
         }
 
         public void EndBatch()
         {
-            _send = true;
+            _batchMode = false;
             var requests = _pendingRequests.ToList();
             _pendingRequests = new List<RemoteAccessRequest>();
             var batchRequest = new ProcessBatchRequest {Requests = requests};
@@ -136,7 +146,7 @@ namespace BLocal.Web.Manager.Providers.RemoteAccess
                 RequestData = JsonConvert.SerializeObject(request, _partConverter)
             };
 
-            if (!_send)
+            if (_batchMode && _batchAllowedRequestTypes.Contains(request.GetType()))
             {
                 _pendingRequests.Add(serializedRequest);
                 return null;
