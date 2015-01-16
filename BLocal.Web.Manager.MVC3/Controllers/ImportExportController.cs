@@ -202,7 +202,7 @@ namespace BLocal.Web.Manager.Controllers
             var selectedLocale = new Locale(configuration.Locale);
             foreach (var insert in configuration.Data)
             {
-                var qualifiedValue = new QualifiedValue(new Qualifier.Unique(Part.Parse(insert.Part), selectedLocale, insert.Key), insert.Value);
+                var qualifiedValue = new QualifiedValue(new Qualifier.Unique(Part.Parse(insert.Part), selectedLocale, insert.Key), insert.Value ?? String.Empty);
                 providerGroup.ValueManager.CreateValue(qualifiedValue.Qualifier, qualifiedValue.Value);
                 providerGroup.HistoryManager.ProgressHistory(qualifiedValue, Session.Get<String>("author"));
             }
