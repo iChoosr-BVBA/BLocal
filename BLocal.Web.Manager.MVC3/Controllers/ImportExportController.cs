@@ -187,7 +187,7 @@ namespace BLocal.Web.Manager.Controllers
             var selectedLocale = new Locale(configuration.Locale);
             foreach (var update in configuration.Data)
             {
-                var qualifiedValue = new QualifiedValue(new Qualifier.Unique(Part.Parse(update.Part), selectedLocale, update.Key), update.Value);
+                var qualifiedValue = new QualifiedValue(new Qualifier.Unique(Part.Parse(update.Part), selectedLocale, update.Key), update.Value ?? String.Empty);
                 providerGroup.ValueManager.UpdateCreateValue(qualifiedValue);
                 providerGroup.HistoryManager.ProgressHistory(qualifiedValue, Session.Get<String>("author"));
             }
