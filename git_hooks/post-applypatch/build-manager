@@ -1,5 +1,11 @@
 #!/bin/sh
 
-echo -e "Attempting to build BLocal.Web.Mvc3"
-echo -e "(to re-trigger this manually: 'git hooks run post-merge')"
-cmd.exe /c "rake -f ${PWD}/build.rake manager:build"
+branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+echo -e "on branch: $branch"
+if [ $branch == "production" ]; then
+	echo -e "Attempting to build BLocal.Web.Mvc3"
+	echo -e "(to re-trigger this manually: 'git hooks run post-merge')"
+	cmd.exe /c "rake -f ${PWD}/build.rake manager:build"
+else
+	echo -e "For auto-deploy, pull onto the production branch"
+fi
