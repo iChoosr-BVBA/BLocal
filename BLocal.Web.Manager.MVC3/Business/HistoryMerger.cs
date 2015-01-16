@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using BLocal.Core;
 
 namespace BLocal.Web.Manager.Business
@@ -19,6 +20,25 @@ namespace BLocal.Web.Manager.Business
 
             winningHistory.OverrideHistory(qualifiedMergedHistory);
             losingHistory.OverrideHistory(qualifiedMergedHistory);
+        }
+
+        public static QualifiedHistory MergeHistoryEntries(QualifiedHistory history1, QualifiedHistory history2)
+        {
+            if (history1 == null)
+                return history2;
+            if (history2 == null)
+                return history1;
+            if (!history1.Qualifier.Equals(history2.Qualifier))
+                throw new Exception("Qualifiers don't match!");
+
+            return new QualifiedHistory
+            {
+                Qualifier = history1.Qualifier,
+                Entries = history1.Entries
+                    .Union(history2.Entries).Distinct().OrderBy(h => h.DateTimeUtc)
+                    .Where(e => e != null)
+                    .ToList()
+            };
         }
     }
 }

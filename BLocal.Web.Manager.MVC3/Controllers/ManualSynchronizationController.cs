@@ -34,9 +34,13 @@ namespace BLocal.Web.Manager.Controllers
             rightProviders.HistoryManager.AdjustHistory(rightValues, Session.Get<String>("author"));
 
             var leftNotRight = leftValues.Where(lv => !rightValues.Select(rv => rv.Qualifier).Contains(lv.Qualifier))
-                .Select(lv => new SynchronizationData.QualifiedHistoricalValue(lv, leftProviders.HistoryManager.GetHistory(lv.Qualifier))).ToArray();
+                .Select(lv => new SynchronizationData.QualifiedHistoricalValue(lv, 
+                    HistoryMerger.MergeHistoryEntries(leftProviders.HistoryManager.GetHistory(lv.Qualifier), rightProviders.HistoryManager.GetHistory(lv.Qualifier)
+                ))).ToArray();
             var rightNotLeft = rightValues.Where(rv => !leftValues.Select(lv => lv.Qualifier).Contains(rv.Qualifier))
-                .Select(rv => new SynchronizationData.QualifiedHistoricalValue(rv, rightProviders.HistoryManager.GetHistory(rv.Qualifier))).ToArray();
+                .Select(rv => new SynchronizationData.QualifiedHistoricalValue(rv,
+                    HistoryMerger.MergeHistoryEntries(leftProviders.HistoryManager.GetHistory(rv.Qualifier), rightProviders.HistoryManager.GetHistory(rv.Qualifier)
+                ))).ToArray();
 
             var valueDifferences = leftValues
                 .Join(rightValues, v => v.Qualifier, v => v.Qualifier, (lv, rv) => new SynchronizationData.QualifiedHistoricalValuePair(
