@@ -192,6 +192,8 @@ namespace BLocal.Web.Manager.Controllers
                 providerGroup.HistoryManager.ProgressHistory(qualifiedValue, Session.Get<String>("author"));
             }
             providerGroup.ValueManager.Persist();
+            if(providerGroup.ValueManager != providerGroup.HistoryManager)
+                providerGroup.HistoryManager.Persist();
             return Json(new { ok = true });
         }
 
@@ -207,6 +209,8 @@ namespace BLocal.Web.Manager.Controllers
                 providerGroup.HistoryManager.ProgressHistory(qualifiedValue, Session.Get<String>("author"));
             }
             providerGroup.ValueManager.Persist();
+            if (providerGroup.ValueManager != providerGroup.HistoryManager)
+                providerGroup.HistoryManager.Persist();
             return Json(new { ok = true });
         }
 
@@ -222,6 +226,8 @@ namespace BLocal.Web.Manager.Controllers
                 providerGroup.HistoryManager.ProgressHistory(qualifiedValue, Session.Get<String>("author"));
             }
             providerGroup.ValueManager.Persist();
+            if (providerGroup.ValueManager != providerGroup.HistoryManager)
+                providerGroup.HistoryManager.Persist();
             return Json(new { ok = true });
         }
     }
