@@ -64,7 +64,7 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ActionResult Export(String providerConfigName, String[] parts, String format, String locale)
+        public ActionResult Export(String providerConfigName, String[] parts, String format, String locale, bool omitLocaleBlanks)
         {
             var providerGroup = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
             var allValues = providerGroup.ValueManager.GetAllValuesQualified().ToArray();
@@ -73,14 +73,18 @@ namespace BLocal.Web.Manager.Controllers
                 .Where(v => parts.Contains(v.Qualifier.Part.ToString()))
                 .ToLookup(v => new Qualifier(v.Qualifier.Part, TranslationVerificationData.NoLocale, v.Qualifier.Key));
 
-            var records = groupedTranslations.Select(group =>
-                group.SingleOrDefault(v => Equals(v.Qualifier.Locale.ToString(), locale))
-                    ?? new QualifiedValue(
-                        new Qualifier.Unique(group.Key.Part, selectedLocale, group.Key.Key),
-                        String.Empty
-                    )
-            ).Select(v => new ImportExportRecord(v.Qualifier.Part.ToString(), v.Qualifier.Key, v.Value))
-            .ToArray();
+            var records = groupedTranslations
+                .Select(group =>
+                    group
+                        .SingleOrDefault(v => Equals(v.Qualifier.Locale.ToString(), locale))
+                        ?? (omitLocaleBlanks ? null : new QualifiedValue(
+                            new Qualifier.Unique(group.Key.Part, selectedLocale, group.Key.Key),
+                            String.Empty
+                        ))
+                )
+                .Where(v => v != null)
+                .Select(v => new ImportExportRecord(v.Qualifier.Part.ToString(), v.Qualifier.Key, v.Value))
+                .ToArray();
 
             var stream = new MemoryStream();
             try

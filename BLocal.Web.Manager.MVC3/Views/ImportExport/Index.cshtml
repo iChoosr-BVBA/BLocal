@@ -14,10 +14,11 @@
                 $(this).parents(".innerPart").first().find("input[type=checkbox]").prop("checked", false);
                 return false;
             });
-            $("input[type=checkbox]").click(function(e) {
+            $(".innerPart p input[type=checkbox]").change(function(e) {
                 var check = $(this);
                 check.prop("checked", function (i, val) { return !val; });
-                e.preventBubble();
+                e.stopPropagation();
+                e.preventDefault();
             });
             $(".innerPart p").click(function() {
                 var check = $(this).find("input[type=checkbox]");
@@ -48,7 +49,7 @@
             }
             <option value="x-loc-nolocale">Add new locale</option>
         </select> <input type="file" name="postedFile" /></p>
-        <input type="hidden" name="providerConfigName" value="@Model.ProviderConfigName"/>
+        <input type="hidden" name="providerConfigName" value="@Model.Provider.Name"/>
         <p><input type="submit" value="Upload and proceed to step 2"/></p>
     </form>
 </section>
@@ -58,20 +59,26 @@
     <h2>Export</h2>
     @using (Html.BeginForm("Export", "ImportExport", FormMethod.Post))
     {
-        <input type="hidden" name="providerConfigName" value="@Model.ProviderConfigName"/>
+        <input type="hidden" name="providerConfigName" value="@Model.Provider.Name"/>
         <h3>File Format</h3>
         <p>
             <input type="radio" name="format" value="csv" id="exportcxv" checked="checked"/><label style="width: 500px" for="exportcxv">CSV (Can be opened with Excel)</label><br />
             <input type="radio" name="format" value="xml" id="exportxml"/><label style="width: 500px" for="exportxml">XML (Can be opened with HTML editors)</label>
         </p>
         <h3>Locale Selection</h3>
-        <p><select name="locale">
-               <option value="x-loc-nolocale">Export without values (leave empty)</option>
-               @foreach (var locale in Model.Locales)
-               {
-                   <option>@locale</option>
-               }
-           </select></p>
+        <p>
+            <select name="locale">
+                <option value="x-loc-nolocale">Export without values (leave empty)</option>
+                @foreach (var locale in Model.Locales)
+                {
+                    <option>@locale</option>
+                }
+            </select>
+        </p>
+        <p>
+            <label><input type="checkbox" name="omitLocaleBlanks" value="true" checked="checked"/> Only export records that have a value</label>
+            <input type="hidden" name="omitLocaleBlanks" value="false"/>
+        </p>
         <p><input type="submit" value="Start Export"/></p>
         <h3>Value Selection (all selected by default)</h3>
         <section class="innerPart">
