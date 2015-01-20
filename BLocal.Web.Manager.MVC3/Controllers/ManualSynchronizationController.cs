@@ -23,10 +23,9 @@ namespace BLocal.Web.Manager.Controllers
 
         private static QualifiedHistory MergeHistory(Qualifier.Unique qualifier, ProviderGroup group1, ProviderGroup group2)
         {
-            return HistoryMerger.MergeHistoryEntries(
-                group1.HistoryManager.GetHistory(qualifier),
-                group2.HistoryManager.GetHistory(qualifier)
-            );
+            var group1History = group1.HistoryManager.GetHistory(qualifier);
+            var group2History = group2.HistoryManager.GetHistory(qualifier);
+            return HistoryMerger.MergeHistoryEntries(group1History, group2History);
         }
 
         public ActionResult Index(String leftConfigName, String rightConfigName, Boolean hardReload = false)
