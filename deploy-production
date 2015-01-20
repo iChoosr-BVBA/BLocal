@@ -1,0 +1,16 @@
+#!/bin/sh
+
+originalBranch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+echo -e "on branch: $originalBranch"
+
+if [ $originalBranch != "production" ]; then
+	git checkout production
+fi
+
+git pull
+	echo -e "Attempting to build BLocal.Web.Mvc3"
+	cmd.exe /c "rake -f ${PWD}/build.rake manager:build"
+
+if [ $originalBranch != "production" ]; then
+	git checkout $originalBranch
+fi
