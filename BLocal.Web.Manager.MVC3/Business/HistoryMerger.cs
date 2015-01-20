@@ -12,9 +12,10 @@ namespace BLocal.Web.Manager.Business
             var losingQualifiedHistory = losingHistory.GetHistory(qualifier) ?? new QualifiedHistory();
 
             var mergedHistory = winningQualifiedHistory.Entries
-                .Union(losingQualifiedHistory.Entries).Distinct().OrderBy(h => h.DateTimeUtc)
-                .Except(new[] { winningQualifiedHistory.LatestEntry() }).Union(new [] {winningQualifiedHistory.LatestEntry() })
-                .Where(e => e != null);
+                .Union(losingQualifiedHistory.Entries).Distinct()
+                .Where(e => e != null)
+                .OrderBy(e => e.DateTimeUtc)
+                .Except(new[] { winningQualifiedHistory.LatestEntry() }).Union(new [] {winningQualifiedHistory.LatestEntry() });
 
             var qualifiedMergedHistory = new QualifiedHistory {Qualifier = qualifier, Entries = mergedHistory.ToList()};
 
@@ -37,7 +38,7 @@ namespace BLocal.Web.Manager.Business
                 Entries = history1.Entries
                     .Union(history2.Entries).Distinct()
                     .Where(e => e != null)
-                    .OrderBy(h => h.DateTimeUtc)
+                    .OrderBy(e => e.DateTimeUtc)
                     .ToList()
             };
         }
