@@ -35,8 +35,9 @@ namespace BLocal.Web.Manager.Business
             {
                 Qualifier = history1.Qualifier,
                 Entries = history1.Entries
-                    .Union(history2.Entries).Distinct().OrderBy(h => h.DateTimeUtc)
+                    .Union(history2.Entries).Distinct()
                     .Where(e => e != null)
+                    .OrderBy(h => h.DateTimeUtc)
                     .ToList()
             };
         }
