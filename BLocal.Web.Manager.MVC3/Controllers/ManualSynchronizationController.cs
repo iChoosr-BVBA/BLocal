@@ -20,7 +20,15 @@ namespace BLocal.Web.Manager.Controllers
         {
             ProviderGroupFactory = new ProviderGroupFactory();
         }
-        
+
+        private static QualifiedHistory MergeHistory(Qualifier.Unique qualifier, ProviderGroup group1, ProviderGroup group2)
+        {
+            return HistoryMerger.MergeHistoryEntries(
+                group1.HistoryManager.GetHistory(qualifier),
+                group2.HistoryManager.GetHistory(qualifier)
+            );
+        }
+
         public ActionResult Index(String leftConfigName, String rightConfigName, Boolean hardReload = false)
         {
             var leftProviders = ProviderGroupFactory.CreateProviderGroup(leftConfigName);
@@ -34,13 +42,11 @@ namespace BLocal.Web.Manager.Controllers
             rightProviders.HistoryManager.AdjustHistory(rightValues, Session.Get<String>("author"));
 
             var leftNotRight = leftValues.Where(lv => !rightValues.Select(rv => rv.Qualifier).Contains(lv.Qualifier))
-                .Select(lv => new SynchronizationData.QualifiedHistoricalValue(lv, 
-                    HistoryMerger.MergeHistoryEntries(leftProviders.HistoryManager.GetHistory(lv.Qualifier), rightProviders.HistoryManager.GetHistory(lv.Qualifier)
-                ))).ToArray();
+                .Select(lv => new SynchronizationData.QualifiedHistoricalValue(lv, MergeHistory(lv.Qualifier, leftProviders, rightProviders)))
+                .ToArray();
             var rightNotLeft = rightValues.Where(rv => !leftValues.Select(lv => lv.Qualifier).Contains(rv.Qualifier))
-                .Select(rv => new SynchronizationData.QualifiedHistoricalValue(rv,
-                    HistoryMerger.MergeHistoryEntries(leftProviders.HistoryManager.GetHistory(rv.Qualifier), rightProviders.HistoryManager.GetHistory(rv.Qualifier)
-                ))).ToArray();
+                .Select(rv => new SynchronizationData.QualifiedHistoricalValue(rv, MergeHistory(rv.Qualifier, leftProviders, rightProviders)))
+                .ToArray();
 
             var valueDifferences = leftValues
                 .Join(rightValues, v => v.Qualifier, v => v.Qualifier, (lv, rv) => new SynchronizationData.QualifiedHistoricalValuePair(
