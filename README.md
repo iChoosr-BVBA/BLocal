@@ -6,7 +6,7 @@ A better way of Internationalization/Globalization/Localization for .NET
 # Installing the BLocal manager locally
 
 1. checkout this git repository
-2. make sure you have installed the rigth tooling
+2. make sure you have installed the right tooling
 	* ruby
 	* rake
 	* ruby gems
