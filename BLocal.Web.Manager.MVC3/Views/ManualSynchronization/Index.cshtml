@@ -46,7 +46,7 @@
                 <td style="white-space: nowrap;">
                     @value.Value.Qualifier.Key <br />
                     <span class="localepart">@value.Value.Qualifier.Locale | @value.Value.Qualifier.Part</span><br />
-                    <span class="localepart">@value.History.LatestEntry().DateTimeUtc - @value.History.LatestEntry().Author</span>
+                    <span class="localepart">@value.History.LatestEntry().DateTimeUtc.ToLocalTime() - @value.History.LatestEntry().Author</span>
                 </td>
                 <td style="width: 99%;">@value.Value.Value</td>
             </tr>
@@ -77,7 +77,7 @@
                 <td style="white-space: nowrap;">
                     @value.Value.Qualifier.Key <br />
                     <span class="localepart">@value.Value.Qualifier.Locale | @value.Value.Qualifier.Part</span><br />
-                    <span class="localepart">@value.History.LatestEntry().DateTimeUtc - @value.History.LatestEntry().Author</span>
+                    <span class="localepart">@value.History.LatestEntry().DateTimeUtc.ToLocalTime() - @value.History.LatestEntry().Author</span>
                 </td>
                 <td style="width: 99%;">@value.Value.Value</td>
             </tr>
@@ -101,7 +101,7 @@
                         <input type="checkbox" data-provider="@Model.Left.Name" data-affected-side="right" data-part="@value.Left.Value.Qualifier.Part" data-locale="@value.Left.Value.Qualifier.Locale" data-key="@value.Left.Value.Qualifier.Key" />
                         Change on <span style="color: @Model.Left.Color">@Model.Left.Name</span> using this value
                         <br />
-                        @value.Right.History.LatestEntry().DateTimeUtc - @value.Right.History.LatestEntry().Author
+                        @value.Right.History.LatestEntry().DateTimeUtc.ToLocalTime() - @value.Right.History.LatestEntry().Author
                     </p>
                 </label>
                 <label class="right">
@@ -110,7 +110,7 @@
                         <input type="checkbox" data-provider="@Model.Right.Name" data-affected-side="left" data-part="@value.Right.Value.Qualifier.Part" data-locale="@value.Right.Value.Qualifier.Locale" data-key="@value.Right.Value.Qualifier.Key" />
                         Change on <span style="color: @Model.Right.Color">@Model.Right.Name</span> using this value
                         <br />
-                        @value.Left.History.LatestEntry().DateTimeUtc - @value.Left.History.LatestEntry().Author
+                        @value.Left.History.LatestEntry().DateTimeUtc.ToLocalTime() - @value.Left.History.LatestEntry().Author
                     </p>
                 </label>
                 <div class="clear"></div>

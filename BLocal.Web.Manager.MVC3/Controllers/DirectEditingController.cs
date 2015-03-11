@@ -23,9 +23,6 @@ namespace BLocal.Web.Manager.Controllers
         public ActionResult Index(String providerConfigName)
         {
             var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
-
-            localization.ValueManager.Reload();
-            localization.HistoryManager.Reload();
             
             var localizations = localization.ValueManager.GetAllValuesQualified().ToList();
             localization.HistoryManager.AdjustHistory(localizations, Session.Get<String>("author"));

@@ -11,7 +11,7 @@
             var previous = history.PreviousEntry();
             <tr class="lrvalue">
                 <td class="">@history.Qualifier</td>
-                <td class="">@latest.DateTimeUtc</td>
+                <td class="">@latest.DateTimeUtc.ToLocalTime()</td>
                 <td class="">@latest.Author</td>
                 <td style="">
                     <p class="oldvalue">@(previous == null ? "" : previous.Content)</p>

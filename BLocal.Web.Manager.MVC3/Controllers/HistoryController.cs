@@ -22,9 +22,6 @@ namespace BLocal.Web.Manager.Controllers
         {
             var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
-            localization.HistoryManager.Reload();
-            localization.ValueManager.Reload();
-
             var allValues = localization.ValueManager.GetAllValuesQualified();
             localization.HistoryManager.AdjustHistory(allValues, Session.Get<String>("author"));
             var history = localization.HistoryManager.ProvideHistory()
@@ -36,6 +33,16 @@ namespace BLocal.Web.Manager.Controllers
                 History = history
             };
             return View(model);
+        }
+
+
+        public ActionResult Fix(String providerConfigName)
+        {
+            var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
+            var allValues = localization.ValueManager.GetAllValuesQualified();
+            localization.HistoryManager.AdjustHistory(allValues, "History fix (" + Session.Get<String>("autor") + ")");
+            localization.HistoryManager.Persist();
+            return RedirectToAction("Index", new { providerConfigName });
         }
     }
 }
