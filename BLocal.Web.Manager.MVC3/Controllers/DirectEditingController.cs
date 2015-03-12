@@ -48,7 +48,6 @@ namespace BLocal.Web.Manager.Controllers
             foreach (var kvp in nodesWithParents)
                 groupedParts.Remove(kvp.Key);
 
-            localization.ValueManager.Persist();
             var model = new IndexModel {Parts = groupedParts.Values, Provider = localization};
             return View(model);
         }

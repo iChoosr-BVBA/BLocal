@@ -40,7 +40,7 @@ namespace BLocal.Web.Manager.Controllers
         {
             var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
             var allValues = localization.ValueManager.GetAllValuesQualified();
-            localization.HistoryManager.AdjustHistory(allValues, "History fix (" + Session.Get<String>("autor") + ")");
+            localization.HistoryManager.AdjustHistory(allValues, "History fix (" + Session.Get<String>("author") + ")");
             localization.HistoryManager.Persist();
             return RedirectToAction("Index", new { providerConfigName });
         }
