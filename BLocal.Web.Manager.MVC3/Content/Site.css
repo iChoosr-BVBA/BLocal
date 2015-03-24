@@ -234,3 +234,10 @@ body.busy .block-ui {
 .hidden {
     display: none;
 }
+ins {
+    background-color: #ffa;
+    text-decoration: none;
+}
+del {
+    display: none;
+}

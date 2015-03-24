@@ -96,7 +96,7 @@
             <p class="localepart">@value.Left.Value.Qualifier.Locale | @value.Left.Value.Qualifier.Part</p>
             <section class="comparison">
                 <label class="left">
-                    <p>@value.Right.Value.Value</p>
+                    <p class="value">@value.Right.Value.Value</p>
                     <p>
                         <input type="checkbox" data-provider="@Model.Left.Name" data-affected-side="right" data-part="@value.Left.Value.Qualifier.Part" data-locale="@value.Left.Value.Qualifier.Locale" data-key="@value.Left.Value.Qualifier.Key" />
                         Change on <span style="color: @Model.Left.Color">@Model.Left.Name</span> using this value
@@ -105,7 +105,7 @@
                     </p>
                 </label>
                 <label class="right">
-                    <p>@value.Left.Value.Value</p>
+                    <p class="value">@value.Left.Value.Value</p>
                     <p>
                         <input type="checkbox" data-provider="@Model.Right.Name" data-affected-side="left" data-part="@value.Right.Value.Qualifier.Part" data-locale="@value.Right.Value.Qualifier.Locale" data-key="@value.Right.Value.Qualifier.Key" />
                         Change on <span style="color: @Model.Right.Color">@Model.Right.Name</span> using this value

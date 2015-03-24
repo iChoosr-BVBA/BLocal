@@ -128,4 +128,19 @@
         $(this).parents(".difference").removeClass("left").removeClass("right").addClass(newAffectedSide);
     });
 
+    // loop over all comparisons, turn them into diffs
+    $(".comparison").each(function () {
+        var el = $(this);
+        var leftEl = el.find(".left .value");
+        var rightEl = el.find(".right .value");
+        var leftHtml = leftEl.html();
+        var rightHtml = rightEl.html();
+        leftEl.html(diffString(rightHtml, leftHtml));
+        rightEl.html(diffString(leftHtml, rightHtml));
+    });
+
+    // the diff tool has a nasty habit of encoding HTML (great!) but doing it only in some places (not so great), so we fix that here
+    $(".comparison ins, .comparison del").each(function() {
+        $(this).html($(this).text());
+    });
 }});
