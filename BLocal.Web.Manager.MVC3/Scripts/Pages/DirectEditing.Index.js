@@ -136,13 +136,13 @@
 
             elements.find(".save, .updatecopy").click(function () {
                 blockUI();
-                var newPart = partEl.val(), newKey = keyEl.val(), newLocale = localeEl.val(), newContent = contentEl.val();
+                var newPart = partEl.val().trim(), newKey = keyEl.val().trim(), newLocale = localeEl.val().trim(), newContent = contentEl.val();
                 update(newPart, newKey, newLocale, newContent, unblockUI);
             });
 
             elements.find(".updaterecreate").click(function () {
                 blockUI();
-                var newPart = partEl.val(), newKey = keyEl.val(), newLocale = localeEl.val(), newContent = contentEl.val();
+                var newPart = partEl.val().trim(), newKey = keyEl.val().trim(), newLocale = localeEl.val().trim(), newContent = contentEl.val();
 
                 if (part == newPart && key == newKey && locale == newLocale) {
                     update(newPart, newKey, newLocale, newContent, unblockUI);
@@ -164,7 +164,7 @@
             });
 
             elements.find(".part, .key, .locale").keyup(function() {
-                var newPart = partEl.val(), newKey = keyEl.val(), newLocale = localeEl.val(), newContent = contentEl.val();
+                var newPart = partEl.val().trim(), newKey = keyEl.val().trim(), newLocale = localeEl.val().trim(), newContent = contentEl.val();
                 var qualifierChanged = part != newPart || key != newKey || locale != newLocale;
                 elements.find(".save").toggle(!qualifierChanged);
                 elements.find(".updaterecreate, .updatecopy").toggle(qualifierChanged);
@@ -183,7 +183,7 @@
 
         $("input.filter").each(function() {
             var filter = $(this);
-            var filterval = $(this).val().toLowerCase();
+            var filterval = $(this).val().toLowerCase().trim();
             if (filterval.length == 0)
                 return true;
 
