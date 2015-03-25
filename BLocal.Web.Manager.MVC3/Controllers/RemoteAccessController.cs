@@ -24,7 +24,7 @@ namespace BLocal.Web.Manager.Controllers
             ProviderGroupFactory = new ProviderGroupFactory();
         }
 
-        private static Dictionary<string, MethodInfo> _requestMethods = typeof(RemoteAccessController)
+        private static readonly Dictionary<string, MethodInfo> RequestMethods = typeof(RemoteAccessController)
             .GetMethods()
             .Where(m => m.ReturnType == typeof(ContentResult))
             .Where(m => m.GetParameters().First().ParameterType == typeof(RemoteAccessRequest))
@@ -38,7 +38,7 @@ namespace BLocal.Web.Manager.Controllers
             if (authenticationRequest.Password != ConfigurationManager.AppSettings["password"])
                 return Content("", "application/json", Encoding.Unicode);
 
-            var thisVersion = System.Reflection.Assembly.GetAssembly(typeof(HomeController)).GetName().Version.ToString();
+            var thisVersion = Assembly.GetAssembly(typeof(HomeController)).GetName().Version.ToString();
             if (!String.Equals(authenticationRequest.Version, thisVersion))
                 return Content(String.Format("Trying to connect from version {0} to version {1}", authenticationRequest.Version ?? "N/A", thisVersion), "application/text", Encoding.Unicode);
 
@@ -182,7 +182,7 @@ namespace BLocal.Web.Manager.Controllers
         {
             var processBatchRequest = JsonConvert.DeserializeObject<ProcessBatchRequest>(request.RequestData);
             foreach (var batchRequest in processBatchRequest.Requests)
-                _requestMethods[JsonConvert.DeserializeObject<BasicRequest>(batchRequest.RequestData).Path].Invoke(this, new object[] { batchRequest });
+                RequestMethods[JsonConvert.DeserializeObject<BasicRequest>(batchRequest.RequestData).Path].Invoke(this, new object[] { batchRequest });
             var json = JsonConvert.SerializeObject(new ProcessBatchResponse(), _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
@@ -197,10 +197,16 @@ namespace BLocal.Web.Manager.Controllers
 
             var session = dictionary[synchronizationRequest.ApiKey];
 
-            return session.ProviderGroups.ContainsKey(synchronizationRequest.ProviderGroupName)
+            var group = session.ProviderGroups.ContainsKey(synchronizationRequest.ProviderGroupName)
                 ? session.ProviderGroups[synchronizationRequest.ProviderGroupName]
                 : session.ProviderGroups[synchronizationRequest.ProviderGroupName] =
                     ProviderGroupFactory.CreateProviderGroup(synchronizationRequest.ProviderGroupName);
+
+            var isChainingRemote = group.HistoryManager.GetType() == typeof(RemoteAccessManager) || group.ValueManager.GetType() == typeof(RemoteAccessManager);
+            if(isChainingRemote)
+                throw new RemoteChainingException();
+
+            return group;
         }
     }
 }
