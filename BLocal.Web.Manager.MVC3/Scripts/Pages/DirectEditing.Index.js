@@ -31,7 +31,7 @@
     });
 
     $(document).on("click", "h2", function() {
-        var valueChildren = $(this).parent(".part").find(".values");
+        var valueChildren = $(this).parent(".part").children(".values");
         var anyVisible = valueChildren.filter(":visible").length > 0;
         if (anyVisible)
             valueChildren.hide();
@@ -194,6 +194,22 @@
             });
         });
 
+        $("select.part").each(function() {
+            var selectedPart = $(this).val();
+            if (!selectedPart)
+                return;
+
+            var level = $(this).data("level");
+
+            $(".values > p:not([data-hidden])").each(function () {
+                var part = $(this).closest(".part").data("part");
+                var splitPart = part.split(".");
+
+                if (splitPart.length <= level || splitPart[level] != selectedPart)
+                    $(this).hide().attr("data-hidden", "");
+            });
+        });
+
         $("section.part").each(function() {
             if ($(this).find("section.values > p:not([data-hidden])").length == 0)
                 $(this).hide();
@@ -202,7 +218,7 @@
         var totalValueCount = $(".values > p").length;
         var visibleValueCount = (totalValueCount - $(".values > p[data-hidden]").length);
         $(".result").html("displaying " + visibleValueCount + " out of " + totalValueCount + " values");
-        if (visibleValueCount < 500)
-            $("span.open").click();
     });
+
+    $("select.part").change(function() { $("#filterform").submit(); });
 }});

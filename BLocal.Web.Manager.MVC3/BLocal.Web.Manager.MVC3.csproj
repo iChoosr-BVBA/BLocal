@@ -142,6 +142,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\jsdiff.js" />
     <Content Include="Scripts\homebrew.popup.js" />
     <Content Include="Scripts\jquery-1.11.1.js" />
     <Content Include="Scripts\main.app.js" />
