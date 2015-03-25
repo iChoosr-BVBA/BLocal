@@ -80,7 +80,7 @@
     <Compile Include="Controllers\DirectEditingController.cs" />
     <Compile Include="Models\AutomaticSynchronization\Conflict.cs" />
     <Compile Include="Models\AutomaticSynchronization\Creation.cs" />
-    <Compile Include="Controllers\ExternalSynchronizationController.cs" />
+    <Compile Include="Controllers\RemoteAccessController.cs" />
     <Compile Include="Models\AutomaticSynchronization\Ignore.cs" />
     <Compile Include="Models\AutomaticSynchronization\Removal.cs" />
     <Compile Include="Models\AutomaticSynchronization\SynchronizationResult.cs" />
@@ -138,6 +138,7 @@
     <Compile Include="Providers\RemoteAccess\Communication\UpdateCreateValueRequest.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\ProgressHistoryRequest.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\ProgressHistoryResponse.cs" />
+    <Compile Include="Providers\RemoteAccess\RemoteChainingException.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
