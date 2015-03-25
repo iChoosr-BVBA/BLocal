@@ -68,7 +68,7 @@
         <h3>Locale Selection</h3>
         <p>
             <select name="locale">
-                <option value="x-loc-nolocale">Export without values (leave empty)</option>
+                <option value="x-loc-nolocale">None (no translations)</option>
                 @foreach (var locale in Model.Locales)
                 {
                     <option>@locale</option>
@@ -76,7 +76,7 @@
             </select>
         </p>
         <p>
-            <label><input type="checkbox" name="omitLocaleBlanks" value="true" checked="checked"/> Only export records that have a value</label>
+            <label><input type="checkbox" name="omitLocaleBlanks" value="true" checked="checked"/> Skip records without translation</label>
             <input type="hidden" name="omitLocaleBlanks" value="false"/>
         </p>
         <p><input type="submit" value="Start Export"/></p>
