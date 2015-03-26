@@ -63,7 +63,7 @@ section.part, section.general {
 section.values { margin-top: 10px; }
 section.values span { display: block; overflow: hidden; float: left;}
 section.values .key { width: 20%; }
-section.values .locale { width: 8%; overflow: hidden;height: 18px; margin-right: 1%; margin-left: 1%; }
+section.values .locale { width: 8%; overflow: hidden; height: 22px; margin-right: 1%; margin-left: 1%; }
 section.values .content { width: 70%; }
 section.values .clear { height: 0; width: 0; padding: 0; margin: 0; border: none; float: none; clear: both;}
     
