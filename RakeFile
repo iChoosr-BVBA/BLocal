@@ -1,0 +1,9 @@
+require 'albacore'
+require 'albacore/tasks/versionizer'
+require 'albacore/ext/teamcity'
+require 'fileutils'
+require 'rubygems'
+require 'yaml'
+
+#load all rake tasks in tools/rake-scripts
+Dir.glob('tools/rake-scripts/*.rake').each { |r| load r}
