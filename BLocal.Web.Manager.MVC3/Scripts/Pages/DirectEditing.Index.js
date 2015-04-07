@@ -210,14 +210,20 @@
             });
         });
 
-        $("section.part").each(function() {
-            if ($(this).find("section.values > p:not([data-hidden])").length == 0)
-                $(this).hide();
-        });
-
         var totalValueCount = $(".values > p").length;
         var visibleValueCount = (totalValueCount - $(".values > p[data-hidden]").length);
         $(".result").html("displaying " + visibleValueCount + " out of " + totalValueCount + " values");
+
+        if (visibleValueCount == totalValueCount) {
+            $("section.part .values").hide();
+        } else {
+            $("section.part").each(function() {
+                if ($(this).find("section.values > p:not([data-hidden])").length == 0)
+                    $(this).hide().find(".values").hide();
+                else
+                    $(this).find(".values").show();
+            });
+        }
     });
 
     $("select.part").change(function() { $("#filterform").submit(); });
