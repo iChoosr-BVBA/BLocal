@@ -38,23 +38,29 @@ namespace BLocal.Web.Manager.Controllers
         [ValidateInput(false)]
         public JsonResult Update(String part, String locale, String key, String value, String providerConfigName)
         {
-            var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
+            var providerGroup = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
-            localization.ValueManager.UpdateCreateValue(new QualifiedValue(qualifier, value));
+            providerGroup.ValueManager.UpdateCreateValue(new QualifiedValue(qualifier, value));
 
-            localization.ValueManager.Persist();
+            providerGroup.ValueManager.Persist();
+            if (providerGroup.ValueManager != providerGroup.HistoryManager)
+                providerGroup.HistoryManager.Persist();
+
             return Json(new { ok = true });
         }
 
         [ValidateInput(false)]
         public JsonResult Delete(String part, String key, String providerConfigName)
         {
-            var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
+            var providerGroup = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
-            localization.ValueManager.DeleteLocalizationsFor(Part.Parse(part), key);
+            providerGroup.ValueManager.DeleteLocalizationsFor(Part.Parse(part), key);
 
-            localization.ValueManager.Persist();
+            providerGroup.ValueManager.Persist();
+            if (providerGroup.ValueManager != providerGroup.HistoryManager)
+                providerGroup.HistoryManager.Persist();
+
             return Json(new { ok = true });
         }
     }

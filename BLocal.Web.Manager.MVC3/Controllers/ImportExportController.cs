@@ -177,6 +177,8 @@ namespace BLocal.Web.Manager.Controllers
             }
 
             providerGroup.ValueManager.Persist();
+            if (providerGroup.ValueManager != providerGroup.HistoryManager)
+                providerGroup.HistoryManager.Persist();
             return View(new ImportReportData(providerConfigName, postedFile.FileName, selectedLocale, inserts, updates, deletes));
         }
 
