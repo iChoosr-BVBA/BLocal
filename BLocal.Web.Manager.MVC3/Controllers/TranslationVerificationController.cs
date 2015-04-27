@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using BLocal.Core;
 using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Context;
+using BLocal.Web.Manager.Extensions;
 using BLocal.Web.Manager.Models.TranslationVerification;
 
 namespace BLocal.Web.Manager.Controllers
@@ -41,7 +42,9 @@ namespace BLocal.Web.Manager.Controllers
             var providerGroup = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
-            providerGroup.ValueManager.UpdateCreateValue(new QualifiedValue(qualifier, value));
+            var qualifiedValue = new QualifiedValue(qualifier, value);
+            providerGroup.ValueManager.UpdateCreateValue(qualifiedValue);
+            providerGroup.HistoryManager.ProgressHistory(qualifiedValue, Session.Get<String>("author"));
 
             providerGroup.ValueManager.Persist();
             if (providerGroup.ValueManager != providerGroup.HistoryManager)
@@ -56,6 +59,7 @@ namespace BLocal.Web.Manager.Controllers
             var providerGroup = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
             providerGroup.ValueManager.DeleteLocalizationsFor(Part.Parse(part), key);
+            providerGroup.HistoryManager.AdjustHistory(providerGroup.ValueManager.GetAllValuesQualified(), Session.Get<String>("author"));
 
             providerGroup.ValueManager.Persist();
             if (providerGroup.ValueManager != providerGroup.HistoryManager)

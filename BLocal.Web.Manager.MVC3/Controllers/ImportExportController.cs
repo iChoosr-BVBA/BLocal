@@ -176,9 +176,6 @@ namespace BLocal.Web.Manager.Controllers
                     inserts.Add(new QualifiedValue(recordQualfier, record.Value));
             }
 
-            providerGroup.ValueManager.Persist();
-            if (providerGroup.ValueManager != providerGroup.HistoryManager)
-                providerGroup.HistoryManager.Persist();
             return View(new ImportReportData(providerConfigName, postedFile.FileName, selectedLocale, inserts, updates, deletes));
         }
 
