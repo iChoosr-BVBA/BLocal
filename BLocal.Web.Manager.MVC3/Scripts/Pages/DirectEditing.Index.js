@@ -88,7 +88,7 @@
 
     function showValue(part, key, locale, content) {
         var partSection = findSection(part, true);
-        var keyParagraph = partSection.find("[data-key='" + key + "'][data-locale='" + locale + "']");
+        var keyParagraph = partSection.children('.values').find("[data-key='" + key + "'][data-locale='" + locale + "']");
         if (keyParagraph.length == 0) {
             keyParagraph = $('<p class="value" data-key="' + key + '" data-locale="' + locale + '"><span class="key">' + key + '</span><span class="locale"><nobr>' + locale + '</nobr></span><span class="content"></span><span class="clear"></span>');
             keyParagraph.appendTo(partSection.children(".values"));
