@@ -51,7 +51,7 @@ namespace BLocal.Web.Manager.Controllers
             // clean up unnecesary sessions here, not perfect but it'll do
             foreach (var entry in dictionary.ToArray())
             {
-                if (entry.Value.StartDateTime < DateTime.Now.AddDays(-1))
+                if (entry.Value.StartDateTime < DateTime.Now.AddHours(-1))
                     dictionary.Remove(entry.Key);
             }
 
