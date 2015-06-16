@@ -19,9 +19,6 @@
 <section class="general">
     <h2>Filter</h2>
     <form id="filterform">
-        <div><label for="key">Key</label> <input type="text" class="filter" id="key" /></div>
-        <div><label for="locale">Locale</label> <input type="text" class="filter" id="locale" /></div>
-        <div><label for="content">Content</label> <input type="text" class="filter" id="content" /></div>
         <div>
             <label>Part</label>
             @{ var nextLevelLocalizedParts = Model.Parts.ToList(); }
@@ -40,6 +37,9 @@
                 </select>
             }
         </div>
+        <div><label for="key">Key</label> <input type="text" class="filter" id="key" /></div>
+        <div><label for="locale">Locale</label> <input type="text" class="filter" id="locale" /></div>
+        <div><label for="content">Content</label> <input type="text" class="filter" id="content" /></div>
         <div><input type="submit" value="Apply Filter" /></div>
     </form>
     <div><p class="result"></p></div>
