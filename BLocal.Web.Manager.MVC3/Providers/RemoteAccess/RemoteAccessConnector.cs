@@ -167,9 +167,9 @@ namespace BLocal.Web.Manager.Providers.RemoteAccess
                 {
                     return JsonConvert.DeserializeObject<TResponse>(responseString, _partConverter);
                 }
-                catch (JsonReaderException)
+                catch (JsonReaderException e)
                 {
-                    throw new Exception("Unexpected response: " + responseString);
+                    throw new Exception("Unexpected response: " + responseString, e);
                 }
             }
         }
