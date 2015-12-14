@@ -7,7 +7,7 @@ using System.Security.Authentication;
 using System.Text;
 using System.Web.Mvc;
 using BLocal.Web.Manager.Business;
-using BLocal.Web.Manager.Models.RemoteAccess;
+using BLocal.Web.Manager.Models.ExternalSynchronization;
 using BLocal.Web.Manager.Providers.RemoteAccess;
 using BLocal.Web.Manager.Providers.RemoteAccess.Communication;
 using Newtonsoft.Json;
@@ -48,12 +48,7 @@ namespace BLocal.Web.Manager.Controllers
             var key = Guid.NewGuid();
             dictionary[key] = new SynchronizationSession();
 
-            // clean up unnecesary sessions here, not perfect but it'll do
-            foreach (var entry in dictionary.ToArray())
-            {
-                if (entry.Value.StartDateTime < DateTime.Now.AddHours(-1))
-                    dictionary.Remove(entry.Key);
-            }
+            CleanSessions(dictionary);
 
             var json = JsonConvert.SerializeObject(new AuthenticationResponse { ApiKey = key }, _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
@@ -187,10 +182,22 @@ namespace BLocal.Web.Manager.Controllers
             return Content(json, "application/json", Encoding.Unicode);
         }
 
+        private void CleanSessions(Dictionary<Guid, SynchronizationSession> dictionary)
+        {
+            // clean up unnecesary sessions here, not perfect but it'll do
+            foreach (var entry in dictionary.ToArray())
+            {
+                if (entry.Value.StartDateTime < DateTime.Now.AddMinutes(5))
+                    dictionary.Remove(entry.Key);
+            }
+        }
+
         private ProviderGroup GetProviderGroup(RemoteAccessRequest synchronizationRequest)
         {
             var dictionary = (Dictionary<Guid, SynchronizationSession>)(Request.RequestContext.HttpContext.Application["sessions"]
                 ?? (Request.RequestContext.HttpContext.Application["sessions"] = new Dictionary<Guid, SynchronizationSession>()));
+
+            CleanSessions(dictionary);
 
             if (!dictionary.ContainsKey(synchronizationRequest.ApiKey))
                 throw new AuthenticationException();

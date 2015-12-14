@@ -35,7 +35,6 @@ namespace BLocal.Web.Manager.Controllers
             return View(model);
         }
 
-
         public ActionResult Fix(String providerConfigName)
         {
             var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BLocal.Web.Manager.Business;
 
-namespace BLocal.Web.Manager.Models.RemoteAccess
+namespace BLocal.Web.Manager.Models.ExternalSynchronization
 {
     public class SynchronizationSession
     {
