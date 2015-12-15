@@ -12,13 +12,6 @@ namespace BLocal.Core
         IEnumerable<QualifiedHistory> ProvideHistory();
 
         /// <summary>
-        /// Adjusts history based on new values, adds all found changes as done by author parameter
-        /// </summary>
-        /// <param name="changedValues"></param>
-        /// <param name="author"></param>
-        void AdjustHistory(IEnumerable<QualifiedValue> changedValues, String author);
-
-        /// <summary>
         /// When implemented, rewrites history from scratch
         /// </summary>
         /// <returns></returns>

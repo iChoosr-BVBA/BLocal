@@ -1,0 +1,27 @@
+﻿@model BLocal.Web.Manager.Models.History.BrokenHistoryData
+@{
+    ViewBag.Title = "Fix Broken History";
+}
+<h1>@Html.ActionLink("Home", "Overview", "Home") - Fix outdated history of <span style="color: @Model.Provider.Color">@(Model.Provider.Name)</span></h1>
+<p>History is outdated, please manually fix these problems on your system, or use the button at the bottom of this page to update history instead.</p>
+<section class="general">
+    <table cellpadding="0" cellspacing="0" class="updates" style="width: 100%"><tbody>
+        @foreach (var conflict in Model.ConflictingValues)
+        {
+            <tr class="lrvalue">
+                <td>@conflict.Qualifier</td>
+                <td>
+                    <p class="oldvalue">@conflict.LatestHistoryValue</p>
+                    <p class="value">@conflict.CurrentValue</p>
+                </td>
+            </tr>
+        }
+        </tbody></table>
+</section>
+
+<p>
+    <form action="@Url.Action("Fix")">
+        <input type="hidden" name="providerConfigName" value="@Model.Provider.Name"/>
+        <button type="submit">Apply these changes to history</button>
+    </form>
+</p>

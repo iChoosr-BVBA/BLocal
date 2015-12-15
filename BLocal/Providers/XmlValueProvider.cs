@@ -289,11 +289,6 @@ namespace BLocal.Providers
         {
             _groups[qualifier.Part.ToString()].RemoveValue(qualifier, node => { lock (_groups) { _groups.Remove(node.ToString()); } });
         }
-        public void DeleteLocalizationsFor(Part part, String key)
-        {
-            foreach(var localization in _groups[part.ToString()].GetAllQualified().Where(qv => qv.Qualifier.Key == key).ToArray())
-                DeleteValue(localization.Qualifier);
-        }
 
         private GroupNode GetOrCreateGroupNode(Part part)
         {

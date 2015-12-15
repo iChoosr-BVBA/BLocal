@@ -23,10 +23,11 @@ namespace BLocal.Web.Manager.Controllers
         public ActionResult Index(String providerConfigName)
         {
             var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
-            
             var localizations = localization.ValueManager.GetAllValuesQualified().ToList();
-            localization.HistoryManager.AdjustHistory(localizations, Session.Get<String>("author"));
             var history = localization.HistoryManager.ProvideHistory().ToDictionary(h => h.Qualifier);
+
+            var historyChecker = new HistoryChecker();
+            historyChecker.ValidateHistory(localizations, history.Values, providerConfigName);
 
             var groupedParts = localizations
                 .Select(l => new QualifiedLocalization(l.Qualifier, l.Value, history[l.Qualifier]))

@@ -42,13 +42,6 @@ namespace BLocal.Core
         void DeleteValue(Qualifier.Unique qualifier);
 
         /// <summary>
-        /// When implemented, removes all values of all localizations, for a given part / key combination, from the system
-        /// </summary>
-        /// <param name="part">The part for which to remove all translations</param>
-        /// <param name="key">The key for which to remove all translations</param>
-        void DeleteLocalizationsFor(Part part, string key);
-
-        /// <summary>
         /// When implemented, persists all non-persisted values (if applicable)
         /// </summary>
         void Persist();

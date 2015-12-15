@@ -5,7 +5,6 @@ using System.Web.Mvc;
 using BLocal.Core;
 using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Context;
-using BLocal.Web.Manager.Extensions;
 using BLocal.Web.Manager.Models.ManualSynchronization;
 using BLocal.Web.Manager.Providers.RemoteAccess;
 
@@ -33,12 +32,14 @@ namespace BLocal.Web.Manager.Controllers
             var leftProviders = ProviderGroupFactory.CreateProviderGroup(leftConfigName);
             leftProviders.ValueManager.Reload();
             var leftValues = leftProviders.ValueManager.GetAllValuesQualified().ToArray();
-            leftProviders.HistoryManager.AdjustHistory(leftValues, Session.Get<String>("author"));
-
+            
             var rightProviders = ProviderGroupFactory.CreateProviderGroup(rightConfigName);
             rightProviders.ValueManager.Reload();
             var rightValues = rightProviders.ValueManager.GetAllValuesQualified().ToArray();
-            rightProviders.HistoryManager.AdjustHistory(rightValues, Session.Get<String>("author"));
+
+            var historyChecker = new HistoryChecker();
+            historyChecker.ValidateHistory(leftValues, leftProviders.HistoryManager.ProvideHistory(), leftConfigName);
+            historyChecker.ValidateHistory(rightValues, rightProviders.HistoryManager.ProvideHistory(), rightConfigName);
 
             var leftNotRight = leftValues.Where(lv => !rightValues.Select(rv => rv.Qualifier).Contains(lv.Qualifier))
                 .Select(lv => new SynchronizationData.QualifiedHistoricalValue(lv, MergeHistory(lv.Qualifier, leftProviders, rightProviders)))
@@ -68,7 +69,7 @@ namespace BLocal.Web.Manager.Controllers
                 { Side.Right, ProviderGroupFactory.CreateProviderGroup(rightProviderConfigName) }
             };
 
-            if (items.Length > 5)
+            if (items.Length >= 3)
                 foreach(var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<RemoteAccessManager>())
                     manager.StartBatch();
 
@@ -100,7 +101,7 @@ namespace BLocal.Web.Manager.Controllers
                 localization.HistoryManager.Persist();
             }
 
-            if (items.Length > 5)
+            if (items.Length >= 5)
                 foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<RemoteAccessManager>())
                     manager.EndBatch();
 
@@ -117,7 +118,7 @@ namespace BLocal.Web.Manager.Controllers
                 { Side.Right, ProviderGroupFactory.CreateProviderGroup(rightProviderConfigName) }
             };
 
-            if (items.Length > 5)
+            if (items.Length >= 3)
                 foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<RemoteAccessManager>())
                     manager.StartBatch();
 
@@ -152,7 +153,7 @@ namespace BLocal.Web.Manager.Controllers
                 localization.HistoryManager.Persist();
             }
 
-            if (items.Length > 5)
+            if (items.Length >= 3)
                 foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<RemoteAccessManager>())
                     manager.EndBatch();
 
@@ -169,7 +170,7 @@ namespace BLocal.Web.Manager.Controllers
                 { Side.Right, ProviderGroupFactory.CreateProviderGroup(rightProviderConfigName) }
             };
 
-            if (items.Length > 5)
+            if (items.Length >= 3)
                 foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<RemoteAccessManager>())
                     manager.StartBatch();
 
@@ -187,8 +188,8 @@ namespace BLocal.Web.Manager.Controllers
                     sourcedLocalizationSides.Add(localizationFrom);
 
                 var qualifier = new Qualifier.Unique(Part.Parse(item.Part), new Locale(item.Locale), item.Key);
-                localizationTo.ValueManager.UpdateCreateValue(localizationFrom.ValueManager.GetQualifiedValue(qualifier));
                 EnsureHistoryLoaded(localizationFrom, qualifier);
+                localizationTo.ValueManager.UpdateCreateValue(localizationFrom.ValueManager.GetQualifiedValue(qualifier));
                 HistoryMerger.MergeHistory(qualifier, localizationFrom.HistoryManager, localizationTo.HistoryManager);
             }
 
@@ -204,7 +205,7 @@ namespace BLocal.Web.Manager.Controllers
                 localization.HistoryManager.Persist();
             }
 
-            if (items.Length > 5)
+            if (items.Length >= 3)
                 foreach (var manager in sideProviders.Select(p => p.Value.ValueManager).OfType<RemoteAccessManager>())
                     manager.EndBatch();
 
@@ -215,7 +216,7 @@ namespace BLocal.Web.Manager.Controllers
         {
             var historyFrom = localizationFrom.HistoryManager.GetHistory(qualifier);
             if (historyFrom == null || historyFrom.LatestEntry() == null)
-                localizationFrom.HistoryManager.AdjustHistory(localizationFrom.ValueManager.GetAllValuesQualified(), Session.Get<String>("author"));
+                throw new HistoryChecker.HistoryConflictException(String.Format("Cannot find history for {0} on {1}", qualifier, localizationFrom.Name));
         }
     }
 }

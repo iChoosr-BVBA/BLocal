@@ -82,12 +82,5 @@ namespace BLocal.Providers
             if (AllValues.ContainsKey(qualifier))
                 AllValues.Remove(qualifier);
         }
-
-        public void DeleteLocalizationsFor(Part part, string key)
-        {
-            var valuesToDelete = AllValues.Where(kvp => Equals(kvp.Key.Part, part) && kvp.Key.Key == key).ToArray();
-            foreach (var value in valuesToDelete)
-                AllValues.Remove(value.Key);
-        }
     }
 }

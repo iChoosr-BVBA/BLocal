@@ -1,4 +1,5 @@
-﻿@model BLocal.Web.Manager.Models.TranslationVerification.TranslationVerificationData
+﻿@using System.Linq
+@model BLocal.Web.Manager.Models.TranslationVerification.TranslationVerificationData
 @{
     ViewBag.Title = "Verify Translations";
 }
@@ -34,7 +35,7 @@
                             return true;
 
                         $.ajax({
-                            url: '@Html.Raw(Url.Action("Update", "TranslationVerification", new { providerConfigName = Model.ProviderConfigName }))',
+                            url: '@Html.Raw(Url.Action("Update", "TranslationVerification", new { providerConfigName = Model.Provider.Name }))',
                             data: { part: part, key: key, locale: locale, value: newValue },
                             type: 'POST',
                             success: function() {
@@ -51,7 +52,7 @@
 
                         blockUI();
                         $.ajax({
-                            url: '@Html.Raw(Url.Action("Delete", "TranslationVerification", new { providerConfigName = Model.ProviderConfigName }))',
+                            url: '@Html.Raw(Url.Action("Delete", "TranslationVerification", new { providerConfigName = Model.Provider.Name }))',
                             data: { part: part, key: key },
                             type: 'POST',
                             success: function() {

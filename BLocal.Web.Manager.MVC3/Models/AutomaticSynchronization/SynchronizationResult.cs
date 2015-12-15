@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using BLocal.Web.Manager.Controllers;
 
 namespace BLocal.Web.Manager.Models.AutomaticSynchronization
 {
@@ -10,5 +10,6 @@ namespace BLocal.Web.Manager.Models.AutomaticSynchronization
         public readonly List<Update> Updated = new List<Update>();
         public readonly List<Ignore> Ignored = new List<Ignore>();
         public readonly List<Conflict> Unresolved = new List<Conflict>();
+        public readonly List<String> Problems = new List<string>();
     }
 }

@@ -32,6 +32,10 @@ namespace BLocal.Web.Manager.Controllers
             var allParts = allValues.Select(value => value.Qualifier.Part).Distinct().OrderBy(p => p.ToString()).ToArray();
             var allLocales = allValues.Select(value => value.Qualifier.Locale).Distinct().OrderBy(l => l.ToString()).ToArray();
 
+            var history = providerGroup.HistoryManager.ProvideHistory();
+            var historyChecker = new HistoryChecker();
+            historyChecker.ValidateHistory(allValues, history, Session.Get<String>("author"));
+
             var partNodes = new Dictionary<Part, PartNode>();
             foreach (var part in allParts)
             {

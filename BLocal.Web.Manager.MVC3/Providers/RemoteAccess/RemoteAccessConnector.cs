@@ -21,12 +21,11 @@ namespace BLocal.Web.Manager.Providers.RemoteAccess
         private readonly HashSet<Type> _batchAllowedRequestTypes = new HashSet<Type>
         {
             typeof(CreateValueRequest),
-            typeof(DeleteLocalizationsRequest),
+            typeof(UpdateCreateValueRequest),
             typeof(DeleteValueRequest),
             typeof(OverrideHistoryRequest),
             typeof(PersistRequest),
-            typeof(ProgressHistoryRequest),
-            typeof(UpdateCreateValueRequest)
+            typeof(ProgressHistoryRequest)
         };  
 
         private readonly PartJsonConverter _partConverter = new PartJsonConverter();
@@ -77,13 +76,6 @@ namespace BLocal.Web.Manager.Providers.RemoteAccess
             return response == null ? null : response.AllValues;
         }
 
-        public IEnumerable<QualifiedValue> DeleteLocalizationsFor(Part part, String key)
-        {
-            var request = new DeleteLocalizationsRequest { Part = part, Key = key };
-            var response = MakeRequest(request);
-            return response == null ? null : response.AllValues;
-        }
-
         public IEnumerable<QualifiedHistory> RewriteHistory(IEnumerable<QualifiedHistory> history)
         {
             var request = new RewriteHistoryRequest { History = history.ToArray() };
@@ -94,13 +86,6 @@ namespace BLocal.Web.Manager.Providers.RemoteAccess
         public IEnumerable<QualifiedHistory> ProvideHistory()
         {
             var request = new ProvideHistoryRequest();
-            var response = MakeRequest(request);
-            return response.History;
-        }
-
-        public IEnumerable<QualifiedHistory> AdjustHistory(IEnumerable<QualifiedValue> currentValues, String author)
-        {
-            var request = new AdjustHistoryRequest { CurrentValues = currentValues.ToArray(), Author = author };
             var response = MakeRequest(request);
             return response.History;
         }
