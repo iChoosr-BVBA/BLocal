@@ -12,11 +12,6 @@ namespace BLocal.Providers
             return Enumerable.Empty<QualifiedHistory>();
         }
 
-        public IEnumerable<QualifiedValue> FindValuesConflictingWithHistory(IEnumerable<QualifiedValue> currentValues)
-        {
-            return Enumerable.Empty<QualifiedValue>();
-        }
-
         public void RewriteHistory(IEnumerable<QualifiedHistory> newHistory)
         {
         }
