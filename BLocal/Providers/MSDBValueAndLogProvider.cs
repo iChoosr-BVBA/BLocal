@@ -207,16 +207,6 @@ namespace BLocal.Providers
                 ), connection);
         }
 
-        public void DeleteLocalizationsFor(Part part, String key)
-        {
-            using (var connection = Connect()) {
-                var partId = _partTable.GetPart(part.ToString()).Id;
-                foreach (var locale in _localeTable.GetAll())
-                    _valueTable.Delete(new InternalQualifier(partId, locale.Id, key), connection);
-            }
-
-        }
-
         public void Log(Qualifier.Unique accessedQualifier)
         {
             _logTable.LogAsync(new InternalQualifier(

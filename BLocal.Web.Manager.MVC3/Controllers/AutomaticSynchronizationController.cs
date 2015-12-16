@@ -36,8 +36,20 @@ namespace BLocal.Web.Manager.Controllers
                 .Where(dv => !Equals(dv.Left.Value, dv.Right.Value))
                 .ToArray();
 
-            leftProviders.HistoryManager.AdjustHistory(leftValues.Values, settings.LeftAuthorName ?? "Automatic Synchronization");
-            rightProviders.HistoryManager.AdjustHistory(rightValues.Values, settings.RightAuthorName ?? "Automatic Synchronization");
+            var synchronizationResult = new SynchronizationResult();
+
+            var historyChecker = new HistoryChecker();
+
+            var leftHistoryConflicts = historyChecker.FindValuesConflictingWithHistory(leftProviders.ValueManager.GetAllValuesQualified(), leftProviders.HistoryManager.ProvideHistory()).ToArray();
+            if (leftHistoryConflicts.Any())
+                synchronizationResult.Problems.Add(historyChecker.ProvideConflictMessage(leftProviders.Name, leftHistoryConflicts));
+
+            var rightHistoryConflicts = historyChecker.FindValuesConflictingWithHistory(rightProviders.ValueManager.GetAllValuesQualified(), rightProviders.HistoryManager.ProvideHistory()).ToArray();
+            if (rightHistoryConflicts.Any())
+                synchronizationResult.Problems.Add(historyChecker.ProvideConflictMessage(rightProviders.Name, rightHistoryConflicts));
+
+            if (synchronizationResult.Problems.Any())
+                return Content(JsonConvert.SerializeObject(synchronizationResult), "application/json", Encoding.UTF8);
 
             var leftHistoryCollection = leftProviders.HistoryManager.ProvideHistory().ToDictionary(a => a.Qualifier);
             var rightHistoryCollection = rightProviders.HistoryManager.ProvideHistory().ToDictionary(a => a.Qualifier);
@@ -45,8 +57,6 @@ namespace BLocal.Web.Manager.Controllers
             if(settings.Execute)
                 foreach (var manager in new[]{ leftProviders.ValueManager, rightProviders.ValueManager }.OfType<RemoteAccessManager>())
                     manager.StartBatch();
-
-            var synchronizationResult = new SynchronizationResult();
 
             foreach (var missingRight in leftNotRight)
             {

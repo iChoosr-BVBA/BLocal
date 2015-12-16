@@ -118,11 +118,6 @@ namespace BLocal.Web.Manager.Providers.RemoteAccess
             Reload(_connector.DeleteValue(qualifier));
         }
 
-        public void DeleteLocalizationsFor(Part part, String key)
-        {
-            Reload(_connector.DeleteLocalizationsFor(part, key));
-        }
-
         public IEnumerable<QualifiedValue> GetAllValuesQualified()
         {
             foreach (var localization in _localizedValues)
@@ -141,11 +136,6 @@ namespace BLocal.Web.Manager.Providers.RemoteAccess
         public IEnumerable<QualifiedHistory> ProvideHistory()
         {
             return _history.Values;
-        }
-
-        public void AdjustHistory(IEnumerable<QualifiedValue> currentValues, String author)
-        {
-            Reload(_connector.AdjustHistory(currentValues, author));
         }
 
         public void RewriteHistory(IEnumerable<QualifiedHistory> newHistory)

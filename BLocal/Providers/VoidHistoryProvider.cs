@@ -12,10 +12,6 @@ namespace BLocal.Providers
             return Enumerable.Empty<QualifiedHistory>();
         }
 
-        public void AdjustHistory(IEnumerable<QualifiedValue> currentValues, String author)
-        {
-        }
-
         public void RewriteHistory(IEnumerable<QualifiedHistory> newHistory)
         {
         }

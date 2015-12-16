@@ -75,16 +75,6 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [HttpPost, ValidateInput(false)]
-        public ContentResult DeleteLocalizations(RemoteAccessRequest request)
-        {
-            var providerGroup = GetProviderGroup(request);
-            var deleteLocalizationsRequest = JsonConvert.DeserializeObject<DeleteLocalizationsRequest>(request.RequestData, _partConverter);
-            providerGroup.ValueManager.DeleteLocalizationsFor(deleteLocalizationsRequest.Part, deleteLocalizationsRequest.Key);
-            var json = JsonConvert.SerializeObject(new FullContentResponse { AllValues = providerGroup.ValueManager.GetAllValuesQualified().ToArray() }, _partConverter);
-            return Content(json, "application/json", Encoding.Unicode);
-        }
-
-        [HttpPost, ValidateInput(false)]
         public ContentResult UpdateCreateValue(RemoteAccessRequest request)
         {
             var providerGroup = GetProviderGroup(request);
@@ -128,16 +118,6 @@ namespace BLocal.Web.Manager.Controllers
             var providerGroup = GetProviderGroup(request);
             var provideHistoryRequest = JsonConvert.DeserializeObject<ProvideHistoryRequest>(request.RequestData, _partConverter);
             providerGroup.HistoryManager.Reload();
-            var json = JsonConvert.SerializeObject(new ProvideHistoryResponse { History = providerGroup.HistoryManager.ProvideHistory().ToArray() }, _partConverter);
-            return Content(json, "application/json", Encoding.Unicode);
-        }
-
-        [HttpPost, ValidateInput(false)]
-        public ContentResult AdjustHistory(RemoteAccessRequest request)
-        {
-            var providerGroup = GetProviderGroup(request);
-            var adjustHistoryRequest = JsonConvert.DeserializeObject<AdjustHistoryRequest>(request.RequestData, _partConverter);
-            providerGroup.HistoryManager.AdjustHistory(adjustHistoryRequest.CurrentValues, adjustHistoryRequest.Author);
             var json = JsonConvert.SerializeObject(new ProvideHistoryResponse { History = providerGroup.HistoryManager.ProvideHistory().ToArray() }, _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }

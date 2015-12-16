@@ -69,6 +69,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Business\HistoryChecker.cs" />
     <Compile Include="Business\HistoryMerger.cs" />
     <Compile Include="Configuration\ValueProviderConfigurationSection.cs" />
     <Compile Include="Context\AuthorizedAttribute.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Models\AutomaticSynchronization\SynchronizationResult.cs" />
     <Compile Include="Models\AutomaticSynchronization\Update.cs" />
     <Compile Include="Models\DirectEditing\IndexModel.cs" />
+    <Compile Include="Models\History\BrokenHistoryData.cs" />
     <Compile Include="Models\History\HistoryData.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\ExternalSynchronizationRequest.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -111,8 +113,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\AuthenticationRequest.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\AuthenticationResponse.cs" />
-    <Compile Include="Providers\RemoteAccess\Communication\AdjustHistoryRequest.cs" />
-    <Compile Include="Providers\RemoteAccess\Communication\AdjustHistoryResponse.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\BasicRequest.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\OverrideHistoryRequest.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\OverrideHistoryResponse.cs" />
@@ -125,7 +125,6 @@
     <Compile Include="Providers\RemoteAccess\Communication\ProvideHistoryResponse.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\ProvideHistoryRequest.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\CreateValueRequest.cs" />
-    <Compile Include="Providers\RemoteAccess\Communication\DeleteLocalizationsRequest.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\DeleteValueRequest.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\GetAllQualifiedValuesRequest.cs" />
     <Compile Include="Providers\RemoteAccess\Communication\FullContentResponse.cs" />
@@ -158,7 +157,9 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -185,6 +186,9 @@
       <Project>{446DA010-F56F-4084-B961-A116D5AAC872}</Project>
       <Name>BLocal</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\History\Broken.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

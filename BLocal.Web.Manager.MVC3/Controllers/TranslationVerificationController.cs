@@ -58,8 +58,13 @@ namespace BLocal.Web.Manager.Controllers
         {
             var providerGroup = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
-            providerGroup.ValueManager.DeleteLocalizationsFor(Part.Parse(part), key);
-            providerGroup.HistoryManager.AdjustHistory(providerGroup.ValueManager.GetAllValuesQualified(), Session.Get<String>("author"));
+            var localizationsToDelete = providerGroup.ValueManager.GetAllValuesQualified().Where(v => v.Qualifier.Part.ToString() == part).ToArray();
+
+            foreach (var localization in localizationsToDelete)
+            {
+                providerGroup.ValueManager.DeleteValue(localization.Qualifier);
+                providerGroup.HistoryManager.ProgressHistory(new QualifiedValue(localization.Qualifier, null), Session.Get<String>("author"));
+            }
 
             providerGroup.ValueManager.Persist();
             if (providerGroup.ValueManager != providerGroup.HistoryManager)
