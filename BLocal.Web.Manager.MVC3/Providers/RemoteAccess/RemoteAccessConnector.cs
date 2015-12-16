@@ -161,8 +161,9 @@ namespace BLocal.Web.Manager.Providers.RemoteAccess
                     {"RequestData", serializedRequest.RequestData}
                 };
 
-                    var response = client.UploadValues(BaseUrl + request.Path, values);
-                    var responseString = Encoding.Unicode.GetString(response);
+                var response = client.UploadValues(BaseUrl + request.Path, values);
+                var responseString = Encoding.Unicode.GetString(response);
+
                 try
                 {
                     return JsonConvert.DeserializeObject<TResponse>(responseString, _partConverter);
