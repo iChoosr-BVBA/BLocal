@@ -9,6 +9,7 @@
         window.urls = window.urls || {};
         window.urls.current = '@Html.Raw(Url.Action("Index", "DirectEditing", new { providerConfigName = Model.Provider.Name }))';
         window.urls.updateCreateValue = '@Html.Raw(Url.Action("UpdateCreateValue", "DirectEditing", new { providerConfigName = Model.Provider.Name }))';
+        window.urls.moveAndUpdateValue = '@Html.Raw(Url.Action("MoveAndUpdateValue", "DirectEditing", new { providerConfigName = Model.Provider.Name }))';
         window.urls.deleteValue = '@Html.Raw(Url.Action("DeleteValue", "DirectEditing", new { providerConfigName = Model.Provider.Name }))';
     </script>
 }

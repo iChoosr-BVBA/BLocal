@@ -6,8 +6,9 @@
 
     function getPageUrl(page) {
         var requestedPage = window.urls[page];
-        if (requestedPage)
+        if (requestedPage) {
             return requestedPage;
+        }
 
         alert("Requested page not found");
         console.log('tried to acces ' + page + ', key not found in pages');
@@ -43,6 +44,16 @@
         $.ajax({
             url: getPageUrl('updateCreateValue'),
             data: { part: part, key: key, locale: locale, content: content },
+            type: 'POST',
+            success: callback,
+            error: unblockUI
+        });
+    }
+
+    function moveAndUpdateValue(oldPart, oldKey, oldLocale, newPart, newKey, newLocale, newContent, callback) {
+        $.ajax({
+            url: getPageUrl('moveAndUpdateValue'),
+            data: { oldPart: oldPart, oldKey: oldKey, oldLocale: oldLocale, newPart: newPart, newKey: newKey, newLocale: newLocale, newContent: newContent },
             type: 'POST',
             success: callback,
             error: unblockUI
@@ -147,9 +158,10 @@
                 if (part == newPart && key == newKey && locale == newLocale) {
                     update(newPart, newKey, newLocale, newContent, unblockUI);
                 } else {
-                    deleteValue(part, key, locale, function () {
+                    moveAndUpdateValue(part, key, locale, newPart, newKey, newLocale, newContent, function () {
                         remove(p);
-                        update(newPart, newKey, newLocale, newContent, unblockUI);
+                        details.close();
+                        unblockUI();
                     });
                 }
             });

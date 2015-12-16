@@ -73,6 +73,34 @@ namespace BLocal.Web.Manager.Controllers
         }
 
         [ValidateInput(false)]
+        public JsonResult MoveAndUpdateValue(String oldPart, String oldLocale, String oldKey, String newPart, String newLocale, String newKey, String newContent, String providerConfigName)
+        {
+            var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
+
+            // delete old Qualifier
+            var oldQualifier = new Qualifier.Unique(Part.Parse(oldPart), new Locale(oldLocale), oldKey);
+            var oldQualifiedValue = new QualifiedValue(oldQualifier, null);
+
+            localization.ValueManager.DeleteValue(oldQualifier);
+            localization.HistoryManager.ProgressHistory(oldQualifiedValue, Session.Get<String>("author"));
+
+            // insert new Qualifier
+            var newQualifier = new Qualifier.Unique(Part.Parse(newPart), new Locale(newLocale), newKey);
+            var newQualifiedValue = new QualifiedValue(newQualifier, newContent);
+
+            localization.ValueManager.UpdateCreateValue(newQualifiedValue);
+            localization.HistoryManager.ProgressHistory(newQualifiedValue, Session.Get<String>("author"));
+
+            localization.ValueManager.Persist();
+            if (localization.ValueManager != localization.HistoryManager)
+            {
+                localization.HistoryManager.Persist();
+            }
+
+            return Json(new { ok = true });
+        }
+
+        [ValidateInput(false)]
         public JsonResult DeleteValue(String part, String locale, String key, String providerConfigName)
         {
             var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
