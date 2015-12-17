@@ -30,7 +30,7 @@ namespace :manager do
 	end
 	
 	build :msbuild => [:load_config, :restore] do |b|
-	  b.sln   = Paths.join @base_dir, 'BLocal.Legacy.sln'
+	  b.sln   = Paths.join @base_dir, 'BLocal.sln'
 	  b.target = ['Rebuild']
 	  b.prop 'Configuration', 'Release'            
 	  b.clp 'ErrorsOnly'  

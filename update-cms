@@ -9,7 +9,7 @@ fi
 
 git pull origin production
 echo -e "Attempting to build BLocal.Web.Mvc3"
-rake -f ${PWD}/build.rake manager:build
+rake -f ${PWD}/rakefile manager:build
 
 if [ $originalBranch != "production" ]; then
 	git checkout $originalBranch
