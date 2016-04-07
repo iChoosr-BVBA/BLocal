@@ -25,7 +25,8 @@ A better way of Internationalization/Globalization/Localization for .NET
 	* copy as web.config to the folder where the website is hosted, and customize it
 1. configure the build
 	* find the config.yml.template in the root
-	* copy as config.yml, and fill in
+	* copy as config.yml, and provide path to required libraries.
+1. copy *.dll and *.pdb files (iChoosr.Localization and iChoosr.System) from GroupSales\iChoosr.Localization\bin\Debug to BLocal.Web.Manager.MVC3\bin directory
 1. install gems
 	* open a bash shell in the root folder of the repository
 	* gem install albacore
