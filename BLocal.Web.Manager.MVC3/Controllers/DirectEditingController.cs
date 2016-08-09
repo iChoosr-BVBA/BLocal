@@ -56,6 +56,10 @@ namespace BLocal.Web.Manager.Controllers
         [ValidateInput(false)]
         public JsonResult UpdateCreateValue(String part, String locale, String key, String content, String providerConfigName)
         {
+            part = part.ToLower();
+            locale = locale.ToLower();
+            key = key.ToLower();
+
             var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
@@ -75,6 +79,15 @@ namespace BLocal.Web.Manager.Controllers
         [ValidateInput(false)]
         public JsonResult MoveAndUpdateValue(String oldPart, String oldLocale, String oldKey, String newPart, String newLocale, String newKey, String newContent, String providerConfigName)
         {
+            oldPart = oldPart.ToLower();
+            oldLocale = oldLocale.ToLower();
+            oldKey = oldKey.ToLower();
+
+            newPart = newPart.ToLower();
+            newLocale = newLocale.ToLower();
+            newKey = newKey.ToLower();
+
+
             var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
             // delete old Qualifier
@@ -103,6 +116,10 @@ namespace BLocal.Web.Manager.Controllers
         [ValidateInput(false)]
         public JsonResult DeleteValue(String part, String locale, String key, String providerConfigName)
         {
+            part = part.ToLower();
+            locale = locale.ToLower();
+            key = key.ToLower();
+
             var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);

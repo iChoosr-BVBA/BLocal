@@ -9,7 +9,7 @@ namespace BLocal.Web.Manager.Extensions
         {
             if (null == session || null == variableNames)
                 return;
-
+            String var = "\\'";
             foreach (var variableName in variableNames)
                 session[variableName] = null;
         }
