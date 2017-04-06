@@ -115,9 +115,7 @@ namespace BLocal.Web.Manager.Controllers
         [ValidateInput(false)]
         public JsonResult DeleteValue(String part, String locale, String key, String providerConfigName)
         {
-            part = part.ToLower();
-            locale = locale.ToLower();
-            key = key.ToLower();
+            
             var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
