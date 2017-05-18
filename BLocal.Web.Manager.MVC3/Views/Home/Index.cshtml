@@ -2,6 +2,30 @@
 @{
     ViewBag.Title = "Authentication";
 }
+<meta name="google-signin-client_id" content="160483565426-9t0ol9i5h8pmq9f7vq1o73q13kj1utbc.apps.googleusercontent.com">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script type="text/javascript">
+    function onSignIn(googleUser) {
+        // Send ID-Token to controller
+        $.ajax({
+            url: '@Url.Action("GoogleLogin", "Home")',
+            type: 'POST',
+            dataType: 'json',
+            cache: false,
+            data: { token: googleUser.getAuthResponse().id_token },
+            success: function (data) {
+                if (data == true) {
+                    // if returned value is true navigate user to Overview view
+                    location.href = "/Home/Overview";
+                } else {
+                    // if not show alert
+                    alert("Your google account's domain is not allowed to login using google. Try to log in using username and password.");
+                }
+            }
+        });
+    }
+</script>
+
 <h1>Authentication</h1>
     
 @if (String.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["password"])) {
@@ -14,5 +38,6 @@ else {
             <input type="text" name="username" value="" placeholder="first name"/>
             <input type="password" name="password" placeholder="password"/> <input type="submit" value="Authenticate"/>
         }
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
     </section>
 }
