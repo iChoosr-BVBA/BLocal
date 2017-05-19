@@ -34,19 +34,27 @@ namespace BLocal.Web.Manager.Controllers
         [HttpPost, ValidateInput(false)]
         public ActionResult GoogleLogin(string token)
         {
-            // specify allowed domains
             string[] allowedDomains = new string[1] { "ichoosr.com" };
-            // decode google token_id    
             GoogleToken googleToken = DecodeToken(token);
-            bool data = false;
-            // check if domain is allowed to enter
-            if (googleToken.EmailVerified == "true" && allowedDomains.Contains(googleToken.Email.Split('@')[1]))
+            string data = "";
+            if (ConfigurationManager.AppSettings["GoogleLogInEnabled"]=="true")
             {
-                Session["auth"] = DateTime.Now;
-                Session["author"] = googleToken.Email;
-                data = true;
+                if (googleToken.EmailVerified == "true" && allowedDomains.Contains(googleToken.Email.Split('@')[1]))
+                {
+                    Session["auth"] = DateTime.Now;
+                    Session["author"] = googleToken.Email;
+                    data = "ok";
+                }
+                else
+                {
+                    data = "bad_domain";
+                }
             }
-            // return result of the action
+            else
+            {
+                data = "disabled";
+            }
+                     
             return new JsonResult() { Data = data };
         }
 

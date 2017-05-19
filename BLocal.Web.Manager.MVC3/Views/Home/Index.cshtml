@@ -14,12 +14,12 @@
             cache: false,
             data: { token: googleUser.getAuthResponse().id_token },
             success: function (data) {
-                if (data == true) {
-                    // if returned value is true navigate user to Overview view
+                if (data === "ok") {
                     location.href = "/Home/Overview";
-                } else {
-                    // if not show alert
+                } else if(data === "bad_domain") {
                     alert("Your google account's domain is not allowed to login using google. Try to log in using username and password.");
+                } else if (data === "disabled") {
+                    alert("Google log in is disabled now. Try to log in using username and password.");
                 }
             }
         });
