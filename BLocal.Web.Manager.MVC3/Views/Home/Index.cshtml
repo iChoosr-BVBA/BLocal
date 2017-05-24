@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Authentication";
 }
-<meta name="google-signin-client_id" content="160483565426-9t0ol9i5h8pmq9f7vq1o73q13kj1utbc.apps.googleusercontent.com">
+<meta name="google-signin-client_id" content="@ConfigurationManager.AppSettings["GoogleOAuthCliendId"]">
 <script src="https://apis.google.com/js/platform.js" async defer></script>
 <script type="text/javascript">
     function onSignIn(googleUser) {
