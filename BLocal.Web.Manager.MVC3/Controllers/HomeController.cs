@@ -37,9 +37,15 @@ namespace BLocal.Web.Manager.Controllers
             string[] allowedDomains = new string[1] { "ichoosr.com" };
             GoogleToken googleToken = DecodeToken(token);
             string data = "";
+
             if (ConfigurationManager.AppSettings["GoogleLogInEnabled"]=="true")
             {
-                if (googleToken.EmailVerified == "true" && allowedDomains.Contains(googleToken.Email.Split('@')[1]))
+                var clientId = ConfigurationManager.AppSettings["GoogleOAuthCliendId"];
+
+                if (googleToken.EmailVerified == "true" && 
+                    allowedDomains.Contains(googleToken.Email.Split('@')[1]) &&
+                    googleToken.Aud == clientId
+                    )
                 {
                     Session["auth"] = DateTime.Now;
                     Session["author"] = googleToken.Email;
