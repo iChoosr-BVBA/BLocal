@@ -176,12 +176,6 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="Web.config.template" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config.template</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config.template</DependentUpon>
-    </None>
     <Content Include="Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
