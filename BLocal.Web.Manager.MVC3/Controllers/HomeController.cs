@@ -68,6 +68,13 @@ namespace BLocal.Web.Manager.Controllers
             return new JsonResult() { Data = data };
         }
 
+        [HttpPost, ValidateInput(false)]
+        public void EndSession()
+        {
+            Session["auth"] = null;
+            Session["author"] = null;
+        }
+
         private GoogleToken DecodeToken(string token)
         {
             string url = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token={token_id}";

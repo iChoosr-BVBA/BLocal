@@ -1,4 +1,5 @@
 ﻿@using BLocal.Core
+@using System.Configuration
 @using BLocal.Web.Manager.Configuration
 @using BLocal.Web.Manager.Controllers
 @using BLocal.Web.Manager.Models.AutomaticSynchronization
@@ -6,11 +7,35 @@
     ViewBag.Title = "Localization Manager";
 }
 @section Head {
+    <meta name="google-signin-client_id" content="@ConfigurationManager.AppSettings["GoogleOAuthCliendId"]">
     <script type="text/javascript">
     </script>
 }
 
 <h1>Localization Manager - <span class="accent">@Session["Author"]</span></h1>
+
+@if (ConfigurationManager.AppSettings["GoogleLogInEnabled"] == "true")
+{
+    <script type="text/javascript">
+        function googleLogOut() {
+            gapi.auth2.getAuthInstance().disconnect();
+            $.ajax({
+                url: '@Url.Action("EndSession", "Home")',
+                type: 'POST',
+                dataType: 'text',
+                cache: false,
+                success: function (data) { location.href = "/Home/index"; }
+            });
+        };
+        function onLoad() {
+            gapi.load('auth2', function () {
+                gapi.auth2.init();
+            });
+        }
+    </script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <button onclick="googleLogOut()">Log out</button>  
+}
 
 <section class="general">
     <h2>Manual editing</h2>
