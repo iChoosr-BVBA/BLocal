@@ -17,7 +17,7 @@
                 if (data === "ok") {
                     location.href = "/Home/Overview";
                 } else if (data === "bad_domain") {
-                    alert("Your google account's domain is not allowed to login using google. You will be logged out from current account. Please try to log in using good account.");
+                    alert("Your google account's domain is not allowed to login using google. You will be logged out from current account. Please try to log in using account allowed to enter.");
                     gapi.auth2.getAuthInstance().disconnect();
                 } else if (data === "disabled") {
                     alert("Google log in is disabled now. Try to log in using username and password.");
