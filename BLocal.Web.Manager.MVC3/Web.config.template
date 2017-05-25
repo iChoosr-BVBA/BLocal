@@ -18,7 +18,7 @@
     <add name="iChoosr - Local" color="#090">
       <valueProvider type="iChoosr.Localization.PackageLocalizedValueManager, iChoosr.Localization, Version=1.0.0.0, Culture=neutral">
         <!-- Add constructor parameters -->
-        <add name="localizationRoot" value="C:\Workspaces\iChoosr\Content\VersionContainer" />
+        <add name="localizationRoot" value="C:\Source\Content" />
       </valueProvider>
       <logProvider type="BLocal.Providers.VoidLogger, BLocal, Version=1.0.0.0, Culture=neutral" />
       <historyProvider type="BLocal.Providers.VoidHistoryProvider, BLocal, Version=1.0.0.0, Culture=neutral" />
