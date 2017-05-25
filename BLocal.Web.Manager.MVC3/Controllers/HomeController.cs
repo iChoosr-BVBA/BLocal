@@ -25,6 +25,10 @@ namespace BLocal.Web.Manager.Controllers
         [HttpPost, ValidateInput(false)]
         public ActionResult Authenticate(String username, String password)
         {
+            if (ConfigurationManager.AppSettings["StandardLogInEnabled"] == "false")
+            {
+                return RedirectToAction("Index");
+            }
             if (password == ConfigurationManager.AppSettings["password"])
                 Session["auth"] = DateTime.Now;
             Session["author"] = username;

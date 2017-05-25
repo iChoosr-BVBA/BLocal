@@ -34,11 +34,25 @@
 }
 else {
     <section class="general">
-        <h2>Please provide first name and password</h2>
-        @using (Html.BeginForm("Authenticate", "Home", FormMethod.Post)) {
-            <input type="text" name="username" value="" placeholder="first name"/>
-            <input type="password" name="password" placeholder="password"/> <input type="submit" value="Authenticate"/>
+        @if (ConfigurationManager.AppSettings["StandardLogInEnabled"] == "true")
+        {
+            <h2>Please provide first name and password</h2>
+            using (Html.BeginForm("Authenticate", "Home", FormMethod.Post))
+             {
+                 <input type="text" name="username" value="" placeholder="first name"/>
+                 <input type="password" name="password" placeholder="password"/>
+                 <input type="submit" value="Authenticate"/>
+             }
         }
-        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        @if (ConfigurationManager.AppSettings["GoogleLogInEnabled"] == "true")
+        {
+            <h2>Authenticate using google account</h2>
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        }
+        @if (ConfigurationManager.AppSettings["GoogleLogInEnabled"] == "false" &&
+                     ConfigurationManager.AppSettings["StandardLogInEnabled"] == "false")
+        {
+            <h2>All authentication ways are currently disabled. Please contact administrator.</h2>
+        }
     </section>
 }
