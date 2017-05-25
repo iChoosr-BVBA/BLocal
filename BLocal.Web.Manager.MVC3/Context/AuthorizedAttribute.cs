@@ -11,7 +11,7 @@ namespace BLocal.Web.Manager.Context
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             var route = filterContext.RouteData.Values;
-            if (new[]{"index", "authenticate"}.Contains(route["action"].ToString().ToLowerInvariant()) && route["controller"].ToString().ToLowerInvariant() == "home")
+            if (new[]{"index", "authenticate", "googlelogin" }.Contains(route["action"].ToString().ToLowerInvariant()) && route["controller"].ToString().ToLowerInvariant() == "home")
                 return;
 
             var lastAuth = filterContext.HttpContext.Session["auth"] as DateTime?;

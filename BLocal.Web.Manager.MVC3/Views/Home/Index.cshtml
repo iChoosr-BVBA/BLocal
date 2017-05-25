@@ -2,6 +2,31 @@
 @{
     ViewBag.Title = "Authentication";
 }
+<meta name="google-signin-client_id" content="@ConfigurationManager.AppSettings["GoogleOAuthCliendId"]">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script type="text/javascript">
+    function onSignIn(googleUser) {
+        // Send ID-Token to controller
+        $.ajax({
+            url: '@Url.Action("GoogleLogin", "Home")',
+            type: 'POST',
+            dataType: 'json',
+            cache: false,
+            data: { token: googleUser.getAuthResponse().id_token },
+            success: function (data) {
+                if (data === "ok") {
+                    location.href = "/Home/Overview";
+                } else if (data === "bad_domain") {
+                    alert("Your account is not allowed to use this service. You will be logged out. Please try to log in using account allowed to enter.");
+                    gapi.auth2.getAuthInstance().disconnect();
+                } else if (data === "disabled") {
+                    alert("Google log in is disabled now. Try to log in using username and password.");
+                }
+            }
+        });
+    }
+</script>
+
 <h1>Authentication</h1>
     
 @if (String.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["password"])) {
@@ -9,10 +34,25 @@
 }
 else {
     <section class="general">
-        <h2>Please provide first name and password</h2>
-        @using (Html.BeginForm("Authenticate", "Home", FormMethod.Post)) {
-            <input type="text" name="username" value="" placeholder="first name"/>
-            <input type="password" name="password" placeholder="password"/> <input type="submit" value="Authenticate"/>
+        @if (ConfigurationManager.AppSettings["StandardLogInEnabled"] == "true")
+        {
+            <h2>Please provide first name and password</h2>
+            using (Html.BeginForm("Authenticate", "Home", FormMethod.Post))
+             {
+                 <input type="text" name="username" value="" placeholder="first name"/>
+                 <input type="password" name="password" placeholder="password"/>
+                 <input type="submit" value="Authenticate"/>
+             }
+        }
+        @if (ConfigurationManager.AppSettings["GoogleLogInEnabled"] == "true")
+        {
+            <h2>Authenticate using google account</h2>
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        }
+        @if (ConfigurationManager.AppSettings["GoogleLogInEnabled"] == "false" &&
+                     ConfigurationManager.AppSettings["StandardLogInEnabled"] == "false")
+        {
+            <h2>All authentication ways are currently disabled. Please contact administrator.</h2>
         }
     </section>
 }
