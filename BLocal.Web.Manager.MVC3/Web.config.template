@@ -13,27 +13,25 @@
     <add key="StandardLogInEnabled" value="false"/>
 	<add key="GoogleOAuthCliendId" value="160483565426-9t0ol9i5h8pmq9f7vq1o73q13kj1utbc.apps.googleusercontent.com"/>
   </appSettings>
-  <!-- do not rename -->
   <providerGroupsConfiguration>
-    <add name="iChoosr - Local" color="#090">
+    <add name="iChoosr - Local">
       <valueProvider type="iChoosr.Localization.PackageLocalizedValueManager, iChoosr.Localization, Version=1.0.0.0, Culture=neutral">
-        <!-- Add constructor parameters -->
         <add name="localizationRoot" value="C:\Source\Content" />
       </valueProvider>
-      <logProvider type="BLocal.Providers.VoidLogger, BLocal, Version=1.0.0.0, Culture=neutral" />
-      <historyProvider type="BLocal.Providers.VoidHistoryProvider, BLocal, Version=1.0.0.0, Culture=neutral" />
+      <historyProvider type="iChoosr.Localization.PackageLocalizedHistoryManager, iChoosr.Localization, Version=1.0.0.0, Culture=neutral">
+        <add name="localizationRoot" value="C:\Source\Content" />
+      </historyProvider>
+      <logProvider type="BLocal.Providers.VoidLogger, BLocal, Version=1.0.0.4, Culture=neutral" />
     </add>
     <add name="iChoosr - Test" color="#f90">
       <valueProvider type="BLocal.Web.Manager.Providers.RemoteAccess.RemoteAccessManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral">
-        <!-- Add constructor parameters -->
-        <add name="targetUrl" value="http://10.120.3.199:7000/ExternalSynchronization/" />
-        <add name="targetPassword" value="left-out-for-safety"/>
-        <add name="targetProviderPair" value="iChoosr - Test"/>
+        <add name="targetUrl" value="http://10.120.3.199:7000/RemoteAccess/" />
+        <add name="targetPassword" value="iChoosr=c00l" />
+        <add name="targetProviderGroup" value="iChoosr - Test" />
       </valueProvider>
+      <historyProvider type="BLocal.Web.Manager.Providers.RemoteAccess.RemoteAccessManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral" isValueProvider="True" />
       <logProvider type="BLocal.Providers.VoidLogger, BLocal, Version=1.0.0.0, Culture=neutral" />
-      <historyProvider type="BLocal.Web.Manager.Providers.RemoteAccess.RemoteAccessManager, BLocal.Web.Manager, Version=1.0.0.0, Culture=neutral" isValueProvider="True" />    
     </add>
-    <!-- add (or remove) any providers -->
   </providerGroupsConfiguration>
   <system.web>
     <compilation debug="true" targetFramework="4.0">
