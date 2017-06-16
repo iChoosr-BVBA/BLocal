@@ -109,3 +109,5 @@ Backup*/
 UpgradeLog*.XML
 /BLocal.Web.Manager.MVC3/Web.config
 /config.yml
+/BLocal.Web.Manager.MVC3/Web.Debug.config
+/BLocal.Web.Manager.MVC3/Web.Release.config
