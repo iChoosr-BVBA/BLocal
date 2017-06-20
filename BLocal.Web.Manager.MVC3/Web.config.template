@@ -11,7 +11,7 @@
     <add key="automaticAuthorName" value="Sam - Autosync"/>
     <add key="GoogleLogInEnabled" value="true"/>
     <add key="StandardLogInEnabled" value="false"/>
-	<add key="GoogleOAuthCliendId" value="160483565426-9t0ol9i5h8pmq9f7vq1o73q13kj1utbc.apps.googleusercontent.com"/>
+	<add key="GoogleOAuthCliendId" value="change-it-to-real-id"/>
   </appSettings>
   <!-- do not rename -->
   <providerGroupsConfiguration>
