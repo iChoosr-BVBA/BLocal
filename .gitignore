@@ -111,3 +111,4 @@ UpgradeLog*.XML
 /config.yml
 /BLocal.Web.Manager.MVC3/Web.Debug.config
 /BLocal.Web.Manager.MVC3/Web.Release.config
+*.nupkg
