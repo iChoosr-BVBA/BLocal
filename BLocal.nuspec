@@ -2,9 +2,9 @@
 <package >
   <metadata>
     <id>BLocal.Web.Manager</id>
-    <version>2.0.5</version>
-    <authors>alan</authors>
-    <owners>alan</owners>
+    <version>2.0.10</version>
+    <authors>alan, krzysztof</authors>
+    <owners>alan, krzysztof</owners>
     <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
     <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
     <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
@@ -20,5 +20,7 @@
     <file src=".\BLocal.Web.Manager.MVC3\Views\**\*.*" target="content\Views"/>
     <file src=".\BLocal.Web.Manager.MVC3\Content\**\*.*" target="content\Content"/>
 	<file src=".\BLocal.Web.Manager.MVC3\Scripts\**\*.*" target="content\Scripts"/>
+	
+	<file src=".\ThirdParty\iChoosr\*.*" target="content\bin"/>
   </files>
 </package>
