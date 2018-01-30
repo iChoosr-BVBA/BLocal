@@ -141,10 +141,14 @@ namespace BLocal.Web.Manager.Controllers
 
             var extention = postedFile.FileName.Split('.').Last();
             var records = new List<ImportExportRecord>();
+            
+            //var content = new StringReader(@"put your csv content here");
+            var content = new StreamReader(postedFile.InputStream);
+
             switch (extention)
             {
                 case "csv":
-                    using (var reader = new CsvReader(new StreamReader(postedFile.InputStream)))
+                    using (var reader = new CsvReader(content))
                     {
                         reader.Configuration.Delimiter = ";";
                         records.AddRange(reader.GetRecords<ImportExportRecord>());
