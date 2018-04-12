@@ -21,9 +21,78 @@
                   "E9EE2DC871089128F36065DB9E7AC94B"
                 ]
     },
+    "faq": {
+      "iframe": [
+                  "www.youtube.com"
+                ],
+      "style":  [
+                  "3643CFE74893823D81165821BB923A51"
+                ]
+    },
     "infotext": {
-    },    
-  },
+      "iframe": [
+        "www.youtube.com",
+        "kiyoh.nl",
+        "onedrive.live.com"
+        ],
+      "style":  [
+                  "3F81241D171106E315597E1EA293ACFA", 
+                  "360C5C23193E3358A421721B85ECB0AE", 
+                  "1694EE8D70783E7F7C8EB4102CA106A5", 
+                  "1D47959685CBEF5530239FFE41F19AE2", 
+                  "360C5C23193E3358A421721B85ECB0AE", 
+                  "CC867542BD06D9B44ED992D985A9D9AE", 
+                  "1694EE8D70783E7F7C8EB4102CA106A5", 
+                  "1D47959685CBEF5530239FFE41F19AE2", 
+                  "723565D08BF24F677FB0414DA1E6C132", 
+                  "1D47959685CBEF5530239FFE41F19AE2", 
+                  "1D47959685CBEF5530239FFE41F19AE2"
+                ],
+      "script": [
+                  "C63F0FFC24B24F7AE792127CDE71DCB0",
+                  "B97A7BEBF26CCC832FE77814127E4039",
+                  "DB14E516966CC45AB349E7FA8C339AC9",
+                  "70FD8F33E23AB13842F68A8677480E31",
+                  "496974B5DAB0C3235268816AAE7D9315",
+                  "0EBA5FB0D5A6D89236E3E9FF57B18403",
+                  "C63F0FFC24B24F7AE792127CDE71DCB0",
+                  "0EBA5FB0D5A6D89236E3E9FF57B18403",
+                  "C63F0FFC24B24F7AE792127CDE71DCB0",
+                  "4EAE88AEDAE7E6DCDF6385DDF979C3DB",
+                  "BF296D6EC4CF5AAEE5F6F74C6CBF95C5",
+                  "2C9BF4CC3C33E3B2F4D846783684B045",
+                  "BF296D6EC4CF5AAEE5F6F74C6CBF95C5"
+                ],
+      "object": [
+                  "35F688A4DE8D136EA9214DE007574B29",
+                  "35F688A4DE8D136EA9214DE007574B29"
+                ],
+      "param": [
+                  "0AFFC6E8AF80244CD7A14AD977009171",
+                  "1862D6E3BFB0582822654B34660B0C20",
+                  "D1333FB2831E359A34821941D09ED8D9",
+                  "FFA3F935AF63CAE71F38C67E457524D3",
+                  "DD2E91D25F864244D5DCA67152F3110C",
+                  "80B66D87070CF0AB46F2D95D27035220",
+                  "6313CCC7F162EB87671FE7C08584FBB9",
+                  "6AE012B6A4FD0D281CE2A45403916C60",
+                  "D59FA595E92491F359F2AE5BBB6D7361",
+                  "E2866C9CA28A587C34727DA428E470A0",
+                  "908E3D5F8A350F859487688A11C7DEE4",
+                  "0AFFC6E8AF80244CD7A14AD977009171",
+                  "1862D6E3BFB0582822654B34660B0C20",
+                  "D1333FB2831E359A34821941D09ED8D9",
+                  "FFA3F935AF63CAE71F38C67E457524D3",
+                  "DD2E91D25F864244D5DCA67152F3110C",
+                  "80B66D87070CF0AB46F2D95D27035220",
+                  "6313CCC7F162EB87671FE7C08584FBB9",
+                  "6AE012B6A4FD0D281CE2A45403916C60",
+                  "D59FA595E92491F359F2AE5BBB6D7361",
+                  "E2866C9CA28A587C34727DA428E470A0",
+                  "908E3D5F8A350F859487688A11C7DEE4"
+                ]
+    }
+  },  
   "AllowedItems": {
     "schemes": [
       "mailto"
