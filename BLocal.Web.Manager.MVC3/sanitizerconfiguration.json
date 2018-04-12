@@ -1,0 +1,38 @@
+{
+  "Exclusions": {
+    "cms": {
+      "iframe": [
+                  "www.surveygizmo.com",
+                  "www.youtube.com"
+                ],
+      "onclick" : [
+                  "return false;",
+                  "{{click_action}}",
+                  "location.href='{{click_action}}'",
+                  "location.href='http://www.provincieantwerpen.be/aanbod/drem/dienst-mobiliteit/fietsbeleid/fietsostrades.html';",
+                  "location.href='http://www.vriendvan.be/';",
+                  "location.href='https://www.kampc.be/nl/duurzaam/adviesverlening/persoonlijk-bouwadvies';",
+                  "location.href='https://www.provincieantwerpen.be/aanbod/dlm/duurzaam-leven/groepsaankopen-energie/groepsaankoop-groene-stroom-particulieren.html';",
+                  "location.href='https://www.provincieantwerpen.be/aanbod/dlm/duurzaam-leven/vriend-van.html';",
+                  "location.href='https://www.provincieantwerpen.be/aanbod/dwep/deis/kamp-c.html';"
+                ],
+      "style" : [
+                  "67B1A7719418F8B15EECCE35C6A543BA",
+                  "E9EE2DC871089128F36065DB9E7AC94B"
+                ]
+    },
+    "infotext": {
+    },    
+  },
+  "AllowedItems": {
+    "schemes": [
+      "mailto"
+    ],
+    "tags": [
+      "noscript"
+    ],
+    "attributes": [ "class", "id", "frameborder", "allow", "allowfullscreen", "scrolling", "face", "bordercolor", "data-confirm-message", "data-qa-menu-item", "data-visible-when", "data-section-class"],
+    "cssproperties": ["overflow-x", "position", "word-break", "border-radius", "box-shadow"]
+  },
+  "OperatingMode": "All"
+}

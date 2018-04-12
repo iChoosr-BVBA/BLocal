@@ -7,6 +7,7 @@ using BLocal.Web.Manager.Business;
 using BLocal.Web.Manager.Context;
 using BLocal.Web.Manager.Extensions;
 using BLocal.Web.Manager.Models.DirectEditing;
+using iChoosr.Sanitizer;
 
 namespace BLocal.Web.Manager.Controllers
 {
@@ -14,6 +15,18 @@ namespace BLocal.Web.Manager.Controllers
     public class DirectEditingController : Controller
     {
         public ProviderGroupFactory ProviderGroupFactory { get; set; }
+        private ISanitizer _sanitizer;
+
+        private ISanitizer Sanitizer
+        {
+            get
+            {
+                if (_sanitizer == null)
+                    _sanitizer = HttpContext.Application["sanitizer"] as ISanitizer;
+
+                return _sanitizer;
+            }
+        }
 
         public DirectEditingController()
         {
@@ -63,53 +76,70 @@ namespace BLocal.Web.Manager.Controllers
             var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
 
             var qualifier = new Qualifier.Unique(Part.Parse(part), new Locale(locale), key);
-            var value = content;
-            var qualifiedValue = new QualifiedValue(qualifier, value);
+            var sanitizationResult =
+                Sanitizer.Sanitize(content, SanitizationExclusionType.Cms, SanitizerOperatingMode.Input);
 
-            localization.ValueManager.UpdateCreateValue(qualifiedValue);
-            localization.HistoryManager.ProgressHistory(qualifiedValue, Session.Get<String>("author"));
+            if (sanitizationResult.ExternalizedErrors.Count > 0){
+                return Json(new { ok = false,  sanitizationResult });
+            } else { 
+                var value = content;
+                var qualifiedValue = new QualifiedValue(qualifier, value);
 
-            localization.ValueManager.Persist();
-            if (localization.ValueManager != localization.HistoryManager)
-                localization.HistoryManager.Persist();
+                localization.ValueManager.UpdateCreateValue(qualifiedValue);
+                localization.HistoryManager.ProgressHistory(qualifiedValue, Session.Get<String>("author"));
 
-            return Json(new {ok = true});
+                localization.ValueManager.Persist();
+                if (localization.ValueManager != localization.HistoryManager)
+                    localization.HistoryManager.Persist();
+
+                return Json(new {ok = true});
+            }
         }
 
         [ValidateInput(false)]
         public JsonResult MoveAndUpdateValue(String oldPart, String oldLocale, String oldKey, String newPart, String newLocale, String newKey, String newContent, String providerConfigName)
         {
-            oldPart = oldPart.ToLower();
-            oldLocale = oldLocale.ToLower();
-            oldKey = oldKey.ToLower();
+            var sanitizationResult =
+                Sanitizer.Sanitize(newContent, SanitizationExclusionType.Cms, SanitizerOperatingMode.Input);
 
-            newPart = newPart.ToLower();
-            newLocale = newLocale.ToLower();
-            newKey = newKey.ToLower();
-
-            var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
-
-            // delete old Qualifier
-            var oldQualifier = new Qualifier.Unique(Part.Parse(oldPart), new Locale(oldLocale), oldKey);
-            var oldQualifiedValue = new QualifiedValue(oldQualifier, null);
-
-            localization.ValueManager.DeleteValue(oldQualifier);
-            localization.HistoryManager.ProgressHistory(oldQualifiedValue, Session.Get<String>("author"));
-
-            // insert new Qualifier
-            var newQualifier = new Qualifier.Unique(Part.Parse(newPart), new Locale(newLocale), newKey);
-            var newQualifiedValue = new QualifiedValue(newQualifier, newContent);
-
-            localization.ValueManager.UpdateCreateValue(newQualifiedValue);
-            localization.HistoryManager.ProgressHistory(newQualifiedValue, Session.Get<String>("author"));
-
-            localization.ValueManager.Persist();
-            if (localization.ValueManager != localization.HistoryManager)
+            if (sanitizationResult.ExternalizedErrors.Count > 0)
             {
-                localization.HistoryManager.Persist();
+                return Json(new {ok = false, sanitizationResult});
             }
+            else
+            {
+                oldPart = oldPart.ToLower();
+                oldLocale = oldLocale.ToLower();
+                oldKey = oldKey.ToLower();
 
-            return Json(new { ok = true });
+                newPart = newPart.ToLower();
+                newLocale = newLocale.ToLower();
+                newKey = newKey.ToLower();
+
+                var localization = ProviderGroupFactory.CreateProviderGroup(providerConfigName);
+
+                // delete old Qualifier
+                var oldQualifier = new Qualifier.Unique(Part.Parse(oldPart), new Locale(oldLocale), oldKey);
+                var oldQualifiedValue = new QualifiedValue(oldQualifier, null);
+
+                localization.ValueManager.DeleteValue(oldQualifier);
+                localization.HistoryManager.ProgressHistory(oldQualifiedValue, Session.Get<String>("author"));
+
+                // insert new Qualifier
+                var newQualifier = new Qualifier.Unique(Part.Parse(newPart), new Locale(newLocale), newKey);
+                var newQualifiedValue = new QualifiedValue(newQualifier, newContent);
+
+                localization.ValueManager.UpdateCreateValue(newQualifiedValue);
+                localization.HistoryManager.ProgressHistory(newQualifiedValue, Session.Get<String>("author"));
+
+                localization.ValueManager.Persist();
+                if (localization.ValueManager != localization.HistoryManager)
+                {
+                    localization.HistoryManager.Persist();
+                }
+
+                return Json(new {ok = true});
+            }
         }
 
         [ValidateInput(false)]
