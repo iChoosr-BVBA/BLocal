@@ -45,9 +45,11 @@
             url: getPageUrl('updateCreateValue'),
             data: { part: part, key: key, locale: locale, content: content },
             type: 'POST',
-            success: callback,
+            success: function(response) {
+                callback(response);
+            },
             error: unblockUI
-        });
+    });
     }
 
     function moveAndUpdateValue(oldPart, oldKey, oldLocale, newPart, newKey, newLocale, newContent, callback) {
@@ -55,7 +57,9 @@
             url: getPageUrl('moveAndUpdateValue'),
             data: { oldPart: oldPart, oldKey: oldKey, oldLocale: oldLocale, newPart: newPart, newKey: newKey, newLocale: newLocale, newContent: newContent },
             type: 'POST',
-            success: callback,
+            success: function (response) {
+                callback(response);
+            },
             error: unblockUI
         });
     }
@@ -137,9 +141,19 @@
             var contentEl = elements.find("textarea.content").val(content);
 
             var update = function (newPart, newKey, newLocale, newContent, callback) {
-                updateCreateValue(newPart, newKey, newLocale, newContent, function () {
-                    showValue(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val());
-                    details.close();
+                updateCreateValue(newPart, newKey, newLocale, newContent, function (response) {
+                    if (response.ok) {
+                        showValue(partEl.val(), keyEl.val(), localeEl.val(), contentEl.val());
+                        details.close();
+                    } else {
+                        var content = "Insecure elements found !";
+                        if (response.sanitizationResult.ShortExternalizedErrors) {
+                            response.sanitizationResult.ShortExternalizedErrors.forEach(function(item) {
+                                content += "\n" + item;
+                            });
+                        }
+                        alert(content);
+                    } 
                     if (callback)
                         callback();
                 });
@@ -158,10 +172,21 @@
                 if (part == newPart && key == newKey && locale == newLocale) {
                     update(newPart, newKey, newLocale, newContent, unblockUI);
                 } else {
-                    moveAndUpdateValue(part, key, locale, newPart, newKey, newLocale, newContent, function () {
-                        remove(p);
-                        details.close();
-                        unblockUI();
+                    moveAndUpdateValue(part, key, locale, newPart, newKey, newLocale, newContent, function (response) {
+                        if (response.ok) {
+                            remove(p);
+                            details.close();
+                            unblockUI();
+                        } else {
+                            var content = "Insecure elements found !";
+                            if (response.sanitizationResult.ShortExternalizedErrors) {
+                                response.sanitizationResult.ShortExternalizedErrors.forEach(function (item) {
+                                    content += "\n" + item;
+                                });
+                            }
+                            alert(content);
+                            unblockUI();
+                        }
                     });
                 }
             });

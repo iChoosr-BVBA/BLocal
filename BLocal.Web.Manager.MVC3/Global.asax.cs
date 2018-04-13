@@ -1,5 +1,9 @@
-﻿using System.Web.Mvc;
+﻿using System.IO;
+using System.Web.Mvc;
 using System.Web.Routing;
+using Ganss.XSS;
+using iChoosr.Sanitizer;
+using Newtonsoft.Json;
 
 namespace BLocal.Web.Manager
 {
@@ -31,6 +35,16 @@ namespace BLocal.Web.Manager
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+            InitializeSanitizer();
+        }
+
+        protected void InitializeSanitizer()
+        {
+            var configFilePath = Server.MapPath("sanitizerconfiguration.json");
+            var configurationContent = File.ReadAllText(configFilePath);
+            var configuration = JsonConvert.DeserializeObject<SanitizerConfiguration>(configurationContent);
+            var sanitizer = new Sanitizer(new HtmlSanitizer(), configuration);
+            Application.Add("sanitizer", sanitizer);
         }
     }
 }
