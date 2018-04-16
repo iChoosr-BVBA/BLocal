@@ -199,6 +199,9 @@
     <Content Include="Web.octopus.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="sanitizerconfiguration.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Web.config.template" />
     <Content Include="Views\Web.config">
       <SubType>Designer</SubType>
