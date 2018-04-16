@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Ganss.XSS;
 using iChoosr.Sanitizer;
+using Microsoft.ApplicationInsights.Extensibility;
 using Newtonsoft.Json;
 
 namespace BLocal.Web.Manager
@@ -31,6 +32,9 @@ namespace BLocal.Web.Manager
 
         protected void Application_Start()
         {
+#if DEBUG
+            TelemetryConfiguration.Active.DisableTelemetry = true;
+#endif
             AreaRegistration.RegisterAllAreas();
 
             RegisterGlobalFilters(GlobalFilters.Filters);
