@@ -153,6 +153,7 @@
                             });
                         }
                         alert(content);
+                        elements.find("#manualEditErrors").html(content.replace(/\n/g, "<br>"));
                     } 
                     if (callback)
                         callback();
@@ -185,6 +186,7 @@
                                 });
                             }
                             alert(content);
+                            elements.find("#manualEditErrors").html(content.replace(/\n/g, "<br>"));
                             unblockUI();
                         }
                     });
