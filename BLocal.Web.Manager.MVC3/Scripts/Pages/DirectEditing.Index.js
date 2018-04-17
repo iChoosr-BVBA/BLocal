@@ -149,10 +149,10 @@
                         var content = "Insecure elements found !";
                         if (response.sanitizationResult.ShortExternalizedErrors) {
                             response.sanitizationResult.ShortExternalizedErrors.forEach(function(item) {
-                                content += "\n" + item;
+                                content += "<br>" + item;
                             });
                         }
-                        alert(content);
+                        elements.find("#manualEditErrors").html(content);
                     } 
                     if (callback)
                         callback();
@@ -181,10 +181,10 @@
                             var content = "Insecure elements found !";
                             if (response.sanitizationResult.ShortExternalizedErrors) {
                                 response.sanitizationResult.ShortExternalizedErrors.forEach(function (item) {
-                                    content += "\n" + item;
+                                    content += "<br>" + item;
                                 });
                             }
-                            alert(content);
+                            elements.find("#manualEditErrors").html(content);
                             unblockUI();
                         }
                     });

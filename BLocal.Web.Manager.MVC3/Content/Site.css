@@ -181,6 +181,9 @@ div.popup textarea {
     height: 250px;
     margin-bottom: 10px;
 }
+div.popup #manualEditErrors {
+        color: #EE0000;
+}
 input, textarea, select {
     padding: 5px;
 }
