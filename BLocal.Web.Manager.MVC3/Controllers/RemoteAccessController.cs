@@ -156,8 +156,12 @@ namespace BLocal.Web.Manager.Controllers
         public ContentResult ProcessBatch(RemoteAccessRequest request)
         {
             var processBatchRequest = JsonConvert.DeserializeObject<ProcessBatchRequest>(request.RequestData);
+
             foreach (var batchRequest in processBatchRequest.Requests)
-                RequestMethods[JsonConvert.DeserializeObject<BasicRequest>(batchRequest.RequestData).Path].Invoke(this, new object[] { batchRequest });
+            {
+                RequestMethods[JsonConvert.DeserializeObject<BasicRequest>(batchRequest.RequestData).Path]
+                    .Invoke(this, new object[] {batchRequest});
+            }
             var json = JsonConvert.SerializeObject(new ProcessBatchResponse(), _partConverter);
             return Content(json, "application/json", Encoding.Unicode);
         }
